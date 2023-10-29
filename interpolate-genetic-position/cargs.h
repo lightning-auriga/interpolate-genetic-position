@@ -66,6 +66,65 @@ class cargs {
   bool help() const { return compute_flag("help"); }
 
   /*!
+   * \brief get name of input variant/region query file
+   * \return name of input variant/query region file
+   */
+  std::string get_input_filename() const {
+    return compute_parameter<std::string>("input");
+  }
+  /*!
+   * \brief get input variant/region file format
+   * \return input variant/region file format
+   *
+   * the term "preset" is based on tabix's notation.
+   * accepted values are: "bim", "map", "bed". input
+   * format also controls output behavior.
+   */
+  std::string get_input_preset() const {
+    std::string preset = compute_parameter<std::string>("preset");
+    if (preset.compare("bim") && preset.compare("map") &&
+        preset.compare("bed")) {
+      throw std::runtime_error("invalid input preset format: \"" + preset +
+                               "\"");
+    }
+    return preset;
+  }
+  /*!
+   * \brief get name of input recombination map
+   * \return name of input recombination map
+   */
+  std::string get_recombination_map() const {
+    return compute_parameter<std::string>("genetic-map");
+  }
+  /*!
+   * \brief get input recombination map format
+   * \return input recombination map format
+   *
+   * this refers to the source of the genetic map file.
+   * accepted values are:
+   *   - "bolt"
+   * (https://storage.googleapis.com/broad-alkesgroup-public/BOLT-LMM/downloads/)
+   *   - "ucsc"
+   * (https://hgdownload.soe.ucsc.edu/gbdb/hg38/recombRate/recombAvg.bw)
+   *     - note that this needs to be converted to bedgraph before being used
+   * with this software
+   */
+  std::string get_map_format() const {
+    std::string map_format = compute_parameter<std::string>("map-format");
+    if (map_format.compare("bolt") && map_format.compare("ucsc")) {
+      throw std::runtime_error("invalid genetic map format: \"" + map_format +
+                               "\"");
+    }
+    return map_format;
+  }
+  /*!
+   *
+   */
+  std::string get_output_filename() const {
+    return compute_parameter<std::string>("output");
+  }
+
+  /*!
     \brief find status of arbitrary flag
     @param tag name of flag
     \return whether the flag is set
