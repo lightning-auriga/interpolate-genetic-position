@@ -18,9 +18,9 @@
 #include <string>
 #include <vector>
 
+#include "interpolate-genetic-position/utilities.h"
+
 namespace interpolate_genetic_position {
-typedef enum { UNKNOWN, BOLT, UCSC } format_type;
-typedef enum { LESS_THAN, EQUAL, GREATER_THAN } direction;
 /*!
  * \class genetic_map
  * \brief interface class for reading data from a genetic map file.
