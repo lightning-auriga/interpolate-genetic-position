@@ -2,11 +2,13 @@ name: interpolate-genetic-position-env
 dependencies:
   - boost-cpp
   - git
+  - gmp
+  - zlib
 # required for commitizen
   - nodejs
   - pre-commit
   - cppcheck
-  - sarcasm::clang-format
+  - clang-format
 
   - libtool
   - automake
