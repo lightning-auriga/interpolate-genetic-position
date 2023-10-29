@@ -86,6 +86,14 @@ class query_file {
    * If no connection is established... not really sure.
    */
   bool eof();
+  /*!
+   * \brief given an interpolated genetic position and an output stream,
+   * recapitulate input data with updated genetic position information
+   * \param gpos_interpolated interpolated genetic position for this query
+   * \param output pointer to output stream; opening/closing it is handled
+   * upstream
+   */
+  void report(const mpf_class &gpos_interpolated, std::ostream *output) const;
 
  private:
   std::ifstream _input;   //!< file connection for plaintext input

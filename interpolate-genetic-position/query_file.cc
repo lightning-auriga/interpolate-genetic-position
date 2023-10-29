@@ -116,3 +116,30 @@ bool igp::query_file::eof() {
   }
   return false;
 }
+void igp::query_file::report(const mpf_class &gpos_interpolated,
+                             std::ostream *output) const {
+  for (unsigned i = 0; i < _line_contents.size(); ++i) {
+    if (i) {
+      if (!(*output << '\t')) {
+        throw std::runtime_error("query_file::report: cannot write to stream");
+      }
+    }
+    if ((_ft == BIM || _ft == MAP) && i == 2) {
+      if (!(*output << gpos_interpolated)) {
+        throw std::runtime_error("query_file::report: cannot write to stream");
+      }
+    } else {
+      if (!(*output << _line_contents.at(i))) {
+        throw std::runtime_error("query_file::report: cannot write to stream");
+      }
+    }
+  }
+  if (_ft == BED) {
+    if (!(*output << '\t' << gpos_interpolated)) {
+      throw std::runtime_error("query_file::report: cannot write to stream");
+    }
+  }
+  if (!(*output << '\n')) {
+    throw std::runtime_error("query_file::report: cannot write to stream");
+  }
+}
