@@ -13,6 +13,7 @@
 #include <zlib.h>
 
 #include <fstream>
+#include <iostream>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -72,11 +73,12 @@ class genetic_map {
    * \param chr_query chromosome of query variant as string
    * \param pos_query physical position of query variant,
    * represented as mpz
+   * \param verbose whether to emit (extremely) verbose logging to std::cout
    * \param gpos_interpolated pointer to mpf with interpolated
    * genetic position for the query
    */
   void query(const std::string &chr_query, const mpz_class &pos_query,
-             mpf_class *gpos_interpolated);
+             bool verbose, mpf_class *gpos_interpolated);
   /*!
    * \brief close any input connection
    */

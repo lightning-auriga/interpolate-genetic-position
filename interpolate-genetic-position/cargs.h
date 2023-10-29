@@ -66,6 +66,12 @@ class cargs {
   bool help() const { return compute_flag("help"); }
 
   /*!
+   * \brief determine whether the user has requested (extremely) verbose debug
+   * logging \return whether the user has requested verbose logging
+   */
+  bool verbose() const { return compute_flag("verbose"); }
+
+  /*!
    * \brief get name of input variant/region query file
    * \return name of input variant/query region file
    */

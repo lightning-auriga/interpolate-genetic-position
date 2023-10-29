@@ -16,7 +16,8 @@ void igp::interpolator::interpolate(const std::string &input_filename,
                                     const std::string &preset,
                                     const std::string &genetic_map_filename,
                                     const std::string &map_format,
-                                    const std::string &output_filename) const {
+                                    const std::string &output_filename,
+                                    bool verbose) const {
   genetic_map gm;
   format_type map_ft = string_to_format_type(map_format);
   gm.open(genetic_map_filename, map_ft);
@@ -35,7 +36,7 @@ void igp::interpolator::interpolate(const std::string &input_filename,
     }
   }
   while (qf.get()) {
-    gm.query(qf.get_chr(), qf.get_pos(), &gpos_interpolated);
+    gm.query(qf.get_chr(), qf.get_pos(), verbose, &gpos_interpolated);
     qf.report(gpos_interpolated,
               output_filename.empty() ? &std::cout : &output);
   }
