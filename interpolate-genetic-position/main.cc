@@ -18,6 +18,9 @@
 #include <vector>
 
 #include "interpolate-genetic-position/cargs.h"
+#include "interpolate-genetic-position/interpolator.h"
+
+namespace igp = interpolate_genetic_position;
 
 /*!
   \brief main program implementation
@@ -26,13 +29,22 @@
  */
 int main(int argc, char **argv) {
   // parse command line input
-  interpolate_genetic_position::cargs ap(argc, argv);
+  igp::cargs ap(argc, argv);
   // if help is requested or no flags specified
   if (ap.help() || argc == 1) {
     // print a help message and exist
     ap.print_help(std::cout);
     return 0;
   }
+
+  std::string input = ap.get_input_filename();
+  std::string preset = ap.get_input_preset();
+  std::string genetic_map = ap.get_recombination_map();
+  std::string map_format = ap.get_map_format();
+  std::string output = ap.get_output_filename();
+
+  igp::interpolator ip;
+  ip.interpolate(input, preset, genetic_map, map_format, output);
 
   std::cout << "all done woo!" << std::endl;
   return 0;
