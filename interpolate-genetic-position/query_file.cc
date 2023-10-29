@@ -30,19 +30,21 @@ igp::query_file::query_file(const query_file &obj) {
 igp::query_file::~query_file() throw() { close(); }
 void igp::query_file::open(const std::string &filename, format_type ft) {
   _ft = ft;
-  if (filename.rfind(".gz") == filename.size() - 3) {
-    _gzinput = gzopen(filename.c_str(), "rb");
-    if (!_gzinput) {
-      throw std::runtime_error("query_file: cannot read file \"" + filename +
-                               "\"");
+  if (!filename.empty()) {
+    if (filename.rfind(".gz") == filename.size() - 3) {
+      _gzinput = gzopen(filename.c_str(), "rb");
+      if (!_gzinput) {
+        throw std::runtime_error("query_file: cannot read file \"" + filename +
+                                 "\"");
+      }
+    } else {
+      _input.open(filename.c_str());
+      if (!_input.is_open()) {
+        throw std::runtime_error("query_file: cannot read file \"" + filename +
+                                 "\"");
+      }
     }
-  } else {
-    _input.open(filename.c_str());
-    if (!_input.is_open()) {
-      throw std::runtime_error("query_file: cannot read file \"" + filename +
-                               "\"");
-    }
-  }
+  }  // otherwise, input comes from cin
   if (_ft == BIM) {
     _chr_index = 0;
     _pos_index = 3;
@@ -68,16 +70,18 @@ void igp::query_file::open(const char *filename, format_type ft) {
 }
 bool igp::query_file::get() {
   std::string line = "", catcher = "";
+  if (eof()) {
+    return false;
+  }
   if (_input.is_open()) {
-    if (_input.peek() == EOF) {
-      return false;
-    }
     getline(_input, line);
-  } else {
+  } else if (_gzinput) {
     if (gzgets(_gzinput, _buffer, _buffer_size) == Z_NULL) {
       return false;
     }
     line = std::string(_buffer);
+  } else {
+    getline(std::cin, line);
   }
   std::istringstream strm1(line);
   for (unsigned i = 0; i < _line_contents.size(); ++i) {
@@ -114,7 +118,7 @@ bool igp::query_file::eof() {
   if (_gzinput) {
     return gzeof(_gzinput);
   }
-  return false;
+  return std::cin.peek() == EOF;
 }
 void igp::query_file::report(const mpf_class &gpos_interpolated,
                              std::ostream *output) const {

@@ -13,6 +13,7 @@
 #include <zlib.h>
 
 #include <fstream>
+#include <iostream>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -47,7 +48,9 @@ class query_file {
   ~query_file() throw();
   /*!
    * \brief initialize file connection from string
-   * \param filename name of input file
+   * \param filename name of input file. if an empty string,
+   * the input is assumed to come from cin, and logic skips
+   * opening the stream but otherwise proceeds as usual
    * \param ft descriptor of query file format
    */
   void open(const std::string &filename, format_type ft);
@@ -83,7 +86,8 @@ class query_file {
    * \brief probe input connection to determine whether EOF has been reached
    * \return whether an open connection is EOF
    *
-   * If no connection is established... not really sure.
+   * If no connection is established, then input is coming from cin, in which
+   * case that stream's next character is tested for EOF.
    */
   bool eof();
   /*!

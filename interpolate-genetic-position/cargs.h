@@ -74,6 +74,8 @@ class cargs {
   /*!
    * \brief get name of input variant/region query file
    * \return name of input variant/query region file
+   *
+   * this string can be empty, in which case input is pulled from cin
    */
   std::string get_input_filename() const {
     return compute_parameter<std::string>("input");
