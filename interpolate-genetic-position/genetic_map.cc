@@ -149,6 +149,7 @@ void igp::genetic_map::query(const std::string &chr_query,
   // the many permutations of chromosome codes that are encountered in datasets.
   direction query_vs_old = EQUAL;
   direction query_vs_new = EQUAL;
+  mpf_class mb_adjustment = 1000000.0;
   if (verbose) {
     std::cout << "query: chr is " << chr_query << ", pos is " << pos_query
               << std::endl;
@@ -190,7 +191,8 @@ void igp::genetic_map::query(const std::string &chr_query,
         return;
       } else if (query_pos_vs_old == 1 && query_pos_vs_new == -1) {
         // interpolate
-        *gpos_interpolated = _gpos_old + (_pos_new - _pos_old) * _rate_old;
+        *gpos_interpolated =
+            _gpos_old + (_pos_new - _pos_old) / mb_adjustment * _rate_old;
         if (verbose) {
           std::cout << "interpolated: gpos_old = " << _gpos_old
                     << ", pos_old = " << _pos_old << ", pos_new = " << _pos_new
