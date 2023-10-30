@@ -102,12 +102,12 @@ By default, the final compiled program can be run with
 
 |Parameter|Description|
 |---|---|
-|--input<br>-i|Input file of variants or regions to annotate. Needs to be sorted, chromosome and position. Can be gzipped. If not specified, will be read from stdin.|
-|--preset<br>-p|Format of input variant file. Accepted formats: `bim`, `map`, `bed`.|
-|--genetic-map<br>-g|Input recombination map. Needs to be sorted, chromosome and position. Can be gzipped.|
-|--map-format<br>-m|Format of recombination map. Accepted formats: `bolt`, `ucsc` (see below for further discussion).|
-|--output<br>-o|Output file. Will match format of input. Cannot currently be gzipped. If not specified, will be written to stdout.|
-|--verbose<br>-v|Whether to print extremely verbose debug logs. You probably don't want this.|
+|`--input`<br>`-i`|Input file of variants or regions to annotate. Needs to be sorted, chromosome and position. Can be gzipped. If not specified, will be read from stdin.|
+|`--preset`<br>`-p`|Format of input variant file. Accepted formats: `bim`, `map`, `bed`.|
+|`--genetic-map`<br>`-g`|Input recombination map. Needs to be sorted, chromosome and position. Can be gzipped.|
+|`--map-format`<br>`-m`|Format of recombination map. Accepted formats: `bolt`, `ucsc` (see below for further discussion).|
+|`--output`<br>`-o`|Output file. Will match format of input. Cannot currently be gzipped. If not specified, will be written to stdout.|
+|`--verbose`<br>`-v`|Whether to print extremely verbose debug logs. You probably don't want this.|
 
 
 ## How to Choose a Recombination Rate File
