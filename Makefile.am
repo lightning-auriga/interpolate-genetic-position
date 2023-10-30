@@ -2,7 +2,7 @@ bin_PROGRAMS = interpolate-genetic-position.out test_suite.out
 
 AM_CXXFLAGS = $(BOOST_CPPFLAGS) -ggdb -Wall -std=c++17
 
-COMBINED_SOURCES = interpolate-genetic-position/cargs.cc interpolate-genetic-position/cargs.h interpolate-genetic-position/genetic_map.cc interpolate-genetic-position/genetic_map.h interpolate-genetic-position/interpolator.cc interpolate-genetic-position/interpolator.h interpolate-genetic-position/query_file.cc interpolate-genetic-position/query_file.h interpolate-genetic-position/utilities.cc interpolate-genetic-position/utilities.h
+COMBINED_SOURCES = interpolate-genetic-position/cargs.cc interpolate-genetic-position/cargs.h interpolate-genetic-position/genetic_map.cc interpolate-genetic-position/genetic_map.h interpolate-genetic-position/input_variant_file.cc interpolate-genetic-position/input_variant_file.h interpolate-genetic-position/interpolator.cc interpolate-genetic-position/interpolator.h interpolate-genetic-position/query_file.cc interpolate-genetic-position/query_file.h interpolate-genetic-position/utilities.cc interpolate-genetic-position/utilities.h
 COMBINED_LDADD = $(BOOST_LDFLAGS) -lboost_program_options -lboost_system -lboost_filesystem -lboost_iostreams -lgmpxx -lgmp -lz
 
 interpolate_genetic_position_out_SOURCES = interpolate-genetic-position/main.cc $(COMBINED_SOURCES)

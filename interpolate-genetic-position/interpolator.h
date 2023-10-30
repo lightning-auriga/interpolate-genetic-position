@@ -21,6 +21,7 @@
 #include <vector>
 
 #include "interpolate-genetic-position/genetic_map.h"
+#include "interpolate-genetic-position/input_variant_file.h"
 #include "interpolate-genetic-position/query_file.h"
 #include "interpolate-genetic-position/utilities.h"
 

@@ -19,6 +19,7 @@
 #include <string>
 #include <vector>
 
+#include "interpolate-genetic-position/input_variant_file.h"
 #include "interpolate-genetic-position/utilities.h"
 
 namespace interpolate_genetic_position {
@@ -42,6 +43,12 @@ class query_file {
    * file handle.
    */
   query_file(const query_file &obj);
+  /*!
+   * \brief initialize object with pointer to existing interface object
+   * \param ptr pointer to allocated interface object. this is managed upstream,
+   * and will not be deleted by this object
+   */
+  explicit query_file(base_input_variant_file *ptr);
   /*!
    * \brief destructor
    */
@@ -100,18 +107,8 @@ class query_file {
   void report(const mpf_class &gpos_interpolated, std::ostream *output) const;
 
  private:
-  std::ifstream _input;   //!< file connection for plaintext input
-  gzFile _gzinput;        //!< file connection for gzipped input
-  char *_buffer;          //!< character buffer for gzinput line reading
-  unsigned _buffer_size;  //!< size of gzinput buffer, in bytes
-  format_type _ft;        //!< stored format of input filestream
-  std::vector<std::string> _line_contents;  //!< contents of current input line
-  unsigned _chr_index;   //!< index of chromosome in current line
-  unsigned _pos_index;   //!< index of physical position in current line
-  unsigned _gpos_index;  //!< index of genetic position in current line
-  bool _base0;           //!< whether input positions are base 0
-  std::string _chr;      //!< chromosome of current query
-  mpz_class _pos;        //!< physical position of current query
+  base_input_variant_file *_interface;  //!< input file handler
+  format_type _ft;                      //!< stored format of input filestream
 };
 }  // namespace interpolate_genetic_position
 
