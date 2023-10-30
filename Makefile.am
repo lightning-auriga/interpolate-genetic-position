@@ -7,9 +7,9 @@ COMBINED_LDADD = $(BOOST_LDFLAGS) -lboost_program_options -lboost_system -lboost
 
 interpolate_genetic_position_out_SOURCES = interpolate-genetic-position/main.cc $(COMBINED_SOURCES)
 interpolate_genetic_position_out_LDADD = $(COMBINED_LDADD)
-UNIT_TEST_SOURCES = unit_tests/boost_main.cc unit_tests/boost_example_test.cc
+UNIT_TEST_SOURCES = unit_tests/google_example_test.cc
 test_suite_out_SOURCES = $(COMBINED_SOURCES) $(UNIT_TEST_SOURCES)
-test_suite_out_LDADD = $(COMBINED_LDADD) -lboost_unit_test_framework
+test_suite_out_LDADD = $(COMBINED_LDADD) -lgtest_main -lgtest -lgmock -lpthread
 
 dist_doc_DATA = README
 ACLOCAL_AMFLAGS = -I m4
