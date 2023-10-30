@@ -46,6 +46,8 @@ void igp::interpolator::interpolate(const std::string &input_filename,
     if (output.is_open()) {
       output.close();
     }
+    delete interface;
+    interface = 0;
   } catch (...) {
     if (interface) delete interface;
     throw;
