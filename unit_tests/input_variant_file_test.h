@@ -3,7 +3,7 @@
  \brief mock class for interfacing with input variant query files
  \author Lightning Auriga
  \copyright Released under the MIT License.
- Copyright 2023 Lightning Auriga, Bari Ballew
+ Copyright 2023 Lightning Auriga
 
  Powered by gmock from
  <https://github.com/google/googletest/tree/main/googlemock>
