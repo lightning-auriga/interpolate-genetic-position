@@ -27,10 +27,11 @@ void igp::genetic_map::query(const std::string &chr_query,
                              mpf_class *gpos_interpolated) {
   // This comparison must cautiously detect whether a variant falls before,
   // after, or within the interval indicated by the currently loaded set of
-  // genetic positions. Certain permutations of this comparison will indicate
-  // that sorting assumptions on input data have been violated. Additionally,
-  // the test for chromosome equality must be performed carefully to deal with
-  // the many permutations of chromosome codes that are encountered in datasets.
+  // genetic positions. Certain permutations of this comparison will
+  // indicate that sorting assumptions on input data have been violated.
+  // Additionally, the test for chromosome equality must be performed
+  // carefully to deal with the many permutations of chromosome codes
+  // that are encountered in datasets.
   direction query_vs_lower_bound = EQUAL;
   direction query_vs_upper_bound = EQUAL;
   mpf_class mb_adjustment = 1000000.0;
@@ -110,11 +111,12 @@ void igp::genetic_map::query(const std::string &chr_query,
       } else {
         // impossible condition
         throw std::runtime_error(
-            "genetic_map::query: an impossible condition was encountered. This "
-            "likely means that your input queries or genetic map are unsorted. "
-            "For now, the only solution to this issue is to sort your input "
-            "data; in the future, there may be an option to have the program "
-            "handle this for you, at the cost of RAM.");
+            "genetic_map::query: an impossible condition was encountered."
+            " This likely means that your input queries or genetic map "
+            "are unsorted. For now, the only solution to this issue is "
+            "to sort your input data; in the future, there may be an "
+            "option to have the program handle this for you, at the cost "
+            "of RAM.");
       }
     } else if (query_vs_lower_bound == EQUAL &&
                query_vs_upper_bound == LESS_THAN) {
@@ -147,21 +149,23 @@ void igp::genetic_map::query(const std::string &chr_query,
     } else {
       // sort error
       throw std::runtime_error(
-          "genetic_map::query: an impossible condition was encountered. This "
-          "likely means that your input queries or genetic map are unsorted. "
-          "For now, the only solution to this issue is to sort your input "
-          "data; in the future, there may be an option to have the program "
-          "handle this for you, at the cost of RAM.");
+          "genetic_map::query: an impossible condition was encountered."
+          " This likely means that your input queries or genetic map "
+          "are unsorted. For now, the only solution to this issue is "
+          "to sort your input data; in the future, there may be an "
+          "option to have the program handle this for you, at the cost "
+          "of RAM.");
     }
   }
   if (_interface->eof()) {
     if (query_vs_upper_bound == EQUAL) {
-      // For variants at the end of the chromosome's rate information, what is
-      // the correct course of action? This current value sets out-of-range
-      // recombination to 0; this may be swapped out for linear interpolation
-      // using the last known good rate of the chromosome, which might be more
-      // biological but violates the traditional convention of analyses
-      // extending beyond a model's estimation range.
+      // For variants at the end of the chromosome's rate information,
+      // what is the correct course of action? This current value sets
+      // out-of-range recombination to 0; this may be swapped out for
+      // linear interpolation using the last known good rate of the
+      // chromosome, which might be more biological but violates the
+      // traditional convention of analyses extending beyond a model's
+      // estimation range.
       if (verbose) {
         std::cout
             << "\tfinal value, beyond boundary of loaded data; setting to "
@@ -170,11 +174,11 @@ void igp::genetic_map::query(const std::string &chr_query,
       *gpos_interpolated = _interface->get_gpos_upper_bound();
       return;
     } else {
-      // We may eventually want to let the user specify that this should fall
-      // back to the naive estimator.
+      // We may eventually want to let the user specify that this should
+      // fall back to the naive estimator.
       if (verbose) {
-        std::cout << "\tfinal loaded data don't match chromosome, setting to 0"
-                  << std::endl;
+        std::cout << "\tfinal loaded data don't match chromosome, "
+                  << "setting to 0" << std::endl;
       }
       *gpos_interpolated = 0;
       return;
