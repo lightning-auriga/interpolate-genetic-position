@@ -11,6 +11,7 @@
 #include "gtest/gtest.h"
 #include "interpolate-genetic-position/genetic_map.h"
 
+using ::testing::AnyNumber;
 using ::testing::AtLeast;
 using ::testing::Return;
 
@@ -20,15 +21,22 @@ igp::mock_input_genetic_map_file::mock_input_genetic_map_file()
     : igp::base_input_genetic_map_file() {}
 igp::mock_input_genetic_map_file::~mock_input_genetic_map_file() throw() {}
 
-/*
-TEST(input_genetic_map_fileTest, can_initialize_bimfile) {
+TEST(input_genetic_map_fileTest, open_command_executed) {
   igp::mock_input_genetic_map_file mockfile;
-  std::string bimfilename = "test.bim";
-  EXPECT_CALL(mockfile, set_format_parameters(0, 3, 2, false, 6))
-      .Times(1)
-      .WillOnce(Return());
-  EXPECT_CALL(mockfile, open(bimfilename)).Times(1).WillOnce(Return());
-  igp::query_file qf(&mockfile);
-  qf.open(bimfilename, igp::BIM);
+  std::string filename = "test.ucsc.bedgraph";
+  EXPECT_CALL(mockfile, open(filename, igp::UCSC)).Times(1).WillOnce(Return());
+  EXPECT_CALL(mockfile, close()).Times(AnyNumber());
+  igp::genetic_map gm(&mockfile);
+  gm.open(filename, igp::UCSC);
 }
-*/
+
+TEST(input_genetic_map_fileTest, basic_constructor_disabled) {
+  EXPECT_THROW(igp::genetic_map gm, std::runtime_error);
+}
+
+TEST(input_genetic_map_fileTest, copy_constructor_disabled) {
+  igp::mock_input_genetic_map_file mockfile;
+  igp::genetic_map gm(&mockfile);
+  EXPECT_CALL(mockfile, close()).Times(AnyNumber());
+  EXPECT_THROW(igp::genetic_map gm2(gm), std::runtime_error);
+}
