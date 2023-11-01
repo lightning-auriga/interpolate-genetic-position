@@ -18,11 +18,12 @@ void igp::interpolator::interpolate(const std::string &input_filename,
                                     const std::string &map_format,
                                     const std::string &output_filename,
                                     bool verbose) const {
-  input_variant_file interface;
-  genetic_map gm;
+  input_variant_file variant_interface;
+  input_genetic_map_file genetic_map_interface;
+  genetic_map gm(&genetic_map_interface);
   format_type map_ft = string_to_format_type(map_format);
   gm.open(genetic_map_filename, map_ft);
-  query_file qf(&interface);
+  query_file qf(&variant_interface);
   format_type query_ft = string_to_format_type(preset);
   qf.open(input_filename, query_ft);
   mpf_class gpos_interpolated;
