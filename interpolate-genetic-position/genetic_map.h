@@ -49,7 +49,7 @@ class genetic_map {
    * \param ptr pointer to interface object. memory is
    * handled upstream and won't be freed by this class
    */
-  explicit genetic_map(input_genetic_map_file *ptr);
+  explicit genetic_map(base_input_genetic_map_file *ptr);
   /*!
    * \brief destructor
    */
@@ -79,7 +79,7 @@ class genetic_map {
   void close();
 
  private:
-  input_genetic_map_file *_interface;  //!< pointer to file interface object
+  base_input_genetic_map_file *_interface;  //!< pointer to interface object
 };
 }  // namespace interpolate_genetic_position
 

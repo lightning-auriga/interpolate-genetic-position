@@ -17,7 +17,8 @@ igp::genetic_map::genetic_map(const genetic_map &obj) {
   throw std::runtime_error(
       "genetic_map: copy constructor operation is invalid for this class");
 }
-igp::genetic_map::genetic_map(input_genetic_map_file *ptr) : _interface(ptr) {}
+igp::genetic_map::genetic_map(base_input_genetic_map_file *ptr)
+    : _interface(ptr) {}
 igp::genetic_map::~genetic_map() throw() { _interface->close(); }
 void igp::genetic_map::open(const std::string &filename, format_type ft) {
   _interface->open(filename, ft);
