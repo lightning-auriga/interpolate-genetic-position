@@ -1,24 +1,30 @@
 /*!
- \file input_variant_file_test.cc
- \brief test of interface between query_file and input variant files.
+ \file genetic_map_test.cc
+ \brief test of operations of genetic_map.
  \copyright Released under the MIT License.
  Copyright 2023 Lightning Auriga
  */
 
-#include "unit_tests/input_variant_file_test.h"
+#include "interpolate-genetic-position/genetic_map.h"
 
-#include "gmock/gmock.h"
 #include "gtest/gtest.h"
-#include "interpolate-genetic-position/query_file.h"
 
 using ::testing::AtLeast;
 using ::testing::Return;
 
 namespace igp = interpolate_genetic_position;
 
-igp::mock_input_variant_file::mock_input_variant_file()
-    : igp::base_input_variant_file() {}
-igp::mock_input_variant_file::~mock_input_variant_file() throw() {}
+TEST(genetic_mapTest, query_chromosome_less_than_window) {}
+
+TEST(genetic_mapTest, query_chromosome_greater_than_window) {}
+
+TEST(genetic_mapTest, query_beyond_lower_bound_before_upper_chromosome) {}
+
+TEST(genetic_mapTest, query_chromosome_has_no_map_internal) {}
+
+TEST(genetic_mapTest, query_chromosome_has_no_map_before_range) {}
+
+TEST(genetic_mapTest, query_chromosome_has_no_map_after_range) {}
 
 TEST(input_variant_fileTest, can_initialize_bimfile) {
   igp::mock_input_variant_file mockfile;
