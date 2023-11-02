@@ -158,6 +158,8 @@ void igp::genetic_map::query(const std::string &chr_query,
           "of RAM.");
     }
   }
+  query_vs_upper_bound =
+      chromosome_compare(chr_query, _interface->get_chr_upper_bound());
   if (_interface->eof()) {
     if (query_vs_upper_bound == EQUAL) {
       // For variants at the end of the chromosome's rate information,
