@@ -40,6 +40,15 @@ void igp::genetic_map::query(const std::string &chr_query,
     std::cout << "query: chr is " << chr_query << ", pos is " << pos_query
               << std::endl;
   }
+  if (chromosome_compare(_interface->get_chr_lower_bound(),
+                         _interface->get_chr_upper_bound()) == GREATER_THAN) {
+    throw std::runtime_error(
+        "genetic_map::query: your genetic map "
+        "is unsorted. For now, the only solution to this issue is "
+        "to sort your input data; in the future, there may be an "
+        "option to have the program handle this for you, at the cost "
+        "of RAM.");
+  }
   while (!_interface->eof()) {
     query_vs_lower_bound =
         chromosome_compare(chr_query, _interface->get_chr_lower_bound());
@@ -50,6 +59,17 @@ void igp::genetic_map::query(const std::string &chr_query,
         std::cout << "\tsame chromosome, position comparing" << std::endl;
       }
       // proceed to position comparison
+      // this early check enforces strict position ordering, and prevents
+      // several later error conditions from ever occurring.
+      if (cmp(_interface->get_pos_lower_bound(),
+              _interface->get_pos_upper_bound()) != -1) {
+        throw std::runtime_error(
+            "genetic_map::query: your genetic map "
+            "is unsorted. For now, the only solution to this issue is "
+            "to sort your input data; in the future, there may be an "
+            "option to have the program handle this for you, at the cost "
+            "of RAM.");
+      }
       int query_pos_vs_lower_bound =
           cmp(pos_query, _interface->get_pos_lower_bound());
       int query_pos_vs_upper_bound =
@@ -100,23 +120,13 @@ void igp::genetic_map::query(const std::string &chr_query,
                     << ", interpolation = " << *gpos_interpolated << std::endl;
         }
         return;
-      } else if (query_pos_vs_lower_bound == 1 &&
-                 query_pos_vs_upper_bound == 1) {
-        // increment
+      } else {
+        // query is greater than both positions; increment
         if (verbose) {
           std::cout << "past current loaded window, incrementing range"
                     << std::endl;
         }
         _interface->get();
-      } else {
-        // impossible condition
-        throw std::runtime_error(
-            "genetic_map::query: an impossible condition was encountered."
-            " This likely means that your input queries or genetic map "
-            "are unsorted. For now, the only solution to this issue is "
-            "to sort your input data; in the future, there may be an "
-            "option to have the program handle this for you, at the cost "
-            "of RAM.");
       }
     } else if (query_vs_lower_bound == EQUAL &&
                query_vs_upper_bound == LESS_THAN) {
