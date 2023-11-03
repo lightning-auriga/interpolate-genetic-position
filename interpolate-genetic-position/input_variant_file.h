@@ -1,5 +1,5 @@
 /*!
- \file input_file.h
+ \file input_variant_file.h
  \brief interface for reading input variant files
  \author Lightning Auriga
  \copyright Released under the MIT License.
