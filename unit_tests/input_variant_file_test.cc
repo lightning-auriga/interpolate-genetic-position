@@ -20,7 +20,7 @@ igp::mock_input_variant_file::mock_input_variant_file()
     : igp::base_input_variant_file() {}
 igp::mock_input_variant_file::~mock_input_variant_file() throw() {}
 
-TEST(input_variant_fileTest, can_initialize_bimfile) {
+TEST(inputVariantFileTest, can_initialize_bimfile) {
   igp::mock_input_variant_file mockfile;
   std::string bimfilename = "test.bim";
   EXPECT_CALL(mockfile, set_format_parameters(0, 3, 2, false, 6))
@@ -31,7 +31,7 @@ TEST(input_variant_fileTest, can_initialize_bimfile) {
   qf.open(bimfilename, igp::BIM);
 }
 
-TEST(input_variant_fileTest, can_initialize_mapfile) {
+TEST(inputVariantFileTest, can_initialize_mapfile) {
   igp::mock_input_variant_file mockfile;
   std::string mapfilename = "test.map";
   EXPECT_CALL(mockfile, set_format_parameters(0, 3, 2, false, 4))
@@ -42,7 +42,7 @@ TEST(input_variant_fileTest, can_initialize_mapfile) {
   qf.open(mapfilename, igp::MAP);
 }
 
-TEST(input_variant_fileTest, can_initialize_bedfile) {
+TEST(inputVariantFileTest, can_initialize_bedfile) {
   igp::mock_input_variant_file mockfile;
   std::string bedfilename = "test.bed";
   EXPECT_CALL(mockfile, set_format_parameters(0, 1, 4, true, 4))

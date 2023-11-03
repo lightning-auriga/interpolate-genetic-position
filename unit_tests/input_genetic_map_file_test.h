@@ -15,6 +15,7 @@
 #include <string>
 #include <vector>
 
+#include "boost/filesystem.hpp"
 #include "gmock/gmock.h"
 #include "interpolate-genetic-position/input_genetic_map_file.h"
 
@@ -44,4 +45,12 @@ class mock_input_genetic_map_file : public base_input_genetic_map_file {
   MOCK_METHOD(mpf_class, get_rate_upper_bound, (), (const, override));
 };
 }  // namespace interpolate_genetic_position
+
+class inputGeneticMapFileTest : public testing::Test {
+ protected:
+  inputGeneticMapFileTest();
+  ~inputGeneticMapFileTest() throw();
+  const std::string _tmpfile;
+  mpf_class _mpf_error_tolerance;
+};
 #endif  // UNIT_TESTS_INPUT_GENETIC_MAP_FILE_TEST_H_
