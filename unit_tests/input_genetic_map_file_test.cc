@@ -258,3 +258,104 @@ TEST(input_genetic_map_fileTest, query_detects_unsorted_positions) {
   EXPECT_THROW(gm.query(query_chr, query_pos, verbose, &gpos_interpolated),
                std::runtime_error);
 }
+
+TEST(input_genetic_map_fileTest,
+     query_increment_genetic_map_when_exceeds_position_range) {
+  // if the query and genetic map are on the same chromosome but the query
+  // position exceeds the upper chromosome, the map should be incremented
+  // exactly once.
+  igp::mock_input_genetic_map_file mockfile;
+  igp::genetic_map gm(&mockfile);
+  EXPECT_CALL(mockfile, close()).Times(AnyNumber());
+  EXPECT_CALL(mockfile, eof()).Times(2).WillRepeatedly(Return(false));
+  EXPECT_CALL(mockfile, get_chr_lower_bound())
+      .Times(AnyNumber())
+      .WillRepeatedly(Return("1"));
+  EXPECT_CALL(mockfile, get_chr_upper_bound())
+      .Times(AnyNumber())
+      .WillRepeatedly(Return("1"));
+  EXPECT_CALL(mockfile, get_pos_lower_bound())
+      .Times(AnyNumber())
+      .WillOnce(Return(1000))
+      .WillOnce(Return(1000))
+      .WillRepeatedly(Return(2000));
+  EXPECT_CALL(mockfile, get_pos_upper_bound())
+      .Times(AnyNumber())
+      .WillOnce(Return(2000))
+      .WillOnce(Return(2000))
+      .WillRepeatedly(Return(3000));
+  EXPECT_CALL(mockfile, get_gpos_upper_bound())
+      .Times(AnyNumber())
+      .WillRepeatedly(Return(mpf_class("0.245")));
+  EXPECT_CALL(mockfile, get()).Times(1).WillOnce(Return(true));
+  mpf_class gpos_interpolated;
+  std::string query_chr = "1";
+  mpz_class query_pos = 3000;
+  bool verbose = false;
+  gm.query(query_chr, query_pos, verbose, &gpos_interpolated);
+  EXPECT_EQ(gpos_interpolated, mpf_class("0.245"));
+}
+
+TEST(input_genetic_map_fileTest,
+     query_increment_genetic_map_when_exceeds_lower_chromosome) {
+  // if the query exceeds the lower chromosome but not the upper,
+  // the range should be incremented exactly once.
+  igp::mock_input_genetic_map_file mockfile;
+  igp::genetic_map gm(&mockfile);
+  EXPECT_CALL(mockfile, close()).Times(AnyNumber());
+  EXPECT_CALL(mockfile, eof()).Times(2).WillRepeatedly(Return(false));
+  EXPECT_CALL(mockfile, get_chr_lower_bound())
+      .Times(AnyNumber())
+      .WillOnce(Return("1"))
+      .WillOnce(Return("1"))
+      .WillRepeatedly(Return("2"));
+  EXPECT_CALL(mockfile, get_chr_upper_bound())
+      .Times(AnyNumber())
+      .WillRepeatedly(Return("2"));
+  EXPECT_CALL(mockfile, get_pos_lower_bound())
+      .Times(AnyNumber())
+      .WillRepeatedly(Return(100000));
+  EXPECT_CALL(mockfile, get_pos_upper_bound())
+      .Times(AnyNumber())
+      .WillRepeatedly(Return(200000));
+  EXPECT_CALL(mockfile, get()).Times(AnyNumber()).WillRepeatedly(Return(true));
+  mpf_class gpos_interpolated;
+  std::string query_chr = "2";
+  mpz_class query_pos = 50000;
+  bool verbose = false;
+  gm.query(query_chr, query_pos, verbose, &gpos_interpolated);
+  EXPECT_EQ(gpos_interpolated, mpf_class("0.0"));
+}
+
+TEST(input_genetic_map_fileTest,
+     query_increment_genetic_map_when_exceeds_upper_chromosome) {
+  // if the query exceeds the upper chromosome,
+  // the range should be incremented exactly twice.
+  igp::mock_input_genetic_map_file mockfile;
+  igp::genetic_map gm(&mockfile);
+  EXPECT_CALL(mockfile, close()).Times(AnyNumber());
+  EXPECT_CALL(mockfile, eof()).Times(2).WillRepeatedly(Return(false));
+  EXPECT_CALL(mockfile, get_chr_lower_bound())
+      .Times(AnyNumber())
+      .WillOnce(Return("1"))
+      .WillOnce(Return("1"))
+      .WillRepeatedly(Return("2"));
+  EXPECT_CALL(mockfile, get_chr_upper_bound())
+      .Times(AnyNumber())
+      .WillOnce(Return("1"))
+      .WillOnce(Return("1"))
+      .WillRepeatedly(Return("2"));
+  EXPECT_CALL(mockfile, get_pos_lower_bound())
+      .Times(AnyNumber())
+      .WillRepeatedly(Return(100000));
+  EXPECT_CALL(mockfile, get_pos_upper_bound())
+      .Times(AnyNumber())
+      .WillRepeatedly(Return(200000));
+  EXPECT_CALL(mockfile, get()).Times(AnyNumber()).WillRepeatedly(Return(true));
+  mpf_class gpos_interpolated;
+  std::string query_chr = "2";
+  mpz_class query_pos = 50000;
+  bool verbose = false;
+  gm.query(query_chr, query_pos, verbose, &gpos_interpolated);
+  EXPECT_EQ(gpos_interpolated, mpf_class("0.0"));
+}
