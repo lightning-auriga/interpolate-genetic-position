@@ -85,8 +85,7 @@ void igp::genetic_map::query(const std::string &chr_query,
                  query_pos_vs_upper_bound == -1) {
         // interpolate
         *gpos_interpolated = _interface->get_gpos_lower_bound() +
-                             (_interface->get_pos_upper_bound() -
-                              _interface->get_pos_lower_bound()) /
+                             (pos_query - _interface->get_pos_lower_bound()) /
                                  mb_adjustment *
                                  _interface->get_rate_lower_bound();
         if (verbose) {
