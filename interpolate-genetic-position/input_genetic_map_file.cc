@@ -101,10 +101,14 @@ bool igp::input_genetic_map_file::get() {
     }
     _pos_upper_bound = pos1;
     _rate_upper_bound = rate;
-    _gpos_upper_bound =
-        _gpos_lower_bound + _rate_lower_bound *
-                                (_pos_upper_bound - _pos_lower_bound) /
-                                mpf_class(1000000.0);
+    if (_chr_upper_bound == _chr_lower_bound) {
+      _gpos_upper_bound =
+          _gpos_lower_bound + _rate_lower_bound *
+                                  (_pos_upper_bound - _pos_lower_bound) /
+                                  mpf_class(1000000.0);
+    } else {
+      _gpos_upper_bound = mpf_class("0.0");
+    }
   } else if (_ft == UNKNOWN) {
     throw std::runtime_error("input_genetic_map_file::get: format is unset");
   } else {
