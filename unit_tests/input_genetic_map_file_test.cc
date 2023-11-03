@@ -62,9 +62,7 @@ TEST_F(inputGeneticMapFileTest, geneticMapUnderstandsBedgraph) {
   EXPECT_EQ(cmp(abs(mapfile.get_gpos_lower_bound() - mpf_class("0.000000012")),
                 _mpf_error_tolerance),
             -1);
-  EXPECT_EQ(cmp(abs(mapfile.get_gpos_upper_bound() - mpf_class("0.000000123")),
-                _mpf_error_tolerance),
-            -1);
+  EXPECT_EQ(mapfile.get_gpos_upper_bound(), mpf_class("0.0"));
   EXPECT_EQ(mapfile.get_rate_lower_bound(), mpf_class("0.111"));
   EXPECT_EQ(mapfile.get_rate_upper_bound(), mpf_class("0.213"));
   EXPECT_TRUE(mapfile.eof());
