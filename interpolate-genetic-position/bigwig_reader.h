@@ -94,6 +94,14 @@ class bigwig_reader {
    * \return whether load operation returned anything
    */
   bool load_chr(const std::string &chr);
+  /*!
+   * \brief try to match a query chromosome to a chromosome
+   * present in an open bigwig
+   * \param chr input query chromosome
+   * \return version of the chromosome code that is present in the bigwig,
+   * if possible
+   */
+  std::string interpret_chr(const std::string &chr) const;
 
  private:
   bigWigFile_t *_input;                  //!< file handle to bigwig file
