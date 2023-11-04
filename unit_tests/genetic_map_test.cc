@@ -22,7 +22,7 @@ geneticMapTest::geneticMapTest()
 
 geneticMapTest::~geneticMapTest() {}
 
-TEST_F(geneticMapTest, open_command_executed) {
+TEST_F(geneticMapTest, openCommandExecuted) {
   igp::mock_input_genetic_map_file mockfile;
   std::string filename = "test.ucsc.bedgraph";
   EXPECT_CALL(mockfile, open(filename, igp::UCSC)).Times(1).WillOnce(Return());
@@ -31,18 +31,18 @@ TEST_F(geneticMapTest, open_command_executed) {
   gm.open(filename, igp::UCSC);
 }
 
-TEST_F(geneticMapTest, basic_constructor_disabled) {
+TEST_F(geneticMapTest, basicConstructorDisabled) {
   EXPECT_THROW(igp::genetic_map gm, std::runtime_error);
 }
 
-TEST_F(geneticMapTest, copy_constructor_disabled) {
+TEST_F(geneticMapTest, copyConstructorDisabled) {
   igp::mock_input_genetic_map_file mockfile;
   igp::genetic_map gm(&mockfile);
   EXPECT_CALL(mockfile, close()).Times(AnyNumber());
   EXPECT_THROW(igp::genetic_map gm2(gm), std::runtime_error);
 }
 
-TEST_F(geneticMapTest, query_beyond_end_of_chromosome) {
+TEST_F(geneticMapTest, queryBeyondEndOfChromosome) {
   igp::mock_input_genetic_map_file mockfile;
   igp::genetic_map gm(&mockfile);
   EXPECT_CALL(mockfile, close()).Times(AnyNumber());
@@ -64,7 +64,7 @@ TEST_F(geneticMapTest, query_beyond_end_of_chromosome) {
   EXPECT_EQ(gpos_interpolated, mpf_class(23.4));
 }
 
-TEST_F(geneticMapTest, query_beyond_end_of_file) {
+TEST_F(geneticMapTest, queryBeyondEndOfFile) {
   igp::mock_input_genetic_map_file mockfile;
   igp::genetic_map gm(&mockfile);
   EXPECT_CALL(mockfile, close()).Times(AnyNumber());
@@ -83,7 +83,7 @@ TEST_F(geneticMapTest, query_beyond_end_of_file) {
   EXPECT_EQ(gpos_interpolated, mpf_class(0.0));
 }
 
-TEST_F(geneticMapTest, query_interior_uncovered_chromosome) {
+TEST_F(geneticMapTest, queryInteriorUncoveredChromosome) {
   igp::mock_input_genetic_map_file mockfile;
   igp::genetic_map gm(&mockfile);
   EXPECT_CALL(mockfile, close()).Times(AnyNumber());
@@ -102,7 +102,7 @@ TEST_F(geneticMapTest, query_interior_uncovered_chromosome) {
   EXPECT_EQ(gpos_interpolated, mpf_class(0.0));
 }
 
-TEST_F(geneticMapTest, query_beginning_of_chromosome) {
+TEST_F(geneticMapTest, queryBeginningOfChromosome) {
   igp::mock_input_genetic_map_file mockfile;
   igp::genetic_map gm(&mockfile);
   EXPECT_CALL(mockfile, close()).Times(AnyNumber());
@@ -127,7 +127,7 @@ TEST_F(geneticMapTest, query_beginning_of_chromosome) {
   EXPECT_EQ(gpos_interpolated, mpf_class(0.0));
 }
 
-TEST_F(geneticMapTest, query_standard_interpolation) {
+TEST_F(geneticMapTest, queryStandardInterpolation) {
   igp::mock_input_genetic_map_file mockfile;
   igp::genetic_map gm(&mockfile);
   EXPECT_CALL(mockfile, close()).Times(AnyNumber());
@@ -160,7 +160,7 @@ TEST_F(geneticMapTest, query_standard_interpolation) {
             -1);
 }
 
-TEST_F(geneticMapTest, query_overlap_lower_bound) {
+TEST_F(geneticMapTest, queryOverlapLowerBound) {
   igp::mock_input_genetic_map_file mockfile;
   igp::genetic_map gm(&mockfile);
   EXPECT_CALL(mockfile, close()).Times(AnyNumber());
@@ -188,7 +188,7 @@ TEST_F(geneticMapTest, query_overlap_lower_bound) {
   EXPECT_EQ(gpos_interpolated, mpf_class("0.001"));
 }
 
-TEST_F(geneticMapTest, query_overlap_upper_bound) {
+TEST_F(geneticMapTest, queryOverlapUpperBound) {
   igp::mock_input_genetic_map_file mockfile;
   igp::genetic_map gm(&mockfile);
   EXPECT_CALL(mockfile, close()).Times(AnyNumber());
@@ -216,7 +216,7 @@ TEST_F(geneticMapTest, query_overlap_upper_bound) {
   EXPECT_EQ(gpos_interpolated, mpf_class("0.002"));
 }
 
-TEST_F(geneticMapTest, query_detects_unsorted_chromosomes) {
+TEST_F(geneticMapTest, queryDetectsUnsortedChromosomes) {
   igp::mock_input_genetic_map_file mockfile;
   igp::genetic_map gm(&mockfile);
   EXPECT_CALL(mockfile, close()).Times(AnyNumber());
@@ -234,7 +234,7 @@ TEST_F(geneticMapTest, query_detects_unsorted_chromosomes) {
                std::runtime_error);
 }
 
-TEST_F(geneticMapTest, query_detects_unsorted_positions) {
+TEST_F(geneticMapTest, queryDetectsUnsortedPositions) {
   igp::mock_input_genetic_map_file mockfile;
   igp::genetic_map gm(&mockfile);
   EXPECT_CALL(mockfile, close()).Times(AnyNumber());
@@ -259,8 +259,7 @@ TEST_F(geneticMapTest, query_detects_unsorted_positions) {
                std::runtime_error);
 }
 
-TEST_F(geneticMapTest,
-       query_increment_genetic_map_when_exceeds_position_range) {
+TEST_F(geneticMapTest, queryIncrementGeneticMapWhenExceedsPositionRange) {
   // if the query and genetic map are on the same chromosome but the query
   // position exceeds the upper chromosome, the map should be incremented
   // exactly once.
@@ -296,8 +295,7 @@ TEST_F(geneticMapTest,
   EXPECT_EQ(gpos_interpolated, mpf_class("0.245"));
 }
 
-TEST_F(geneticMapTest,
-       query_increment_genetic_map_when_exceeds_lower_chromosome) {
+TEST_F(geneticMapTest, queryIncrementGeneticMapWhenExceedsLowerChromosome) {
   // if the query exceeds the lower chromosome but not the upper,
   // the range should be incremented exactly once.
   igp::mock_input_genetic_map_file mockfile;
@@ -327,8 +325,7 @@ TEST_F(geneticMapTest,
   EXPECT_EQ(gpos_interpolated, mpf_class("0.0"));
 }
 
-TEST_F(geneticMapTest,
-       query_increment_genetic_map_when_exceeds_upper_chromosome) {
+TEST_F(geneticMapTest, queryIncrementGeneticMapWhenExceedsUpperChromosome) {
   // if the query exceeds the upper chromosome,
   // the range should be incremented exactly twice.
   igp::mock_input_genetic_map_file mockfile;

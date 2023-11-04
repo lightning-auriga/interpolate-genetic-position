@@ -17,7 +17,7 @@ using ::testing::Return;
 
 namespace igp = interpolate_genetic_position;
 
-TEST(queryFileTest, can_initialize_bimfile) {
+TEST(queryFileTest, canInitializeBimfile) {
   igp::mock_input_variant_file mock_infile;
   igp::mock_output_variant_file mock_outfile;
   std::string bimfilename = "test.bim";
@@ -29,7 +29,7 @@ TEST(queryFileTest, can_initialize_bimfile) {
   qf.open(bimfilename, igp::BIM);
 }
 
-TEST(queryFileTest, can_initialize_mapfile) {
+TEST(queryFileTest, canInitializeMapfile) {
   igp::mock_input_variant_file mock_infile;
   igp::mock_output_variant_file mock_outfile;
   std::string mapfilename = "test.map";
@@ -41,7 +41,7 @@ TEST(queryFileTest, can_initialize_mapfile) {
   qf.open(mapfilename, igp::MAP);
 }
 
-TEST(queryFileTest, can_initialize_bedfile) {
+TEST(queryFileTest, canInitializeBedfile) {
   igp::mock_input_variant_file mock_infile;
   igp::mock_output_variant_file mock_outfile;
   std::string bedfilename = "test.bed";
