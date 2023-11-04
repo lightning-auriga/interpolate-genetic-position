@@ -158,6 +158,9 @@ bool igp::input_genetic_map_file::eof() {
   if (_gzinput) {
     return gzeof(_gzinput);
   }
+  if (_bwinput.is_open()) {
+    return _bwinput.eof();
+  }
   return false;
 }
 std::string igp::input_genetic_map_file::get_chr_lower_bound() const {
