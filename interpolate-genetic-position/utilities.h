@@ -14,7 +14,7 @@
 #include <string>
 
 namespace interpolate_genetic_position {
-typedef enum { UNKNOWN, BOLT, UCSC, BIM, MAP, BED, VCF } format_type;
+typedef enum { UNKNOWN, BOLT, BEDGRAPH, BIM, MAP, BED, VCF } format_type;
 typedef enum { LESS_THAN, EQUAL, GREATER_THAN } direction;
 format_type string_to_format_type(const std::string &name);
 /*!

@@ -42,7 +42,7 @@ TEST_F(inputGeneticMapFileTest, geneticMapUnderstandsBedgraph) {
   output.close();
 
   igp::input_genetic_map_file mapfile;
-  EXPECT_NO_THROW(mapfile.open(_tmpfile, igp::UCSC));
+  EXPECT_NO_THROW(mapfile.open(_tmpfile, igp::BEDGRAPH));
   EXPECT_FALSE(mapfile.eof());
   EXPECT_EQ(mapfile.get_chr_lower_bound(), "chr1");
   EXPECT_EQ(mapfile.get_chr_upper_bound(), "chr1");

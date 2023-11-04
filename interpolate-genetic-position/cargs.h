@@ -112,14 +112,14 @@ class cargs {
    * accepted values are:
    *   - "bolt"
    * (https://storage.googleapis.com/broad-alkesgroup-public/BOLT-LMM/downloads/)
-   *   - "ucsc"
+   *   - "bedgraph"
    * (https://hgdownload.soe.ucsc.edu/gbdb/hg38/recombRate/recombAvg.bw)
    *     - note that this needs to be converted to bedgraph before being used
    * with this software
    */
   std::string get_map_format() const {
     std::string map_format = compute_parameter<std::string>("map-format");
-    if (map_format.compare("bolt") && map_format.compare("ucsc")) {
+    if (map_format.compare("bolt") && map_format.compare("bedgraph")) {
       throw std::runtime_error("invalid genetic map format: \"" + map_format +
                                "\"");
     }

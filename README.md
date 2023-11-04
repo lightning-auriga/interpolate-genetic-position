@@ -105,7 +105,7 @@ By default, the final compiled program can be run with
 |`--input`<br>`-i`|Input file of variants or regions to annotate. Needs to be sorted, chromosome and position. Can be gzipped. If not specified, will be read from stdin.|
 |`--preset`<br>`-p`|Format of input variant file. Accepted formats: `bim`, `map`, `bed`.|
 |`--genetic-map`<br>`-g`|Input recombination map. Needs to be sorted, chromosome and position. Can be gzipped.|
-|`--map-format`<br>`-m`|Format of recombination map. Accepted formats: `bolt`, `ucsc` (see below for further discussion).|
+|`--map-format`<br>`-m`|Format of recombination map. Accepted formats: `bolt`, `bedgraph` (see below for further discussion).|
 |`--output`<br>`-o`|Output file. Will match format of input. Cannot currently be gzipped. If not specified, will be written to stdout.|
 |`--verbose`<br>`-v`|Whether to print extremely verbose debug logs. You probably don't want this.|
 
@@ -130,7 +130,7 @@ The following primary maps are supported by this tool:
     and extract the latest version (2.4.1 as of 2023); the map you want is in the `tables` subdirectory.
     * Make sure you choose the one matching your dataset's genome build
   * These maps cover hg17, hg18, hg19 (GRCh37), and hg38 (GRCh38).
-* Recombination rate tracks from UCSC (`--map-format ucsc`)
+* Recombination rate tracks from UCSC (`--map-format bedgraph`)
   * Available as bigwigs [in this directory](https://hgdownload.soe.ucsc.edu/gbdb/hg38/recombRate/). Download
     the version you prefer (I have used [this one](https://hgdownload.soe.ucsc.edu/gbdb/hg38/recombRate/recombAvg.bw)).
   * The link in this readme is just for hg38/GRCh38. You can go digging around for others if you like; they all

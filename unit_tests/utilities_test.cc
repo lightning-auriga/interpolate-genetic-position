@@ -16,8 +16,8 @@ using ::testing::Return;
 
 namespace igp = interpolate_genetic_position;
 
-TEST(utilitiesTest, ucscNameConversion) {
-  EXPECT_EQ(igp::string_to_format_type("ucsc"), igp::UCSC);
+TEST(utilitiesTest, bedgraphNameConversion) {
+  EXPECT_EQ(igp::string_to_format_type("bedgraph"), igp::BEDGRAPH);
 }
 
 TEST(utilitiesTest, boltNameConversion) {

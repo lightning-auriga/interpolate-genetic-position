@@ -25,10 +25,12 @@ geneticMapTest::~geneticMapTest() {}
 TEST_F(geneticMapTest, openCommandExecuted) {
   igp::mock_input_genetic_map_file mockfile;
   std::string filename = "test.ucsc.bedgraph";
-  EXPECT_CALL(mockfile, open(filename, igp::UCSC)).Times(1).WillOnce(Return());
+  EXPECT_CALL(mockfile, open(filename, igp::BEDGRAPH))
+      .Times(1)
+      .WillOnce(Return());
   EXPECT_CALL(mockfile, close()).Times(AnyNumber());
   igp::genetic_map gm(&mockfile);
-  gm.open(filename, igp::UCSC);
+  gm.open(filename, igp::BEDGRAPH);
 }
 
 TEST_F(geneticMapTest, basicConstructorDisabled) {

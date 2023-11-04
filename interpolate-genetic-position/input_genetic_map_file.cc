@@ -89,15 +89,15 @@ bool igp::input_genetic_map_file::get() {
     _pos_upper_bound = pos1;
     _gpos_upper_bound = gpos;
     _rate_upper_bound = rate;
-  } else if (_ft == UCSC) {
-    // UCSC format includes rate but not genetic position itself. Assuming the
-    // first position in a rate file is 0 genetic position, as is conventional,
-    // we need to track the accumulated genetic position each time we get a new
-    // entry from the file.
+  } else if (_ft == BEDGRAPH) {
+    // bedgraph tracks from UCSC include rate but not genetic position itself.
+    // Assuming the first position in a rate file is 0 genetic position, as is
+    // conventional, we need to track the accumulated genetic position each
+    // time we get a new entry from the file.
     if (!(strm1 >> _chr_upper_bound >> pos1 >> pos2 >> rate)) {
       throw std::runtime_error(
-          "input_genetic_map_file::get: cannot parse UCSC bedfile line \"" +
-          line + "\"");
+          "input_genetic_map_file::get: cannot parse bedgraph line \"" + line +
+          "\"");
     }
     _pos_upper_bound = pos1;
     _rate_upper_bound = rate;
