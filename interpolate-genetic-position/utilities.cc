@@ -22,26 +22,24 @@ igp::format_type igp::string_to_format_type(const std::string &name) {
       "descriptor: \"" +
       name + "\"");
 }
-int igp::chromosome_to_integer(const std::string &chr) {
-  int rep = 0;
+bool igp::chromosome_to_integer(const std::string &chr, int *res) {
   std::string stripped_chr = chr;
   if (stripped_chr.find("chr") == 0) {
     stripped_chr = stripped_chr.substr(3);
   }
   if (!stripped_chr.compare("X")) {
-    rep = 23;
+    *res = 23;
   } else if (!stripped_chr.compare("Y")) {
-    rep = 24;
+    *res = 24;
   } else if (!stripped_chr.compare("MT") || !stripped_chr.compare("M")) {
-    rep = 26;
+    *res = 26;
   } else {
     std::istringstream strm1(stripped_chr);
-    if (!(strm1 >> rep)) {
-      throw std::runtime_error(
-          "chromosome_to_integer: unhandled chromosome code \"" + chr + "\"");
+    if (!(strm1 >> *res)) {
+      return false;
     }
   }
-  return rep;
+  return true;
 }
 std::string igp::integer_to_chromosome(int chr) {
   if (chr >= 1 && chr <= 22) {
@@ -58,13 +56,16 @@ std::string igp::integer_to_chromosome(int chr) {
 }
 igp::direction igp::chromosome_compare(const std::string &chr1,
                                        const std::string &chr2) {
-  unsigned int1 = chromosome_to_integer(chr1);
-  unsigned int2 = chromosome_to_integer(chr2);
+  int int1 = 0;
+  chromosome_to_integer(chr1, &int1);
+  int int2 = 0;
+  chromosome_to_integer(chr2, &int2);
   if (int1 == int2) return EQUAL;
   return int1 < int2 ? LESS_THAN : GREATER_THAN;
 }
 std::string igp::next_chromosome(const std::string &current_chr) {
-  int chrint = chromosome_to_integer(current_chr);
+  int chrint = 0;
+  chromosome_to_integer(current_chr, &chrint);
   chrint = chrint == 24 ? 26 : chrint + 1;
   return integer_to_chromosome(chrint);
 }
