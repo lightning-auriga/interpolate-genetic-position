@@ -135,9 +135,9 @@ std::string igp::bigwig_reader::interpret_chr(const std::string &chr) const {
         }
       }
     }
-    throw std::runtime_error("bigwig_reader: query chromosome \"" + chr +
-                             "\" was not detected in any recognized form "
-                             "in the genetic map.");
+    // no match was found. this could be bad, or it could be relatively
+    // mild. not sure if returning silently is the appropriate option.
+    return chr;
   }
   throw std::runtime_error(
       "bigwig_reader: interpret_chr was called without "
