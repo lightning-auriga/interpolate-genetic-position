@@ -143,6 +143,11 @@ The following primary maps are supported by this tool:
     * `mamba install -c bioconda -c conda-forge ucsc-bigwigtobedgraph`
     * `bigWigToBedGraph recombAvg.bw recombAvg.bedgraph`
     * `sed 's/^chrX/23/ ; s/^chr//' recombAvg.bedgraph | sort -k 1,1g -k 2,2g -k3,3g | sed -r 's/^23/chrX/ ; s/^([^c])/chr\1/' > recombAvg.sorted.bedgraph`
+  * Note that there's one potentially significant advantage to using bedgraphs: as currently implemented,
+    the program will load all recombination data for a chromosome at once (clearing memory between chromosomes).
+    For most recombination maps and computers, this RAM usage is pretty trivial. However, if you have a particularly
+    fine-grained recombination map, the intervals themselves could be a memory block. If you convert such a map to
+    bedgraph (and sort it) in advance, the program will stream linewise and have fixed, constant, low memory use.
 
 
 
