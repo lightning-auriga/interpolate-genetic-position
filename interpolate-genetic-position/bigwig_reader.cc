@@ -19,6 +19,10 @@ igp::bigwig_reader::~bigwig_reader() throw() {
 }
 
 void igp::bigwig_reader::open(const std::string &filename) {
+  if (!bwIsBigWig(filename.c_str(), NULL)) {
+    throw std::runtime_error("bigwig_reader: input file is not bigwig: \"" +
+                             filename + "\"");
+  }
   if (bwInit(1 << 17)) {
     throw std::runtime_error("bigwig_reader: unable to bwInit");
   }
