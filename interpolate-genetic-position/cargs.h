@@ -119,7 +119,8 @@ class cargs {
    */
   std::string get_map_format() const {
     std::string map_format = compute_parameter<std::string>("map-format");
-    if (map_format.compare("bolt") && map_format.compare("bedgraph")) {
+    if (map_format.compare("bolt") && map_format.compare("bedgraph") &&
+        map_format.compare("bigwig")) {
       throw std::runtime_error("invalid genetic map format: \"" + map_format +
                                "\"");
     }

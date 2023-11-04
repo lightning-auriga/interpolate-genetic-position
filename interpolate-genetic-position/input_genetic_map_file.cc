@@ -43,6 +43,8 @@ void igp::input_genetic_map_file::open(const std::string &filename,
     if (_ft == BOLT) {
       gzgets(_gzinput, _buffer, _buffer_size);
     }
+  } else if (ft == BIGWIG) {
+    _bwinput.open(filename);
   } else {
     std::string line = "";
     _input.open(filename.c_str());
@@ -70,6 +72,24 @@ bool igp::input_genetic_map_file::get() {
       return false;
     }
     getline(_input, line);
+  } else if (_bwinput.is_open()) {
+    mpz_class pos2;
+    if (!_bwinput.get(&_chr_upper_bound, &_pos_upper_bound, &pos2,
+                      &_rate_upper_bound)) {
+      return false;
+    }
+    // as with bedgraph below, requires interpolation
+    if (_chr_upper_bound == _chr_lower_bound) {
+      _gpos_upper_bound =
+          _gpos_lower_bound + _rate_lower_bound *
+                                  (_pos_upper_bound - _pos_lower_bound) /
+                                  mpf_class(1000000.0);
+    } else {
+      _gpos_upper_bound = mpf_class("0.0");
+    }
+    // return immediately here, as string parsing is handled automatically
+    // upstream
+    return true;
   } else {
     if (gzgets(_gzinput, _buffer, _buffer_size) == Z_NULL) {
       return false;

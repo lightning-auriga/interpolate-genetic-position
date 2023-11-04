@@ -19,6 +19,7 @@
 #include <string>
 #include <vector>
 
+#include "interpolate-genetic-position/bigwig_reader.h"
 #include "interpolate-genetic-position/utilities.h"
 
 namespace interpolate_genetic_position {
@@ -186,6 +187,7 @@ class input_genetic_map_file : public base_input_genetic_map_file {
  private:
   std::ifstream _input;          //!< file connection for plaintext input
   gzFile _gzinput;               //!< file connection for gzipped input
+  bigwig_reader _bwinput;        //!< file connection for bigwigs
   char *_buffer;                 //!< character buffer for gzinput line reading
   unsigned _buffer_size;         //!< size of gzinput buffer, in bytes
   format_type _ft;               //!< stored format of input filestream

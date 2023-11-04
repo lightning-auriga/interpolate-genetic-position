@@ -18,7 +18,8 @@ void interpolate_genetic_position::cargs::initialize_options() {
       "genetic-map,g", boost::program_options::value<std::string>(),
       "name of input genetic recombination map")(
       "map-format,m", boost::program_options::value<std::string>(),
-      "format of input recombination map (accepted values: bolt, bedgraph)")(
+      "format of input recombination map (accepted values: bolt, bedgraph, "
+      "bigwig)")(
       "output,o",
       boost::program_options::value<std::string>()->default_value(""),
       "name of output file (default: write to stdout)");
