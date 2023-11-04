@@ -66,6 +66,8 @@ bool igp::bigwig_reader::load_next_chr() {
   return load_chr(next_chromosome(get_loaded_chr()));
 }
 
+bool igp::bigwig_reader::is_open() const { return _input != NULL; }
+
 bool igp::bigwig_reader::eof() const {
   return _chr == "chrM" && (!_intervals || _interval_index == _intervals->l);
 }

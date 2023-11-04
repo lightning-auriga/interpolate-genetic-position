@@ -71,6 +71,11 @@ class bigwig_reader {
    */
   const std::string &get_loaded_chr() const;
   /*!
+   * \brief determine whether there is an active file connection
+   * \return whether there is an active file connection
+   */
+  bool is_open() const;
+  /*!
    * \brief determine whether entire bigwig has been iterated
    * \return whether valid chromosomes have been exhausted
    */
