@@ -68,13 +68,17 @@ bool igp::bigwig_reader::eof() const {
 
 bool igp::bigwig_reader::get(std::string *chr, mpz_class *pos1, mpz_class *pos2,
                              mpf_class *rate) {
-  if (!_intervals) return false;
+  if (!_intervals || eof()) return false;
   if (_interval_index == _intervals->l) {
-    if (!load_next_chr()) return false;
+    while (!eof()) {
+      if (load_next_chr()) break;
+    }
   }
+  if (eof()) return false;
   *chr = get_loaded_chr();
   *pos1 = _intervals->start[_interval_index];
   *pos2 = _intervals->end[_interval_index];
   *rate = _intervals->value[_interval_index];
+  ++_interval_index;
   return true;
 }
