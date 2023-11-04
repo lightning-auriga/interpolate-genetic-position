@@ -18,29 +18,20 @@ void igp::interpolator::interpolate(const std::string &input_filename,
                                     const std::string &map_format,
                                     const std::string &output_filename,
                                     bool verbose) const {
-  genetic_map gm;
+  input_variant_file input_variant_interface;
+  input_genetic_map_file genetic_map_interface;
+  output_variant_file output_variant_interface;
+  genetic_map gm(&genetic_map_interface);
   format_type map_ft = string_to_format_type(map_format);
   gm.open(genetic_map_filename, map_ft);
-  query_file qf;
+  query_file qf(&input_variant_interface, &output_variant_interface);
   format_type query_ft = string_to_format_type(preset);
   qf.open(input_filename, query_ft);
+  qf.initialize_output(output_filename, query_ft);
   mpf_class gpos_interpolated;
-  std::ofstream output;
-  if (!output_filename.empty()) {
-    output.open(output_filename.c_str());
-    if (!output.is_open()) {
-      throw std::runtime_error(
-          "interpolator::interpolate: cannot write "
-          "output file \"" +
-          output_filename + "\"");
-    }
-  }
   while (qf.get()) {
     gm.query(qf.get_chr(), qf.get_pos(), verbose, &gpos_interpolated);
-    qf.report(gpos_interpolated,
-              output_filename.empty() ? &std::cout : &output);
+    qf.report(gpos_interpolated);
   }
-  if (output.is_open()) {
-    output.close();
-  }
+  qf.close();
 }

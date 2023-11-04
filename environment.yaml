@@ -4,6 +4,7 @@ dependencies:
   - git
   - gmp
   - zlib
+  - libbigwig
 # required for commitizen
   - nodejs
   - pre-commit
