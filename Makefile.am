@@ -7,7 +7,7 @@ COMBINED_LDADD = $(BOOST_LDFLAGS) -lboost_program_options -lboost_system -lboost
 
 interpolate_genetic_position_out_SOURCES = interpolate-genetic-position/main.cc $(COMBINED_SOURCES)
 interpolate_genetic_position_out_LDADD = $(COMBINED_LDADD)
-UNIT_TEST_SOURCES = unit_tests/input_genetic_map_file_test.cc unit_test/input_genetic_map_file_test.h unit_tests/input_variant_file_test.cc unit_tests/input_variant_file_test.h unit_tests/genetic_map_test.cc unit_tests/genetic_map_test.h unit_tests/output_variant_file_test.cc unit_tests/output_variant_file_test.h unit_tests/query_file_test.cc unit_tests/utilities_test.cc
+UNIT_TEST_SOURCES = unit_tests/bigwig_reader_test.cc unit_tests/bigwig_reader_test.h unit_tests/input_genetic_map_file_test.cc unit_test/input_genetic_map_file_test.h unit_tests/input_variant_file_test.cc unit_tests/input_variant_file_test.h unit_tests/genetic_map_test.cc unit_tests/genetic_map_test.h unit_tests/output_variant_file_test.cc unit_tests/output_variant_file_test.h unit_tests/query_file_test.cc unit_tests/utilities_test.cc
 test_suite_out_SOURCES = $(COMBINED_SOURCES) $(UNIT_TEST_SOURCES)
 test_suite_out_LDADD = $(COMBINED_LDADD) -lgtest_main -lgtest -lgmock -lpthread
 
