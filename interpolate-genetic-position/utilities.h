@@ -30,14 +30,15 @@ format_type string_to_format_type(const std::string &name);
  * \brief translate an assortment of chromosome representations
  * into simple integers for sort comparison.
  * \param chr chromosome code, as string, for conversion
- * \return input chromosome, as an integer on {[1,24], 26}
+ * \param res input chromosome, as an integer on {[1,24], 26}
+ * \return whether the input was recognized and successfully converted
  *
  * This function should handle optional "chr" prefixes depending on input
  * build. Chromosomes 1-22 are labeled as normal; X is interpreted as 23; Y is
  * interpreted as 24; M or MT is interpreted as 26. XY/25, the PAR regions,
  * are not currently handled.
  */
-int chromosome_to_integer(const std::string &chr);
+bool chromosome_to_integer(const std::string &chr, int *res);
 /*!
  * \brief translate an integer chromosome representation
  * into a simple "chr[1-22XYM]" string.

@@ -37,43 +37,62 @@ TEST(utilitiesTest, bedNameConversion) {
 }
 
 TEST(utilitiesTest, chromosomeToIntegerAutosome) {
-  EXPECT_EQ(igp::chromosome_to_integer("2"), 2);
+  int chrint = 0;
+  EXPECT_TRUE(igp::chromosome_to_integer("2", &chrint));
+  EXPECT_EQ(chrint, 2);
 }
 
 TEST(utilitiesTest, chromosomeToIntegerXchr) {
-  EXPECT_EQ(igp::chromosome_to_integer("X"), 23);
+  int chrint = 0;
+  EXPECT_TRUE(igp::chromosome_to_integer("X", &chrint));
+  EXPECT_EQ(chrint, 23);
 }
 
 TEST(utilitiesTest, chromosomeToIntegerYchr) {
-  EXPECT_EQ(igp::chromosome_to_integer("Y"), 24);
+  int chrint = 0;
+  EXPECT_TRUE(igp::chromosome_to_integer("Y", &chrint));
+  EXPECT_EQ(chrint, 24);
 }
 
 TEST(utilitiesTest, chromosomeToIntegerMitochrondrion) {
-  EXPECT_EQ(igp::chromosome_to_integer("M"), 26);
+  int chrint = 0;
+  EXPECT_TRUE(igp::chromosome_to_integer("M", &chrint));
+  EXPECT_EQ(chrint, 26);
 }
 
 TEST(utilitiesTest, chromosomeToIntegerMitochondrion_mt) {
-  EXPECT_EQ(igp::chromosome_to_integer("MT"), 26);
+  int chrint = 0;
+  EXPECT_TRUE(igp::chromosome_to_integer("MT", &chrint));
+  EXPECT_EQ(chrint, 26);
 }
 
 TEST(utilitiesTest, chromosomeToIntegerAutosomeChrprefix) {
-  EXPECT_EQ(igp::chromosome_to_integer("chr3"), 3);
+  int chrint = 0;
+  EXPECT_TRUE(igp::chromosome_to_integer("chr3", &chrint));
+  EXPECT_EQ(chrint, 3);
 }
 
 TEST(utilitiesTest, chromosomeToIntegerXchrChrprefix) {
-  EXPECT_EQ(igp::chromosome_to_integer("chrX"), 23);
+  int chrint = 0;
+  EXPECT_TRUE(igp::chromosome_to_integer("chrX", &chrint));
+  EXPECT_EQ(chrint, 23);
 }
 
 TEST(utilitiesTest, chromosomeToIntegerYchrChrprefix) {
-  EXPECT_EQ(igp::chromosome_to_integer("chrY"), 24);
+  int chrint = 0;
+  EXPECT_TRUE(igp::chromosome_to_integer("chrY", &chrint));
+  EXPECT_EQ(chrint, 24);
 }
 
 TEST(utilitiesTest, chromosomeToIntegerMitochondrionChrprefix) {
-  EXPECT_EQ(igp::chromosome_to_integer("chrM"), 26);
+  int chrint = 0;
+  EXPECT_TRUE(igp::chromosome_to_integer("chrM", &chrint));
+  EXPECT_EQ(chrint, 26);
 }
 
 TEST(utilitiesTest, errorOnInvalidChromosome) {
-  EXPECT_THROW(igp::chromosome_to_integer("XY"), std::runtime_error);
+  int chrint = 0;
+  EXPECT_FALSE(igp::chromosome_to_integer("XY", &chrint));
 }
 
 TEST(utilitiesTest, chromosomeCompareLessthan) {

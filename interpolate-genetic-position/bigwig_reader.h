@@ -68,6 +68,10 @@ class bigwig_reader {
    *
    * Note that if no intervals are currently loaded, this will return
    * an empty string.
+   *
+   * There is a potential issue in matching query chromosomes with bigwig
+   * chromosomes. It's addressed inside this class, but other objects
+   * requesting this chromosome must also resolve matches.
    */
   const std::string &get_loaded_chr() const;
   /*!
@@ -94,6 +98,22 @@ class bigwig_reader {
    * \return whether load operation returned anything
    */
   bool load_chr(const std::string &chr);
+  /*!
+   * \brief try to match a query chromosome to a chromosome
+   * present in an open bigwig
+   * \param chr input query chromosome
+   * \return version of the chromosome code that is present in the bigwig,
+   * if possible
+   */
+  std::string interpret_chr(const std::string &chr) const;
+  /*!
+   * \brief try to find minimum (karyotypically) chromosome in bigwig
+   * \return string representation of minimum bigwig chromosome
+   *
+   * There are various corner cases that would mean we couldn't assume
+   * chr1 is the right place to start in a file.
+   */
+  std::string find_minimum_chromosome() const;
 
  private:
   bigWigFile_t *_input;                  //!< file handle to bigwig file
