@@ -30,7 +30,29 @@ void igp::bigwig_reader::open(const std::string &filename) {
   if (!_input) {
     throw std::runtime_error("bigwig_reader: cannot open \"" + filename + "\"");
   }
-  load_chr("chr1");
+  load_chr(find_minimum_chromosome());
+}
+
+std::string igp::bigwig_reader::find_minimum_chromosome() const {
+  std::string bwchr = "";
+  int bigwig_chrint = 0, min_bigwig_chrint = 777777;
+  if (_input && _input->cl) {
+    for (int64_t i = 0; i < _input->cl->nKeys; ++i) {
+      bwchr = std::string(_input->cl->chrom[i]);
+      if (chromosome_to_integer(bwchr, &bigwig_chrint)) {
+        if (bigwig_chrint < min_bigwig_chrint) {
+          min_bigwig_chrint = bigwig_chrint;
+        }
+      }
+    }
+    if (min_bigwig_chrint == 777777) {
+      throw std::runtime_error("bigwig_reader: min chromosome not recognized");
+    }
+    return integer_to_chromosome(min_bigwig_chrint);
+  }
+  throw std::runtime_error(
+      "bigwig_reader: find_minimum_chromosome was called without "
+      "an open file handle, which is an undefined operation.");
 }
 
 void igp::bigwig_reader::close() {
