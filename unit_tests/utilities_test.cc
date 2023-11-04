@@ -87,3 +87,47 @@ TEST(utilitiesTest, chromosomeCompareGreaterthan) {
 TEST(utilitiesTest, chromosomeCompareEqualto) {
   EXPECT_EQ(igp::chromosome_compare("chrX", "X"), igp::EQUAL);
 }
+
+TEST(utilitiesTest, nextChromosomeStandardAutosome) {
+  EXPECT_EQ(igp::next_chromosome("chr4"), "chr5");
+}
+
+TEST(utilitiesTest, nextChromosome22) {
+  EXPECT_EQ(igp::next_chromosome("chr22"), "chrX");
+}
+
+TEST(utilitiesTest, nextChromosomeX) {
+  EXPECT_EQ(igp::next_chromosome("chrX"), "chrY");
+}
+
+TEST(utilitiesTest, nextChromosomeY) {
+  EXPECT_EQ(igp::next_chromosome("chrY"), "chrM");
+}
+
+TEST(utilitiesTest, nextChromosomeM) {
+  EXPECT_THROW(igp::next_chromosome("chrM"), std::runtime_error);
+}
+
+TEST(utilitiesTest, integerToChromosomeStandardAutosome) {
+  EXPECT_EQ(igp::integer_to_chromosome(10), "chr10");
+}
+
+TEST(utilitiesTest, integerToChromosome23) {
+  EXPECT_EQ(igp::integer_to_chromosome(23), "chrX");
+}
+
+TEST(utilitiesTest, integerToChromosome24) {
+  EXPECT_EQ(igp::integer_to_chromosome(24), "chrY");
+}
+
+TEST(utilitiesTest, integerToChromosome25) {
+  EXPECT_THROW(igp::integer_to_chromosome(25), std::runtime_error);
+}
+
+TEST(utilitiesTest, integerToChromosome26) {
+  EXPECT_EQ(igp::integer_to_chromosome(26), "chrM");
+}
+
+TEST(utilitiesTest, integerToChromosome27) {
+  EXPECT_THROW(igp::integer_to_chromosome(27), std::runtime_error);
+}
