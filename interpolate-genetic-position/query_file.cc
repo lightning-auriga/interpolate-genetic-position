@@ -17,8 +17,9 @@ igp::query_file::query_file(const query_file &obj) {
   throw std::runtime_error(
       "query_file: copy constructor operation is invalid for this class");
 }
-igp::query_file::query_file(base_input_variant_file *ptr)
-    : _interface(ptr), _ft(UNKNOWN) {}
+igp::query_file::query_file(base_input_variant_file *inptr,
+                            base_output_variant_file *outptr)
+    : _interface(inptr), _ft(UNKNOWN), _output(outptr) {}
 igp::query_file::~query_file() throw() {}
 void igp::query_file::open(const std::string &filename, format_type ft) {
   _ft = ft;
@@ -32,8 +33,9 @@ void igp::query_file::open(const std::string &filename, format_type ft) {
     _interface->set_format_parameters(0, 1, 4, true, 4);
   }
 }
-void igp::query_file::open(const char *filename, format_type ft) {
-  open(std::string(filename), ft);
+void igp::query_file::initialize_output(const std::string &filename,
+                                        format_type ft) {
+  _output->open(filename, ft);
 }
 bool igp::query_file::get() { return _interface->get_variant(); }
 const std::string &igp::query_file::get_chr() const {
@@ -42,32 +44,27 @@ const std::string &igp::query_file::get_chr() const {
 const mpz_class &igp::query_file::get_pos() const {
   return _interface->get_pos();
 }
-void igp::query_file::close() { _interface->close(); }
+void igp::query_file::close() {
+  _interface->close();
+  _output->close();
+}
 bool igp::query_file::eof() { return _interface->eof(); }
-void igp::query_file::report(const mpf_class &gpos_interpolated,
-                             std::ostream *output) const {
-  for (unsigned i = 0; i < _interface->get_line_contents().size(); ++i) {
-    if (i) {
-      if (!(*output << '\t')) {
-        throw std::runtime_error("query_file::report: cannot write to stream");
-      }
-    }
-    if ((_ft == BIM || _ft == MAP) && i == 2) {
-      if (!(*output << gpos_interpolated)) {
-        throw std::runtime_error("query_file::report: cannot write to stream");
-      }
-    } else {
-      if (!(*output << _interface->get_line_contents().at(i))) {
-        throw std::runtime_error("query_file::report: cannot write to stream");
-      }
-    }
+void igp::query_file::report(const mpf_class &gpos_interpolated) const {
+  std::string chr = "", id = "", a1 = "", a2 = "";
+  mpz_class pos1 = -1, pos2 = -1;
+  if (_ft == BIM || _ft == MAP) {
+    chr = _interface->get_line_contents().at(0);
+    pos1 = mpz_class(_interface->get_line_contents().at(3));
+    id = _interface->get_line_contents().at(1);
+  }
+  if (_ft == BIM) {
+    a1 = _interface->get_line_contents().at(4);
+    a2 = _interface->get_line_contents().at(5);
   }
   if (_ft == BED) {
-    if (!(*output << '\t' << gpos_interpolated)) {
-      throw std::runtime_error("query_file::report: cannot write to stream");
-    }
+    chr = _interface->get_line_contents().at(0);
+    pos1 = mpz_class(_interface->get_line_contents().at(1));
+    pos2 = mpz_class(_interface->get_line_contents().at(2));
   }
-  if (!(*output << '\n')) {
-    throw std::runtime_error("query_file::report: cannot write to stream");
-  }
+  _output->write(chr, pos1, pos2, id, gpos_interpolated, a1, a2);
 }
