@@ -42,10 +42,28 @@ int igp::chromosome_to_integer(const std::string &chr) {
   }
   return rep;
 }
+std::string igp::integer_to_chromosome(int chr) {
+  if (chr >= 1 && chr <= 22) {
+    return "chr" + std::to_string(chr);
+  } else if (chr == 23) {
+    return "chrX";
+  } else if (chr == 24) {
+    return "chrY";
+  } else if (chr == 26) {
+    return "chrM";
+  } else {
+    throw std::runtime_error("integer_to_chromosome: unknown chromosome");
+  }
+}
 igp::direction igp::chromosome_compare(const std::string &chr1,
                                        const std::string &chr2) {
   unsigned int1 = chromosome_to_integer(chr1);
   unsigned int2 = chromosome_to_integer(chr2);
   if (int1 == int2) return EQUAL;
   return int1 < int2 ? LESS_THAN : GREATER_THAN;
+}
+std::string igp::next_chromosome(const std::string &current_chr) {
+  int chrint = chromosome_to_integer(current_chr);
+  chrint = chrint == 24 ? 26 : chrint + 1;
+  return integer_to_chromosome(chrint);
 }

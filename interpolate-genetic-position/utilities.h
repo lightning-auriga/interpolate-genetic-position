@@ -30,6 +30,17 @@ format_type string_to_format_type(const std::string &name);
  */
 int chromosome_to_integer(const std::string &chr);
 /*!
+ * \brief translate an integer chromosome representation
+ * into a simple "chr[1-22XYM]" string.
+ * \param chr chromosome as integer in {1-24,26}
+ * \return input chromosome, as a string "chr[1-22XYM]"
+ *
+ * I'm not yet clear on whether the calling logic,
+ * interacting with libBigWig, needs to deal with alternate
+ * string representations for old genome builds.
+ */
+std::string integer_to_chromosome(int chr);
+/*!
  * \brief compare two chromosome representations to get a consistent
  * directionality of their comparison. Will strip prefixes and convert
  * most standard chromosome aliases.
@@ -38,6 +49,21 @@ int chromosome_to_integer(const std::string &chr);
  * \return the relationship of the first chromosome code to the second
  */
 direction chromosome_compare(const std::string &chr1, const std::string &chr2);
+/*!
+ * \brief represent a chromosome in a way that bigwigs are ok with
+ * \param chr a chromosome represented as a string
+ * \return the input chromosome but in a representation bigwigs like
+ */
+std::string make_chr_bigwig_friendly(const std::string &chr);
+/*!
+ * \brief get next chromosome according to some sort criterion
+ * \param current_chr current chromosome
+ * \return the chromosome that comes after the current one
+ *
+ * This logic is required to control the behavior of cycling through
+ * a bigwig without other guidance.
+ */
+std::string next_chromosome(const std::string &current_chr);
 }  // namespace interpolate_genetic_position
 
 #endif  // INTERPOLATE_GENETIC_POSITION_UTILITIES_H_
