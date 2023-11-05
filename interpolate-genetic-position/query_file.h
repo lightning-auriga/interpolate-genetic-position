@@ -89,7 +89,13 @@ class query_file {
    * \brief get position of current query
    * \return position of current query
    */
-  const mpz_class &get_pos() const;
+  const mpz_class &get_pos1() const;
+  /*!
+   * \brief get end position of current query
+   * \return end position of current query or, if not
+   * applicable for this query type, -1
+   */
+  const mpz_class &get_pos2() const;
   /*!
    * \brief close any input connection
    */

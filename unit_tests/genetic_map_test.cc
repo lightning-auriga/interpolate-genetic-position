@@ -62,7 +62,7 @@ TEST_F(geneticMapTest, queryBeyondEndOfChromosome) {
   std::string query_chr = "1";
   mpz_class query_pos = 1000000;
   bool verbose = false;
-  gm.query(query_chr, query_pos, verbose, &gpos_interpolated);
+  gm.query(query_chr, query_pos, -1, verbose, &gpos_interpolated);
   EXPECT_EQ(gpos_interpolated, mpf_class(23.4));
 }
 
@@ -81,7 +81,7 @@ TEST_F(geneticMapTest, queryBeyondEndOfFile) {
   std::string query_chr = "M";
   mpz_class query_pos = 1000000;
   bool verbose = false;
-  gm.query(query_chr, query_pos, verbose, &gpos_interpolated);
+  gm.query(query_chr, query_pos, -1, verbose, &gpos_interpolated);
   EXPECT_EQ(gpos_interpolated, mpf_class(0.0));
 }
 
@@ -100,7 +100,7 @@ TEST_F(geneticMapTest, queryInteriorUncoveredChromosome) {
   std::string query_chr = "2";
   mpz_class query_pos = 1000000;
   bool verbose = false;
-  gm.query(query_chr, query_pos, verbose, &gpos_interpolated);
+  gm.query(query_chr, query_pos, -1, verbose, &gpos_interpolated);
   EXPECT_EQ(gpos_interpolated, mpf_class(0.0));
 }
 
@@ -125,7 +125,7 @@ TEST_F(geneticMapTest, queryBeginningOfChromosome) {
   std::string query_chr = "1";
   mpz_class query_pos = 50000;
   bool verbose = false;
-  gm.query(query_chr, query_pos, verbose, &gpos_interpolated);
+  gm.query(query_chr, query_pos, -1, verbose, &gpos_interpolated);
   EXPECT_EQ(gpos_interpolated, mpf_class(0.0));
 }
 
@@ -156,7 +156,7 @@ TEST_F(geneticMapTest, queryStandardInterpolation) {
   std::string query_chr = "1";
   mpz_class query_pos = 150000;
   bool verbose = false;
-  gm.query(query_chr, query_pos, verbose, &gpos_interpolated);
+  gm.query(query_chr, query_pos, -1, verbose, &gpos_interpolated);
   mpf_class gpos_expected("0.0035");
   EXPECT_EQ(cmp(abs(gpos_interpolated - gpos_expected), _mpf_error_tolerance),
             -1);
@@ -186,7 +186,7 @@ TEST_F(geneticMapTest, queryOverlapLowerBound) {
   std::string query_chr = "1";
   mpz_class query_pos = 100000;
   bool verbose = false;
-  gm.query(query_chr, query_pos, verbose, &gpos_interpolated);
+  gm.query(query_chr, query_pos, -1, verbose, &gpos_interpolated);
   EXPECT_EQ(gpos_interpolated, mpf_class("0.001"));
 }
 
@@ -214,7 +214,7 @@ TEST_F(geneticMapTest, queryOverlapUpperBound) {
   std::string query_chr = "1";
   mpz_class query_pos = 200000;
   bool verbose = false;
-  gm.query(query_chr, query_pos, verbose, &gpos_interpolated);
+  gm.query(query_chr, query_pos, -1, verbose, &gpos_interpolated);
   EXPECT_EQ(gpos_interpolated, mpf_class("0.002"));
 }
 
@@ -232,7 +232,7 @@ TEST_F(geneticMapTest, queryDetectsUnsortedChromosomes) {
   std::string query_chr = "2";
   mpz_class query_pos = 100000;
   bool verbose = false;
-  EXPECT_THROW(gm.query(query_chr, query_pos, verbose, &gpos_interpolated),
+  EXPECT_THROW(gm.query(query_chr, query_pos, -1, verbose, &gpos_interpolated),
                std::runtime_error);
 }
 
@@ -257,7 +257,7 @@ TEST_F(geneticMapTest, queryDetectsUnsortedPositions) {
   std::string query_chr = "1";
   mpz_class query_pos = 5000;
   bool verbose = false;
-  EXPECT_THROW(gm.query(query_chr, query_pos, verbose, &gpos_interpolated),
+  EXPECT_THROW(gm.query(query_chr, query_pos, -1, verbose, &gpos_interpolated),
                std::runtime_error);
 }
 
@@ -293,7 +293,7 @@ TEST_F(geneticMapTest, queryIncrementGeneticMapWhenExceedsPositionRange) {
   std::string query_chr = "1";
   mpz_class query_pos = 3000;
   bool verbose = false;
-  gm.query(query_chr, query_pos, verbose, &gpos_interpolated);
+  gm.query(query_chr, query_pos, -1, verbose, &gpos_interpolated);
   EXPECT_EQ(gpos_interpolated, mpf_class("0.245"));
 }
 
@@ -323,7 +323,7 @@ TEST_F(geneticMapTest, queryIncrementGeneticMapWhenExceedsLowerChromosome) {
   std::string query_chr = "2";
   mpz_class query_pos = 50000;
   bool verbose = false;
-  gm.query(query_chr, query_pos, verbose, &gpos_interpolated);
+  gm.query(query_chr, query_pos, -1, verbose, &gpos_interpolated);
   EXPECT_EQ(gpos_interpolated, mpf_class("0.0"));
 }
 
@@ -355,6 +355,6 @@ TEST_F(geneticMapTest, queryIncrementGeneticMapWhenExceedsUpperChromosome) {
   std::string query_chr = "2";
   mpz_class query_pos = 50000;
   bool verbose = false;
-  gm.query(query_chr, query_pos, verbose, &gpos_interpolated);
+  gm.query(query_chr, query_pos, -1, verbose, &gpos_interpolated);
   EXPECT_EQ(gpos_interpolated, mpf_class("0.0"));
 }

@@ -65,14 +65,17 @@ class genetic_map {
    * to interpolate genetic position. this action may or may
    * not cause the object to update its internal cache.
    * \param chr_query chromosome of query variant as string
-   * \param pos_query physical position of query variant,
+   * \param pos1_query physical position of query variant,
    * represented as mpz
+   * \param pos2_query for applicable queries (e.g. bedfiles),
+   * physical position of end of region; else, -1
    * \param verbose whether to emit (extremely) verbose logging to std::cout
    * \param gpos_interpolated pointer to mpf with interpolated
    * genetic position for the query
    */
-  void query(const std::string &chr_query, const mpz_class &pos_query,
-             bool verbose, mpf_class *gpos_interpolated);
+  void query(const std::string &chr_query, const mpz_class &pos1_query,
+             const mpz_class &pos2_query, bool verbose,
+             mpf_class *gpos_interpolated);
   /*!
    * \brief close any input connection
    */

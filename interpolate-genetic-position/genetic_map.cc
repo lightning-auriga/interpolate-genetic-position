@@ -24,7 +24,8 @@ void igp::genetic_map::open(const std::string &filename, format_type ft) {
   _interface->open(filename, ft);
 }
 void igp::genetic_map::query(const std::string &chr_query,
-                             const mpz_class &pos_query, bool verbose,
+                             const mpz_class &pos1_query,
+                             const mpz_class &pos2_query, bool verbose,
                              mpf_class *gpos_interpolated) {
   // This comparison must cautiously detect whether a variant falls before,
   // after, or within the interval indicated by the currently loaded set of
@@ -37,7 +38,7 @@ void igp::genetic_map::query(const std::string &chr_query,
   direction query_vs_upper_bound = EQUAL;
   mpf_class mb_adjustment = 1000000.0;
   if (verbose) {
-    std::cout << "query: chr is " << chr_query << ", pos is " << pos_query
+    std::cout << "query: chr is " << chr_query << ", pos is " << pos1_query
               << std::endl;
   }
   if (chromosome_compare(_interface->get_chr_lower_bound(),
@@ -71,9 +72,9 @@ void igp::genetic_map::query(const std::string &chr_query,
             "of RAM.");
       }
       int query_pos_vs_lower_bound =
-          cmp(pos_query, _interface->get_pos_lower_bound());
+          cmp(pos1_query, _interface->get_pos_lower_bound());
       int query_pos_vs_upper_bound =
-          cmp(pos_query, _interface->get_pos_upper_bound());
+          cmp(pos1_query, _interface->get_pos_upper_bound());
       if (query_pos_vs_lower_bound == 0 && query_pos_vs_upper_bound == -1) {
         if (verbose) {
           std::cout << "\t\tmatches lower boundary exactly: "
@@ -105,7 +106,7 @@ void igp::genetic_map::query(const std::string &chr_query,
                  query_pos_vs_upper_bound == -1) {
         // interpolate
         *gpos_interpolated = _interface->get_gpos_lower_bound() +
-                             (pos_query - _interface->get_pos_lower_bound()) /
+                             (pos1_query - _interface->get_pos_lower_bound()) /
                                  mb_adjustment *
                                  _interface->get_rate_lower_bound();
         if (verbose) {

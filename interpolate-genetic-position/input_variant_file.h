@@ -50,14 +50,16 @@ class base_input_variant_file {
    * \brief set parameters controlling interpretation
    * of input lines
    * \param chr_index base 0 index of chromosome in line tokens
-   * \param pos_index base 0 index of physical position in line tokens
+   * \param pos1_index base 0 index of physical position in line tokens
+   * \param pos2_index base 0 index of end position of a region; if not
+   * applicable, set negative
    * \param gpos_index base 0 index of genetic position in line tokens
    * \param base0 whether physical position is base 0
    * \param n_tokens expected number of tokens in line
    */
-  virtual void set_format_parameters(unsigned chr_index, unsigned pos_index,
-                                     unsigned gpos_index, bool base0,
-                                     unsigned n_tokens) = 0;
+  virtual void set_format_parameters(unsigned chr_index, unsigned pos1_index,
+                                     int pos2_index, unsigned gpos_index,
+                                     bool base0, unsigned n_tokens) = 0;
   /*!
    * \brief get a single line from an input stream
    * \param line pointer to allocated string that will contain line,
@@ -79,7 +81,12 @@ class base_input_variant_file {
    * \brief get physical position of currently loaded marker
    * \return physical position of currently loaded marker
    */
-  virtual const mpz_class &get_pos() const = 0;
+  virtual const mpz_class &get_pos1() const = 0;
+  /*!
+   * \brief for region data, get end position of current region
+   * \return end position of current region
+   */
+  virtual const mpz_class &get_pos2() const = 0;
   /*!
    * \brief get vector containing tokenized representation of current line
    * \return vector containing tokenized representation of current line
@@ -122,13 +129,15 @@ class input_variant_file : public base_input_variant_file {
    * \brief set parameters controlling interpretation
    * of input lines
    * \param chr_index base 0 index of chromosome in line tokens
-   * \param pos_index base 0 index of physical position in line tokens
+   * \param pos1_index base 0 index of physical position in line tokens
+   * \param pos2_index base 0 index of end position of a region; if not
+   * applicable, set negative
    * \param gpos_index base 0 index of genetic position in line tokens
    * \param base0 whether physical position is base 0
    * \param n_tokens expected number of tokens in line
    */
-  void set_format_parameters(unsigned chr_index, unsigned pos_index,
-                             unsigned gpos_index, bool base0,
+  void set_format_parameters(unsigned chr_index, unsigned pos1_index,
+                             int pos2_index, unsigned gpos_index, bool base0,
                              unsigned n_tokens);
   /*!
    * \brief get a single line from an input stream
@@ -151,7 +160,12 @@ class input_variant_file : public base_input_variant_file {
    * \brief get physical position of currently loaded marker
    * \return physical position of currently loaded marker
    */
-  const mpz_class &get_pos() const;
+  const mpz_class &get_pos1() const;
+  /*!
+   * \brief for region data, get end position of current region
+   * \return end position of current region
+   */
+  const mpz_class &get_pos2() const;
   /*!
    * \brief get vector containing tokenized representation of current line
    * \return vector containing tokenized representation of current line
@@ -171,10 +185,12 @@ class input_variant_file : public base_input_variant_file {
   std::vector<std::string> _line_contents;  //!< tokenized input line
   unsigned _buffer_size;                    //!< size of allocated buffer
   unsigned _chr_index;                      //!< index of chromosome in line
-  unsigned _pos_index;   //!< index of physical position in line
+  unsigned _pos1_index;  //!< index of physical position in line
+  int _pos2_index;       //!< for e.g. bedfiles, index of end position of region
   unsigned _gpos_index;  //!< index of genetic position in line
   std::string _chr;      //!< chromosome of current marker
-  mpz_class _pos;        //!< physical position of current marker
+  mpz_class _pos1;       //!< physical position of current marker
+  mpz_class _pos2;       //!< for e.g. bedfiles, end position of region
   bool _base0;           //!< whether physical position is base 0
 };
 }  // namespace interpolate_genetic_position

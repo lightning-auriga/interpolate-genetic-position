@@ -26,11 +26,11 @@ void igp::query_file::open(const std::string &filename, format_type ft) {
   _interface->open(filename);
   // handle file formats
   if (_ft == BIM) {
-    _interface->set_format_parameters(0, 3, 2, false, 6);
+    _interface->set_format_parameters(0, 3, -1, 2, false, 6);
   } else if (_ft == MAP) {
-    _interface->set_format_parameters(0, 3, 2, false, 4);
+    _interface->set_format_parameters(0, 3, -1, 2, false, 4);
   } else if (_ft == BED) {
-    _interface->set_format_parameters(0, 1, 4, true, 4);
+    _interface->set_format_parameters(0, 1, 2, 4, true, 4);
   }
 }
 void igp::query_file::initialize_output(const std::string &filename,
@@ -41,8 +41,11 @@ bool igp::query_file::get() { return _interface->get_variant(); }
 const std::string &igp::query_file::get_chr() const {
   return _interface->get_chr();
 }
-const mpz_class &igp::query_file::get_pos() const {
-  return _interface->get_pos();
+const mpz_class &igp::query_file::get_pos1() const {
+  return _interface->get_pos1();
+}
+const mpz_class &igp::query_file::get_pos2() const {
+  return _interface->get_pos2();
 }
 void igp::query_file::close() {
   _interface->close();
