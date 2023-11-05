@@ -130,16 +130,16 @@ The following primary maps are supported by this tool:
     and extract the latest version (2.4.1 as of 2023); the map you want is in the `tables` subdirectory.
     * Make sure you choose the one matching your dataset's genome build
   * These maps cover hg17, hg18, hg19 (GRCh37), and hg38 (GRCh38).
-* Recombination rate tracks from UCSC (`--map-format bigwig` for hg38; `--map-format bedgraph` otherwise)
+* Recombination rate tracks from UCSC (`--map-format bigwig` or `--map-format bedgraph`)
   * Available as bigwigs [in this directory](https://hgdownload.soe.ucsc.edu/gbdb/hg38/recombRate/). Download
     the version you prefer (I have used [this one](https://hgdownload.soe.ucsc.edu/gbdb/hg38/recombRate/recombAvg.bw)).
   * The link in this readme is just for hg38/GRCh38. You can go digging around for others if you like; they all
     have benefits and drawbacks. Hopefully the track format is consistent enough that it'll be compatible.
-  * This program has partial support for directly reading bigwigs. Currently, this only works for hg38, and specifically
-    requires bigwigs that conform to standard chromosome labeling for hg38 (`chr` prefix, `M` for mitochondrion).
-  * If the above is too restrictive, you can convert a bigwig to bedgraph and have it in any chromosome annotation.
+  * In theory, this should work on any of the aforementioned genome builds; in practice, I've only tested it
+    for hg38 so far.
+  * If you have mismatched contig issues with a bigwig, you can convert a bigwig to bedgraph and have it in any chromosome annotation.
     However, the bedgraph needs to be sorted by karyotyping order, not the lexicographical sort the UCSC tracks use.
-    To use the UCSC track with this program, do some version of the following:
+    To convert a UCSC track to a bedgraph for use with this program, do some version of the following:
     * `mamba install -c bioconda -c conda-forge ucsc-bigwigtobedgraph`
     * `bigWigToBedGraph recombAvg.bw recombAvg.bedgraph`
     * `sed 's/^chrX/23/ ; s/^chr//' recombAvg.bedgraph | sort -k 1,1g -k 2,2g -k3,3g | sed -r 's/^23/chrX/ ; s/^([^c])/chr\1/' > recombAvg.sorted.bedgraph`
