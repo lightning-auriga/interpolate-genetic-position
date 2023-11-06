@@ -102,13 +102,14 @@ By default, the final compiled program can be run with
 
 |Parameter|Description|
 |---|---|
-|`--input`<br>`-i`|Input file of variants or regions to annotate. Needs to be sorted, chromosome and position. Can be gzipped. If not specified, will be read from stdin.|
+|`--input`<br>`-i`|Input file of variants or regions to annotate. Needs to be sorted, chromosome and position. Can be gzipped. If not specified, will be read as plaintext from stdin.|
 |`--preset`<br>`-p`|Format of input variant file. Accepted formats: `bim`, `map`, `bed`.|
-|`--genetic-map`<br>`-g`|Input recombination map. Needs to be sorted, chromosome and position. Can be gzipped (except bigwigs).|
+|`--genetic-map`<br>`-g`|Input recombination map. Needs to be sorted, chromosome and position. Can be gzipped (except bigwigs). If not specified, will be read as plaintext from stdin.|
 |`--map-format`<br>`-m`|Format of recombination map. Accepted formats: `bolt`, `bedgraph`, `bigwig` (see below for further discussion).|
 |`--output`<br>`-o`|Output file. Will match format of input. Cannot currently be gzipped. If not specified, will be written to stdout.|
 |`--verbose`<br>`-v`|Whether to print extremely verbose debug logs. You probably don't want this.|
 
+Note that, of the above, either `-i` or `-g` can be read from stdin, but not both.
 
 ## How to Choose a Recombination Rate File
 

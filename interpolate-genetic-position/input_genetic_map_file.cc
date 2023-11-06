@@ -45,7 +45,7 @@ void igp::input_genetic_map_file::open(const std::string &filename,
     }
   } else if (ft == BIGWIG) {
     _bwinput.open(filename);
-  } else {
+  } else if (!filename.empty()) {
     std::string line = "";
     _input.open(filename.c_str());
     if (!_input.is_open()) {
@@ -54,6 +54,11 @@ void igp::input_genetic_map_file::open(const std::string &filename,
     }
     if (_ft == BOLT) {
       getline(_input, line);
+    }
+  } else {  // file is streamed from cin
+    if (_ft == BOLT) {
+      std::string line = "";
+      getline(std::cin, line);
     }
   }
   // Load the first two values, such that a valid range is available at the
@@ -90,11 +95,16 @@ bool igp::input_genetic_map_file::get() {
     // return immediately here, as string parsing is handled automatically
     // upstream
     return true;
-  } else {
+  } else if (_gzinput != NULL) {
     if (gzgets(_gzinput, _buffer, _buffer_size) == Z_NULL) {
       return false;
     }
     line = std::string(_buffer);
+  } else {
+    if (std::cin.peek() == EOF) {
+      return false;
+    }
+    getline(std::cin, line);
   }
   std::istringstream strm1(line);
   if (_ft == BOLT) {
@@ -161,7 +171,7 @@ bool igp::input_genetic_map_file::eof() {
   if (_bwinput.is_open()) {
     return _bwinput.eof();
   }
-  return false;
+  return std::cin.peek() == EOF;
 }
 std::string igp::input_genetic_map_file::get_chr_lower_bound() const {
   return _chr_lower_bound;

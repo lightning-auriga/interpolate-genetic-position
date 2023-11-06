@@ -43,6 +43,9 @@ int main(int argc, char **argv) {
   std::string map_format = ap.get_map_format();
   std::string output = ap.get_output_filename();
   bool verbose = ap.verbose();
+  if (input.empty() && genetic_map.empty()) {
+    throw std::runtime_error("only one of -i and -g can be read from stdin");
+  }
 
   igp::interpolator ip;
   ip.interpolate(input, preset, genetic_map, map_format, output, verbose);
