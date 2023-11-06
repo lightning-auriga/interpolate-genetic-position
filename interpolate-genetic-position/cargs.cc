@@ -14,7 +14,7 @@ void interpolate_genetic_position::cargs::initialize_options() {
       boost::program_options::value<std::string>()->default_value(""),
       "name of input variant/region query file (default: read from stdin)")(
       "preset,p", boost::program_options::value<std::string>(),
-      "format of input file (accepted values: bim, map, bed)")(
+      "format of input file (accepted values: bim, map, snp, bed)")(
       "genetic-map,g",
       boost::program_options::value<std::string>()->default_value(""),
       "name of input genetic recombination map (default: read from stdin)")(

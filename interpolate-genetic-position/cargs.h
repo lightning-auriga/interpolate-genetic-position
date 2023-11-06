@@ -91,7 +91,7 @@ class cargs {
   std::string get_input_preset() const {
     std::string preset = compute_parameter<std::string>("preset");
     if (preset.compare("bim") && preset.compare("map") &&
-        preset.compare("bed")) {
+        preset.compare("bed") && preset.compare("snp")) {
       throw std::runtime_error("invalid input preset format: \"" + preset +
                                "\"");
     }

@@ -21,6 +21,7 @@ typedef enum {
   BIGWIG,
   BIM,
   MAP,
+  SNP,
   BED,
   VCF
 } format_type;

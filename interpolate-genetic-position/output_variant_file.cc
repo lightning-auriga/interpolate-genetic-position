@@ -54,6 +54,9 @@ void igp::output_variant_file::write(
     if (ft == BIM) {
       out << '\t' << a1 << '\t' << a2;
     }
+  } else if (ft == SNP) {
+    out << id << '\t' << chr << '\t' << gpos << '\t'
+        << (cmp(pos2, 0) < 0 ? pos1 + 1 : pos1);
   } else if (ft == BED) {
     out << chr << '\t';
     if (cmp(pos2, 0) < 0) {

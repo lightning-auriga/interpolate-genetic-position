@@ -31,6 +31,8 @@ void igp::query_file::open(const std::string &filename, format_type ft) {
     _interface->set_format_parameters(0, 3, -1, 2, false, 4);
   } else if (_ft == BED) {
     _interface->set_format_parameters(0, 1, 2, 4, true, 4);
+  } else if (_ft == SNP) {
+    _interface->set_format_parameters(1, 3, -1, 2, false, 4);
   }
 }
 void igp::query_file::initialize_output(const std::string &filename,
