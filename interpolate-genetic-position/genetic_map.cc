@@ -89,8 +89,8 @@ void igp::genetic_map::query(const std::string &chr_query,
       // proceed to position comparison
       // this early check enforces strict position ordering, and prevents
       // several later error conditions from ever occurring.
-      if (cmp(_interface->get_pos_lower_bound(),
-              _interface->get_pos_upper_bound()) != -1) {
+      if (cmp(_interface->get_startpos_lower_bound(),
+              _interface->get_startpos_upper_bound()) != -1) {
         throw std::runtime_error(
             "genetic_map::query: your genetic map "
             "is unsorted. For now, the only solution to this issue is "
@@ -99,9 +99,9 @@ void igp::genetic_map::query(const std::string &chr_query,
             "of RAM.");
       }
       int query_pos_vs_lower_bound =
-          cmp(pos1_query, _interface->get_pos_lower_bound());
+          cmp(pos1_query, _interface->get_startpos_lower_bound());
       int query_pos_vs_upper_bound =
-          cmp(pos1_query, _interface->get_pos_upper_bound());
+          cmp(pos1_query, _interface->get_startpos_upper_bound());
       if (query_pos_vs_lower_bound == 0 && query_pos_vs_upper_bound == -1) {
         if (verbose) {
           std::cout << "\t\tmatches lower boundary exactly: "
@@ -133,16 +133,16 @@ void igp::genetic_map::query(const std::string &chr_query,
                  query_pos_vs_upper_bound == -1) {
         // interpolate
         result->set_gpos(_interface->get_gpos_lower_bound() +
-                         (pos1_query - _interface->get_pos_lower_bound()) /
+                         (pos1_query - _interface->get_startpos_lower_bound()) /
                              mb_adjustment *
                              _interface->get_rate_lower_bound());
         if (verbose) {
           std::cout << "interpolated: gpos_lower_bound = "
                     << _interface->get_gpos_lower_bound()
                     << ", pos_lower_bound = "
-                    << _interface->get_pos_lower_bound()
+                    << _interface->get_startpos_lower_bound()
                     << ", pos_upper_bound = "
-                    << _interface->get_pos_upper_bound()
+                    << _interface->get_startpos_upper_bound()
                     << ", rate_lower_bound = "
                     << _interface->get_rate_lower_bound()
                     << ", interpolation = " << result->get_gpos() << std::endl;

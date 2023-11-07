@@ -72,15 +72,25 @@ class base_input_genetic_map_file {
    */
   virtual std::string get_chr_upper_bound() const = 0;
   /*!
-   * \brief get physical position of lower boundary of cached range
-   * \return physical position of lower boundary of cached range
+   * \brief get start physical position of lower boundary of cached range
+   * \return start physical position of lower boundary of cached range
    */
-  virtual mpz_class get_pos_lower_bound() const = 0;
+  virtual mpz_class get_startpos_lower_bound() const = 0;
   /*!
-   * \brief get physical position of upper boundary of cached range
-   * \return physical position of upper boundary of cached range
+   * \brief get start physical position of upper boundary of cached range
+   * \return start physical position of upper boundary of cached range
    */
-  virtual mpz_class get_pos_upper_bound() const = 0;
+  virtual mpz_class get_startpos_upper_bound() const = 0;
+  /*!
+   * \brief get end physical position of lower boundary of cached range
+   * \return end physical position of lower boundary of cached range
+   */
+  virtual mpz_class get_endpos_lower_bound() const = 0;
+  /*!
+   * \brief get end physical position of upper boundary of cached range
+   * \return end physical position of upper boundary of cached range
+   */
+  virtual mpz_class get_endpos_upper_bound() const = 0;
   /*!
    * \brief get genetic position of lower boundary of cached range
    * \return genetic position of lower boundary of cached range
@@ -152,15 +162,25 @@ class input_genetic_map_file : public base_input_genetic_map_file {
    */
   std::string get_chr_upper_bound() const;
   /*!
-   * \brief get physical position of lower boundary of cached range
-   * \return physical position of lower boundary of cached range
+   * \brief get start physical position of lower boundary of cached range
+   * \return start physical position of lower boundary of cached range
    */
-  mpz_class get_pos_lower_bound() const;
+  mpz_class get_startpos_lower_bound() const;
   /*!
-   * \brief get physical position of upper boundary of cached range
-   * \return physical position of upper boundary of cached range
+   * \brief get start physical position of upper boundary of cached range
+   * \return start physical position of upper boundary of cached range
    */
-  mpz_class get_pos_upper_bound() const;
+  mpz_class get_startpos_upper_bound() const;
+  /*!
+   * \brief get end physical position of lower boundary of cached range
+   * \return end physical position of lower boundary of cached range
+   */
+  mpz_class get_endpos_lower_bound() const;
+  /*!
+   * \brief get end physical position of upper boundary of cached range
+   * \return end physical position of upper boundary of cached range
+   */
+  mpz_class get_endpos_upper_bound() const;
   /*!
    * \brief get genetic position of lower boundary of cached range
    * \return genetic position of lower boundary of cached range
@@ -193,10 +213,13 @@ class input_genetic_map_file : public base_input_genetic_map_file {
   format_type _ft;               //!< stored format of input filestream
   std::string _chr_lower_bound;  //!< chromosome of previous entry
   std::string _chr_upper_bound;  //!< chromosome of new entry
-  mpz_class _pos_lower_bound;    //!< physical position of previous entry
-  mpz_class _pos_upper_bound;    //!< physical position of new entry
-  mpf_class _gpos_lower_bound;   //!< genetic position of previous entry
-  mpf_class _gpos_upper_bound;   //!< genetic position of new entry
+  mpz_class
+      _startpos_lower_bound;  //!< start physical position of previous entry
+  mpz_class _startpos_upper_bound;  //!< start physical position of new entry
+  mpz_class _endpos_lower_bound;    //!< end physical position of previous entry
+  mpz_class _endpos_upper_bound;    //!< end physical position of new entry
+  mpf_class _gpos_lower_bound;      //!< genetic position of previous entry
+  mpf_class _gpos_upper_bound;      //!< genetic position of new entry
   mpf_class
       _rate_lower_bound;  //!< point recombination rate change of previous entry
   mpf_class

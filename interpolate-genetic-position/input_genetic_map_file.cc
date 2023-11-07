@@ -19,11 +19,13 @@ igp::input_genetic_map_file::input_genetic_map_file() {
   _buffer_size = 1000;
   _ft = UNKNOWN;
   _chr_lower_bound = "";
-  _pos_lower_bound = 0;
+  _startpos_lower_bound = 0;
+  _endpos_lower_bound = -1;
   _gpos_lower_bound = 0.0;
   _rate_lower_bound = 0.0;
   _chr_upper_bound = "";
-  _pos_upper_bound = 0;
+  _startpos_upper_bound = 0;
+  _endpos_upper_bound = -1;
   _gpos_upper_bound = 0.0;
   _rate_upper_bound = 0.0;
 
@@ -68,10 +70,11 @@ void igp::input_genetic_map_file::open(const std::string &filename,
 }
 bool igp::input_genetic_map_file::get() {
   _chr_lower_bound = _chr_upper_bound;
-  _pos_lower_bound = _pos_upper_bound;
+  _startpos_lower_bound = _startpos_upper_bound;
+  _endpos_lower_bound = _endpos_upper_bound;
   _gpos_lower_bound = _gpos_upper_bound;
   _rate_lower_bound = _rate_upper_bound;
-  std::string line = "", pos1 = "", pos2 = "", gpos = "", rate = "";
+  std::string line = "", pos1 = "", gpos = "", rate = "";
   if (_input.is_open()) {
     if (_input.peek() == EOF) {
       return false;
@@ -79,16 +82,16 @@ bool igp::input_genetic_map_file::get() {
     getline(_input, line);
   } else if (_bwinput.is_open()) {
     mpz_class pos2;
-    if (!_bwinput.get(&_chr_upper_bound, &_pos_upper_bound, &pos2,
-                      &_rate_upper_bound)) {
+    if (!_bwinput.get(&_chr_upper_bound, &_startpos_upper_bound,
+                      &_endpos_upper_bound, &_rate_upper_bound)) {
       return false;
     }
     // as with bedgraph below, requires interpolation
     if (_chr_upper_bound == _chr_lower_bound) {
-      _gpos_upper_bound =
-          _gpos_lower_bound + _rate_lower_bound *
-                                  (_pos_upper_bound - _pos_lower_bound) /
-                                  mpf_class(1000000.0);
+      _gpos_upper_bound = _gpos_lower_bound +
+                          _rate_lower_bound *
+                              (_startpos_upper_bound - _startpos_lower_bound) /
+                              mpf_class(1000000.0);
     } else {
       _gpos_upper_bound = mpf_class("0.0");
     }
@@ -111,31 +114,28 @@ bool igp::input_genetic_map_file::get() {
     // BOLT format includes a first column chromosome indicator,
     // without a "chr" prefix independent of genome build.
     // It includes 1-22 and X encoded as 23.
-    if (!(strm1 >> _chr_upper_bound >> pos1 >> rate >> gpos)) {
+    if (!(strm1 >> _chr_upper_bound >> _startpos_upper_bound >>
+          _rate_upper_bound >> _gpos_upper_bound)) {
       throw std::runtime_error(
           "input_genetic_map_file::get: cannot parse BOLT ratefile line \"" +
           line + "\"");
     }
-    _pos_upper_bound = pos1;
-    _gpos_upper_bound = gpos;
-    _rate_upper_bound = rate;
   } else if (_ft == BEDGRAPH) {
     // bedgraph tracks from UCSC include rate but not genetic position itself.
     // Assuming the first position in a rate file is 0 genetic position, as is
     // conventional, we need to track the accumulated genetic position each
     // time we get a new entry from the file.
-    if (!(strm1 >> _chr_upper_bound >> pos1 >> pos2 >> rate)) {
+    if (!(strm1 >> _chr_upper_bound >> _startpos_upper_bound >>
+          _endpos_upper_bound >> _rate_upper_bound)) {
       throw std::runtime_error(
           "input_genetic_map_file::get: cannot parse bedgraph line \"" + line +
           "\"");
     }
-    _pos_upper_bound = pos1;
-    _rate_upper_bound = rate;
     if (_chr_upper_bound == _chr_lower_bound) {
-      _gpos_upper_bound =
-          _gpos_lower_bound + _rate_lower_bound *
-                                  (_pos_upper_bound - _pos_lower_bound) /
-                                  mpf_class(1000000.0);
+      _gpos_upper_bound = _gpos_lower_bound +
+                          _rate_lower_bound *
+                              (_startpos_upper_bound - _startpos_lower_bound) /
+                              mpf_class(1000000.0);
     } else {
       _gpos_upper_bound = mpf_class("0.0");
     }
@@ -179,11 +179,17 @@ std::string igp::input_genetic_map_file::get_chr_lower_bound() const {
 std::string igp::input_genetic_map_file::get_chr_upper_bound() const {
   return _chr_upper_bound;
 }
-mpz_class igp::input_genetic_map_file::get_pos_lower_bound() const {
-  return _pos_lower_bound;
+mpz_class igp::input_genetic_map_file::get_startpos_lower_bound() const {
+  return _startpos_lower_bound;
 }
-mpz_class igp::input_genetic_map_file::get_pos_upper_bound() const {
-  return _pos_upper_bound;
+mpz_class igp::input_genetic_map_file::get_startpos_upper_bound() const {
+  return _startpos_upper_bound;
+}
+mpz_class igp::input_genetic_map_file::get_endpos_lower_bound() const {
+  return _endpos_lower_bound;
+}
+mpz_class igp::input_genetic_map_file::get_endpos_upper_bound() const {
+  return _endpos_upper_bound;
 }
 mpf_class igp::input_genetic_map_file::get_gpos_lower_bound() const {
   return _gpos_lower_bound;

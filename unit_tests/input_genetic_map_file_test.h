@@ -37,8 +37,10 @@ class mock_input_genetic_map_file : public base_input_genetic_map_file {
   MOCK_METHOD(bool, eof, (), (override));
   MOCK_METHOD(std::string, get_chr_lower_bound, (), (const, override));
   MOCK_METHOD(std::string, get_chr_upper_bound, (), (const, override));
-  MOCK_METHOD(mpz_class, get_pos_lower_bound, (), (const, override));
-  MOCK_METHOD(mpz_class, get_pos_upper_bound, (), (const, override));
+  MOCK_METHOD(mpz_class, get_startpos_lower_bound, (), (const, override));
+  MOCK_METHOD(mpz_class, get_startpos_upper_bound, (), (const, override));
+  MOCK_METHOD(mpz_class, get_endpos_lower_bound, (), (const, override));
+  MOCK_METHOD(mpz_class, get_endpos_upper_bound, (), (const, override));
   MOCK_METHOD(mpf_class, get_gpos_lower_bound, (), (const, override));
   MOCK_METHOD(mpf_class, get_gpos_upper_bound, (), (const, override));
   MOCK_METHOD(mpf_class, get_rate_lower_bound, (), (const, override));
