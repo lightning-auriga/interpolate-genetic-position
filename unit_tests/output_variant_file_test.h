@@ -39,6 +39,8 @@ class mock_output_variant_file : public base_output_variant_file {
                const std::string &a2),
               (override));
   MOCK_METHOD(format_type, get_format, (), (const, override));
+  MOCK_METHOD(void, output_morgans, (bool use_morgans), (override));
+  MOCK_METHOD(bool, output_morgans, (), (const, override));
 };
 }  // namespace interpolate_genetic_position
 #endif  // UNIT_TESTS_OUTPUT_VARIANT_FILE_TEST_H_
