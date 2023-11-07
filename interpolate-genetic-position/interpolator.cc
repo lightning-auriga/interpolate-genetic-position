@@ -30,10 +30,10 @@ void igp::interpolator::interpolate(const std::string &input_filename,
   qf.open(input_filename, query_ft);
   qf.initialize_output(output_filename, query_ft);
   mpf_class gpos_interpolated;
+  std::vector<query_result> results;
   while (qf.get()) {
-    gm.query(qf.get_chr(), qf.get_pos1(), qf.get_pos2(), verbose,
-             &gpos_interpolated);
-    qf.report(gpos_interpolated);
+    gm.query(qf.get_chr(), qf.get_pos1(), qf.get_pos2(), verbose, &results);
+    qf.report(results);
   }
   qf.close();
 }

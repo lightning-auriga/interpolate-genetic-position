@@ -70,3 +70,35 @@ std::string igp::next_chromosome(const std::string &current_chr) {
   chrint = chrint == 24 ? 26 : chrint + 1;
   return integer_to_chromosome(chrint);
 }
+
+igp::query_result::query_result()
+    : _chr(""), _startpos(0), _endpos(0), _gpos(0.0), _rate(0.0) {}
+
+igp::query_result::query_result(const query_result &obj)
+    : _chr(obj._chr),
+      _startpos(obj._startpos),
+      _endpos(obj._endpos),
+      _gpos(obj._gpos),
+      _rate(obj._rate) {}
+
+igp::query_result::~query_result() throw() {}
+
+void igp::query_result::set_chr(const std::string &chr) { _chr = chr; }
+
+const std::string &igp::query_result::get_chr() const { return _chr; }
+
+void igp::query_result::set_startpos(const mpz_class &pos) { _startpos = pos; }
+
+const mpz_class &igp::query_result::get_startpos() const { return _startpos; }
+
+void igp::query_result::set_endpos(const mpz_class &pos) { _endpos = pos; }
+
+const mpz_class &igp::query_result::get_endpos() const { return _endpos; }
+
+void igp::query_result::set_gpos(const mpf_class &gpos) { _gpos = gpos; }
+
+const mpf_class &igp::query_result::get_gpos() const { return _gpos; }
+
+void igp::query_result::set_rate(const mpf_class &rate) { _rate = rate; }
+
+const mpf_class &igp::query_result::get_rate() const { return _rate; }

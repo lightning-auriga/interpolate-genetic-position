@@ -61,6 +61,21 @@ class genetic_map {
    */
   void open(const std::string &filename, format_type ft);
   /*!
+   * \brief run possibly multiple queries over segments
+   * of a larger query, aggregate the results, and return
+   * them at once
+   * \param chr_query chromosome of query variant as string
+   * \param pos1_query physical position of query variant,
+   * represented as mpz
+   * \param pos2_query for applicable queries (e.g. bedfiles),
+   * physical position of end of region; else, -1
+   * \param verbose whether to emit (extremely) verbose logging to std::cout
+   * \param results pointer to vector that should contain interpolated results
+   */
+  void query(const std::string &chr_query, const mpz_class &pos1_query,
+             const mpz_class &pos2_query, bool verbose,
+             std::vector<query_result> *results);
+  /*!
    * \brief query the currently loaded data points to try
    * to interpolate genetic position. this action may or may
    * not cause the object to update its internal cache.
@@ -70,12 +85,10 @@ class genetic_map {
    * \param pos2_query for applicable queries (e.g. bedfiles),
    * physical position of end of region; else, -1
    * \param verbose whether to emit (extremely) verbose logging to std::cout
-   * \param gpos_interpolated pointer to mpf with interpolated
-   * genetic position for the query
+   * \param result pointer to object that should contain interpolated results
    */
   void query(const std::string &chr_query, const mpz_class &pos1_query,
-             const mpz_class &pos2_query, bool verbose,
-             mpf_class *gpos_interpolated);
+             const mpz_class &pos2_query, bool verbose, query_result *results);
   /*!
    * \brief close any input connection
    */

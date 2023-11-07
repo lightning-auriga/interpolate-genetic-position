@@ -54,22 +54,18 @@ void igp::query_file::close() {
   _output->close();
 }
 bool igp::query_file::eof() { return _interface->eof(); }
-void igp::query_file::report(const mpf_class &gpos_interpolated) const {
-  std::string chr = "", id = "", a1 = "", a2 = "";
-  mpz_class pos1 = -1, pos2 = -1;
-  if (_ft == BIM || _ft == MAP) {
-    chr = _interface->get_line_contents().at(0);
-    pos1 = mpz_class(_interface->get_line_contents().at(3));
-    id = _interface->get_line_contents().at(1);
+void igp::query_file::report(const std::vector<query_result> &results) const {
+  std::string id = "", a1 = "", a2 = "";
+  for (std::vector<query_result>::const_iterator iter = results.begin();
+       iter != results.end(); ++iter) {
+    if (_ft == BIM || _ft == MAP) {
+      id = _interface->get_line_contents().at(1);
+    }
+    if (_ft == BIM) {
+      a1 = _interface->get_line_contents().at(4);
+      a2 = _interface->get_line_contents().at(5);
+    }
+    _output->write(iter->get_chr(), iter->get_startpos(), iter->get_endpos(),
+                   id, iter->get_gpos(), a1, a2);
   }
-  if (_ft == BIM) {
-    a1 = _interface->get_line_contents().at(4);
-    a2 = _interface->get_line_contents().at(5);
-  }
-  if (_ft == BED) {
-    chr = _interface->get_line_contents().at(0);
-    pos1 = mpz_class(_interface->get_line_contents().at(1));
-    pos2 = mpz_class(_interface->get_line_contents().at(2));
-  }
-  _output->write(chr, pos1, pos2, id, gpos_interpolated, a1, a2);
 }

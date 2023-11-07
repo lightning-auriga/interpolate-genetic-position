@@ -109,11 +109,11 @@ class query_file {
    */
   bool eof();
   /*!
-   * \brief given an interpolated genetic position and an output stream,
-   * recapitulate input data with updated genetic position information
-   * \param gpos_interpolated interpolated genetic position for this query
+   * \brief given an interpolated result and an output stream,
+   * report the result to an output stream
+   * \param results a vector of results corresponding to an input query
    */
-  void report(const mpf_class &gpos_interpolated) const;
+  void report(const std::vector<query_result> &results) const;
 
  private:
   base_input_variant_file *_interface;  //!< input file handler
