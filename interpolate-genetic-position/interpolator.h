@@ -49,13 +49,16 @@ class interpolator {
    * \param genetic_map name of input recombination map file
    * \param map_format descriptor of genetic map format
    * \param output_filename name of output results file;
+   * \param output_morgans whether genetic position should be output
+   * in morgans, as opposed to the default centimorgans
    * \param verbose whether to emit (extremely) verbose logging to std::cout
    * can be empty string, in which case output is std::cout
    */
   void interpolate(const std::string &input_filename, const std::string &preset,
                    const std::string &genetic_map_filename,
                    const std::string &map_format,
-                   const std::string &output_filename, bool verbose) const;
+                   const std::string &output_filename, bool output_morgans,
+                   bool verbose) const;
 };
 }  // namespace interpolate_genetic_position
 

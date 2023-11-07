@@ -108,6 +108,7 @@ By default, the final compiled program can be run with
 |`--map-format`<br>`-m`|Format of recombination map. Accepted formats: `bolt`, `bedgraph`, `bigwig` (see below for further discussion).|
 |`--output`<br>`-o`|Output file. Will match format of input. Cannot currently be gzipped. If not specified, will be written to stdout.|
 |`--verbose`<br>`-v`|Whether to print extremely verbose debug logs. You probably don't want this.|
+|`--output-morgans`|Report output genetic position in morgans, instead of the default centimorgans.|
 
 Note that, of the above, either `-i` or `-g` can be read from stdin, but not both.
 

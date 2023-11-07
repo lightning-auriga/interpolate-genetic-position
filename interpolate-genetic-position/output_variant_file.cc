@@ -14,7 +14,9 @@ igp::base_output_variant_file::base_output_variant_file() {}
 igp::base_output_variant_file::~base_output_variant_file() throw() {}
 
 igp::output_variant_file::output_variant_file()
-    : igp::base_output_variant_file::base_output_variant_file(), _ft(UNKNOWN) {}
+    : igp::base_output_variant_file::base_output_variant_file(),
+      _ft(UNKNOWN),
+      _output_morgans(false) {}
 
 igp::output_variant_file::~output_variant_file() throw() { close(); }
 
@@ -48,14 +50,15 @@ void igp::output_variant_file::write(
   // the idea is: format an output line, then emit it to appropriate target
   std::ostringstream out;
   format_type ft = get_format();
+  mpf_class output_gpos = output_morgans() ? gpos / mpf_class("100") : gpos;
   if (ft == BIM || ft == MAP) {
-    out << chr << '\t' << id << '\t' << gpos << '\t'
+    out << chr << '\t' << id << '\t' << output_gpos << '\t'
         << (cmp(pos2, 0) < 0 ? pos1 + 1 : pos1);
     if (ft == BIM) {
       out << '\t' << a1 << '\t' << a2;
     }
   } else if (ft == SNP) {
-    out << id << '\t' << chr << '\t' << gpos << '\t'
+    out << id << '\t' << chr << '\t' << output_gpos << '\t'
         << (cmp(pos2, 0) < 0 ? pos1 + 1 : pos1);
   } else if (ft == BED) {
     out << chr << '\t';
@@ -64,7 +67,7 @@ void igp::output_variant_file::write(
     } else {
       out << pos1 << '\t' << pos2 << '\t';
     }
-    out << gpos;
+    out << output_gpos;
   } else {
     throw std::runtime_error(
         "output_variant_file::write: format not supported");
@@ -81,3 +84,11 @@ void igp::output_variant_file::write(
 }
 
 igp::format_type igp::output_variant_file::get_format() const { return _ft; }
+
+bool igp::output_variant_file::output_morgans() const {
+  return _output_morgans;
+}
+
+void igp::output_variant_file::output_morgans(bool use_morgans) {
+  _output_morgans = use_morgans;
+}

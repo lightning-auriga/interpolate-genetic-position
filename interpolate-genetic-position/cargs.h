@@ -134,6 +134,14 @@ class cargs {
   }
 
   /*!
+    \brief determine whether genetic position should be output in morgans,
+    instead of centimorgans.
+    \return whether the user has requested that genetic position be output
+    in morgans instead of centimorgans.
+   */
+  bool output_morgans() const { return compute_flag("output-morgans"); }
+
+  /*!
     \brief find status of arbitrary flag
     @param tag name of flag
     \return whether the flag is set

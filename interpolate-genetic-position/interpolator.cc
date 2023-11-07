@@ -17,10 +17,11 @@ void igp::interpolator::interpolate(const std::string &input_filename,
                                     const std::string &genetic_map_filename,
                                     const std::string &map_format,
                                     const std::string &output_filename,
-                                    bool verbose) const {
+                                    bool output_morgans, bool verbose) const {
   input_variant_file input_variant_interface;
   input_genetic_map_file genetic_map_interface;
   output_variant_file output_variant_interface;
+  output_variant_interface.output_morgans(output_morgans);
   genetic_map gm(&genetic_map_interface);
   format_type map_ft = string_to_format_type(map_format);
   gm.open(genetic_map_filename, map_ft);

@@ -23,5 +23,7 @@ void interpolate_genetic_position::cargs::initialize_options() {
       "bigwig)")(
       "output,o",
       boost::program_options::value<std::string>()->default_value(""),
-      "name of output file (default: write to stdout)");
+      "name of output file (default: write to stdout)")(
+      "output-morgans",
+      "emit output genetic position in morgans instead of centimorgans");
 }
