@@ -233,7 +233,7 @@ TEST_F(geneticMapTest, queryOverlapUpperBound) {
   igp::mock_input_genetic_map_file mockfile;
   igp::genetic_map gm(&mockfile);
   EXPECT_CALL(mockfile, close()).Times(AnyNumber());
-  EXPECT_CALL(mockfile, eof()).Times(1).WillOnce(Return(false));
+  EXPECT_CALL(mockfile, eof()).Times(2).WillRepeatedly(Return(false));
   EXPECT_CALL(mockfile, get_chr_lower_bound())
       .Times(AnyNumber())
       .WillRepeatedly(Return("1"));
@@ -242,11 +242,15 @@ TEST_F(geneticMapTest, queryOverlapUpperBound) {
       .WillRepeatedly(Return("1"));
   EXPECT_CALL(mockfile, get_startpos_lower_bound())
       .Times(AnyNumber())
-      .WillRepeatedly(Return(mpz_class(100000)));
+      .WillOnce(Return(mpz_class(100000)))
+      .WillOnce(Return(mpz_class(100000)))
+      .WillRepeatedly(Return(mpz_class(200000)));
   EXPECT_CALL(mockfile, get_startpos_upper_bound())
       .Times(AnyNumber())
-      .WillRepeatedly(Return(mpz_class(200000)));
-  EXPECT_CALL(mockfile, get_gpos_upper_bound())
+      .WillOnce(Return(mpz_class(200000)))
+      .WillOnce(Return(mpz_class(200000)))
+      .WillRepeatedly(Return(mpz_class(300000)));
+  EXPECT_CALL(mockfile, get_gpos_lower_bound())
       .Times(AnyNumber())
       .WillRepeatedly(Return(mpf_class("0.002")));
   igp::query_result result;
@@ -324,16 +328,21 @@ TEST_F(geneticMapTest, queryIncrementGeneticMapWhenExceedsPositionRange) {
       .WillOnce(Return(2000))
       .WillOnce(Return(2000))
       .WillRepeatedly(Return(3000));
-  EXPECT_CALL(mockfile, get_gpos_upper_bound())
+  EXPECT_CALL(mockfile, get_gpos_lower_bound())
       .Times(AnyNumber())
       .WillRepeatedly(Return(mpf_class("0.245")));
+  EXPECT_CALL(mockfile, get_rate_lower_bound())
+      .Times(AnyNumber())
+      .WillRepeatedly(Return(mpf_class("1.23")));
   EXPECT_CALL(mockfile, get()).Times(1).WillOnce(Return(true));
   igp::query_result result;
   std::string query_chr = "1";
-  mpz_class query_pos = 3000;
+  mpz_class query_pos = 2500;
   bool verbose = false;
   gm.query(query_chr, query_pos, -1, verbose, &result);
-  EXPECT_EQ(result.get_gpos(), mpf_class("0.245"));
+  mpf_class gpos_expected("0.245615");
+  EXPECT_EQ(cmp(abs(result.get_gpos() - gpos_expected), _mpf_error_tolerance),
+            -1);
 }
 
 TEST_F(geneticMapTest, queryIncrementGeneticMapWhenExceedsLowerChromosome) {
