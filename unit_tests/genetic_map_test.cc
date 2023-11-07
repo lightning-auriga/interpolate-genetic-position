@@ -44,7 +44,7 @@ TEST_F(geneticMapTest, copyConstructorDisabled) {
   EXPECT_THROW(igp::genetic_map gm2(gm), std::runtime_error);
 }
 
-TEST_F(geneticMapTest, queryBeyondEndOfChromosome) {
+TEST_F(geneticMapTest, queryBeyondEndOfChromosomePointEstimates) {
   igp::mock_input_genetic_map_file mockfile;
   igp::genetic_map gm(&mockfile);
   EXPECT_CALL(mockfile, close()).Times(AnyNumber());
@@ -55,6 +55,12 @@ TEST_F(geneticMapTest, queryBeyondEndOfChromosome) {
   EXPECT_CALL(mockfile, get_chr_upper_bound())
       .Times(AnyNumber())
       .WillRepeatedly(Return("2"));
+  EXPECT_CALL(mockfile, get_startpos_lower_bound())
+      .Times(AnyNumber())
+      .WillRepeatedly(Return(mpz_class(900000)));
+  EXPECT_CALL(mockfile, get_endpos_lower_bound())
+      .Times(AnyNumber())
+      .WillRepeatedly(Return(mpz_class(-1)));
   EXPECT_CALL(mockfile, get_gpos_lower_bound())
       .Times(AnyNumber())
       .WillRepeatedly(Return(mpf_class(23.4)));
@@ -64,6 +70,39 @@ TEST_F(geneticMapTest, queryBeyondEndOfChromosome) {
   bool verbose = false;
   gm.query(query_chr, query_pos, -1, verbose, &result);
   EXPECT_EQ(result.get_gpos(), mpf_class(23.4));
+}
+
+TEST_F(geneticMapTest, queryBeyondEndOfChromosomeRegionEstimates) {
+  igp::mock_input_genetic_map_file mockfile;
+  igp::genetic_map gm(&mockfile);
+  EXPECT_CALL(mockfile, close()).Times(AnyNumber());
+  EXPECT_CALL(mockfile, eof()).Times(1).WillOnce(Return(false));
+  EXPECT_CALL(mockfile, get_chr_lower_bound())
+      .Times(AnyNumber())
+      .WillRepeatedly(Return("1"));
+  EXPECT_CALL(mockfile, get_chr_upper_bound())
+      .Times(AnyNumber())
+      .WillRepeatedly(Return("2"));
+  EXPECT_CALL(mockfile, get_startpos_lower_bound())
+      .Times(AnyNumber())
+      .WillRepeatedly(Return(mpz_class(900000)));
+  EXPECT_CALL(mockfile, get_endpos_lower_bound())
+      .Times(AnyNumber())
+      .WillRepeatedly(Return(mpz_class(950000)));
+  EXPECT_CALL(mockfile, get_gpos_lower_bound())
+      .Times(AnyNumber())
+      .WillRepeatedly(Return(mpf_class(23.4)));
+  EXPECT_CALL(mockfile, get_rate_lower_bound())
+      .Times(AnyNumber())
+      .WillRepeatedly(Return(mpf_class(1.23)));
+  igp::query_result result;
+  std::string query_chr = "1";
+  mpz_class query_pos = 1000000;
+  bool verbose = false;
+  gm.query(query_chr, query_pos, -1, verbose, &result);
+  mpf_class gpos_expected("23.4615");
+  EXPECT_EQ(cmp(abs(result.get_gpos() - gpos_expected), _mpf_error_tolerance),
+            -1);
 }
 
 TEST_F(geneticMapTest, queryBeyondEndOfFile) {

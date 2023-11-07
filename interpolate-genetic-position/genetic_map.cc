@@ -159,11 +159,31 @@ void igp::genetic_map::query(const std::string &chr_query,
     } else if (query_vs_lower_bound == EQUAL &&
                query_vs_upper_bound == LESS_THAN) {
       // gpos extension beyond end of range
+      mpf_class gpos_interpolated;
+      // certain genetic maps terminate their regions with a non-zero rate
+      // window. for those situations, the extension needs to adjust for the end
+      // position's interpolation from the reported rate of the start position
+      // of the range.
+      if (cmp(_interface->get_endpos_lower_bound(), 0) == -1) {
+        // there is no end position; the position is fixed
+        gpos_interpolated = _interface->get_gpos_lower_bound();
+      } else {
+        // there is an end position; partial interpolation is required,
+        // though if the reported rate is 0, this will be the same
+        // as the above condition
+        gpos_interpolated =
+            _interface->get_gpos_lower_bound() +
+            ((cmp(pos1_query, _interface->get_endpos_lower_bound()) == -1
+                  ? pos1_query
+                  : _interface->get_endpos_lower_bound()) -
+             _interface->get_startpos_lower_bound()) /
+                mb_adjustment * _interface->get_rate_lower_bound();
+      }
       if (verbose) {
         std::cout << "\tchromosome beyond end of range, setting to "
-                  << _interface->get_gpos_lower_bound() << std::endl;
+                  << gpos_interpolated << std::endl;
       }
-      result->set_gpos(_interface->get_gpos_lower_bound());
+      result->set_gpos(gpos_interpolated);
       return;
     } else if (query_vs_upper_bound == LESS_THAN) {
       // no estimate for relevant chromosome; set to 0?
@@ -206,12 +226,32 @@ void igp::genetic_map::query(const std::string &chr_query,
       // chromosome, which might be more biological but violates the
       // traditional convention of analyses extending beyond a model's
       // estimation range.
+      mpf_class gpos_interpolated;
+      // certain genetic maps terminate their regions with a non-zero rate
+      // window. for those situations, the extension needs to adjust for the end
+      // position's interpolation from the reported rate of the start position
+      // of the range.
+      if (cmp(_interface->get_endpos_upper_bound(), 0) == -1) {
+        // there is no end position; the position is fixed
+        gpos_interpolated = _interface->get_gpos_upper_bound();
+      } else {
+        // there is an end position; partial interpolation is required,
+        // though if the reported rate is 0, this will be the same
+        // as the above condition
+        gpos_interpolated =
+            _interface->get_gpos_upper_bound() +
+            ((cmp(pos1_query, _interface->get_endpos_upper_bound()) == -1
+                  ? pos1_query
+                  : _interface->get_endpos_upper_bound()) -
+             _interface->get_startpos_upper_bound()) /
+                mb_adjustment * _interface->get_rate_upper_bound();
+      }
       if (verbose) {
         std::cout
             << "\tfinal value, beyond boundary of loaded data; setting to "
-            << _interface->get_gpos_upper_bound() << std::endl;
+            << gpos_interpolated << std::endl;
       }
-      result->set_gpos(_interface->get_gpos_upper_bound());
+      result->set_gpos(gpos_interpolated);
       return;
     } else {
       // We may eventually want to let the user specify that this should
