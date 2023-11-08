@@ -64,6 +64,7 @@ TEST_F(geneticMapTest, queryBeyondEndOfChromosomePointEstimates) {
   EXPECT_CALL(mockfile, get_gpos_lower_bound())
       .Times(AnyNumber())
       .WillRepeatedly(Return(mpf_class(23.4)));
+  EXPECT_CALL(mockfile, get_rate_lower_bound()).Times(1).WillOnce(Return(1.0));
   igp::query_result result;
   std::string query_chr = "1";
   mpz_class query_pos = 1000000;
@@ -221,6 +222,7 @@ TEST_F(geneticMapTest, queryOverlapLowerBound) {
   EXPECT_CALL(mockfile, get_gpos_lower_bound())
       .Times(AnyNumber())
       .WillRepeatedly(Return(mpf_class("0.001")));
+  EXPECT_CALL(mockfile, get_rate_lower_bound()).Times(1).WillOnce(Return(1.0));
   igp::query_result result;
   std::string query_chr = "1";
   mpz_class query_pos = 100000;
@@ -253,6 +255,8 @@ TEST_F(geneticMapTest, queryOverlapUpperBound) {
   EXPECT_CALL(mockfile, get_gpos_lower_bound())
       .Times(AnyNumber())
       .WillRepeatedly(Return(mpf_class("0.002")));
+  EXPECT_CALL(mockfile, get_rate_lower_bound()).Times(1).WillOnce(Return(1.0));
+  EXPECT_CALL(mockfile, get()).Times(1).WillOnce(Return(true));
   igp::query_result result;
   std::string query_chr = "1";
   mpz_class query_pos = 200000;

@@ -113,6 +113,7 @@ void igp::genetic_map::query(const std::string &chr_query,
             cmp(pos2_query, _interface->get_startpos_upper_bound()) < 0
                 ? pos2_query
                 : _interface->get_startpos_upper_bound());
+        result->set_rate(_interface->get_rate_lower_bound());
         return;
       } else if (query_startpos_vs_lower_bound == 1 &&
                  query_startpos_vs_upper_bound == 0) {
@@ -138,6 +139,7 @@ void igp::genetic_map::query(const std::string &chr_query,
             cmp(pos2_query, _interface->get_startpos_lower_bound()) < 0
                 ? pos2_query
                 : _interface->get_startpos_lower_bound());
+        result->set_rate(0.0);
         return;
       } else if (query_startpos_vs_lower_bound == 1 &&
                  query_startpos_vs_upper_bound == -1) {
@@ -161,6 +163,7 @@ void igp::genetic_map::query(const std::string &chr_query,
             cmp(pos2_query, _interface->get_startpos_upper_bound()) < 0
                 ? pos2_query
                 : _interface->get_startpos_upper_bound());
+        result->set_rate(_interface->get_rate_lower_bound());
         return;
       } else {
         // query is greater than both positions; increment
@@ -182,6 +185,7 @@ void igp::genetic_map::query(const std::string &chr_query,
         // there is no end position; the position is fixed
         gpos_interpolated = _interface->get_gpos_lower_bound();
         result->set_endpos(pos2_query);
+        result->set_rate(_interface->get_rate_lower_bound());
       } else {
         // there is an end position; partial interpolation is required,
         // though if the reported rate is 0, this will be the same
@@ -197,6 +201,10 @@ void igp::genetic_map::query(const std::string &chr_query,
             cmp(pos1_query, _interface->get_endpos_lower_bound()) == -1
                 ? _interface->get_endpos_lower_bound()
                 : pos2_query);
+        result->set_rate(
+            cmp(pos1_query, _interface->get_endpos_lower_bound()) == -1
+                ? _interface->get_rate_lower_bound()
+                : 0.0);
       }
       if (verbose) {
         std::cout << "\tchromosome beyond end of range, setting to "
@@ -212,6 +220,7 @@ void igp::genetic_map::query(const std::string &chr_query,
       }
       result->set_gpos(0.0);
       result->set_endpos(pos2_query);
+      result->set_rate(0.0);
       return;
     } else if (query_vs_lower_bound == GREATER_THAN) {
       if (verbose) {
@@ -255,6 +264,7 @@ void igp::genetic_map::query(const std::string &chr_query,
         // there is no end position; the position is fixed
         gpos_interpolated = _interface->get_gpos_upper_bound();
         result->set_endpos(pos2_query);
+        result->set_rate(_interface->get_rate_upper_bound());
       } else {
         // there is an end position; partial interpolation is required,
         // though if the reported rate is 0, this will be the same
@@ -270,6 +280,10 @@ void igp::genetic_map::query(const std::string &chr_query,
             cmp(pos1_query, _interface->get_endpos_upper_bound()) == -1
                 ? _interface->get_endpos_upper_bound()
                 : pos2_query);
+        result->set_rate(
+            cmp(pos1_query, _interface->get_endpos_upper_bound()) == -1
+                ? _interface->get_rate_upper_bound()
+                : 0.0);
       }
       if (verbose) {
         std::cout
@@ -287,6 +301,7 @@ void igp::genetic_map::query(const std::string &chr_query,
       }
       result->set_gpos(0.0);
       result->set_endpos(pos2_query);
+      result->set_rate(0.0);
       return;
     }
   } else {
