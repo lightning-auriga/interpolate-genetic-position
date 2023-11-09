@@ -9,6 +9,8 @@
 #ifndef INTERPOLATE_GENETIC_POSITION_UTILITIES_H_
 #define INTERPOLATE_GENETIC_POSITION_UTILITIES_H_
 
+#include <gmpxx.h>
+
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -21,6 +23,7 @@ typedef enum {
   BIGWIG,
   BIM,
   MAP,
+  SNP,
   BED,
   VCF
 } format_type;
@@ -74,6 +77,35 @@ std::string make_chr_bigwig_friendly(const std::string &chr);
  * a bigwig without other guidance.
  */
 std::string next_chromosome(const std::string &current_chr);
+/*!
+ * \class query_result
+ * \brief store information required to represent the result
+ * of a query to a genetic map object
+ */
+class query_result {
+ public:
+  query_result();
+  query_result(const query_result &obj);
+  ~query_result() throw();
+
+  void set_chr(const std::string &chr);
+  const std::string &get_chr() const;
+  void set_startpos(const mpz_class &pos);
+  const mpz_class &get_startpos() const;
+  void set_endpos(const mpz_class &pos);
+  const mpz_class &get_endpos() const;
+  void set_gpos(const mpf_class &gpos);
+  const mpf_class &get_gpos() const;
+  void set_rate(const mpf_class &rate);
+  const mpf_class &get_rate() const;
+
+ private:
+  std::string _chr;
+  mpz_class _startpos;
+  mpz_class _endpos;
+  mpf_class _gpos;
+  mpf_class _rate;
+};
 }  // namespace interpolate_genetic_position
 
 #endif  // INTERPOLATE_GENETIC_POSITION_UTILITIES_H_

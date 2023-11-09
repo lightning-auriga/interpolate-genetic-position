@@ -32,13 +32,14 @@ class mock_input_variant_file : public base_input_variant_file {
   MOCK_METHOD(void, open, (const std::string &filename), (override));
   MOCK_METHOD(void, close, (), (override));
   MOCK_METHOD(void, set_format_parameters,
-              (unsigned chr_index, unsigned pos_index, unsigned gpos_index,
-               bool base0, unsigned n_tokens),
+              (unsigned chr_index, unsigned pos1_index, int pos2_index,
+               unsigned gpos_index, bool base0, unsigned n_tokens),
               (override));
   MOCK_METHOD(bool, get_input_line, (std::string * line), (override));
   MOCK_METHOD(bool, get_variant, (), (override));
   MOCK_METHOD(const std::string &, get_chr, (), (const, override));
-  MOCK_METHOD(const mpz_class &, get_pos, (), (const, override));
+  MOCK_METHOD(const mpz_class &, get_pos1, (), (const, override));
+  MOCK_METHOD(const mpz_class &, get_pos2, (), (const, override));
   MOCK_METHOD(const std::vector<std::string> &, get_line_contents, (),
               (const, override));
   MOCK_METHOD(bool, eof, (), (override));

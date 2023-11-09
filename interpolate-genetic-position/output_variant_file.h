@@ -59,6 +59,18 @@ class base_output_variant_file {
    * \return output file format
    */
   virtual format_type get_format() const = 0;
+  /*!
+   * \brief set whether output unit should be morgans
+   * \param use_morgans whether output unit should be morgans
+   */
+  virtual void output_morgans(bool use_morgans) = 0;
+  /*!
+   * \brief determine whether output genetic position unit
+   * should be morgans
+   * \return whether output genetic position unit
+   * should be morgans
+   */
+  virtual bool output_morgans() const = 0;
 };
 
 /*!
@@ -99,10 +111,23 @@ class output_variant_file : public base_output_variant_file {
    * \return output file format
    */
   format_type get_format() const;
+  /*!
+   * \brief set whether output unit should be morgans
+   * \param use_morgans whether output unit should be morgans
+   */
+  void output_morgans(bool use_morgans);
+  /*!
+   * \brief determine whether output genetic position unit
+   * should be morgans
+   * \return whether output genetic position unit
+   * should be morgans
+   */
+  bool output_morgans() const;
 
  private:
   std::ofstream _output;  //!< output uncompressed file stream
   format_type _ft;        //!< format of output file
+  bool _output_morgans;   //!< whether to emit genetic position as morgans
 };
 }  // namespace interpolate_genetic_position
 

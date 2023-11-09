@@ -19,10 +19,12 @@ igp::input_variant_file::input_variant_file()
       _buffer(0),
       _buffer_size(1000),
       _chr_index(0),
-      _pos_index(0),
+      _pos1_index(0),
+      _pos2_index(-1),
       _gpos_index(0),
       _chr(""),
-      _pos(0),
+      _pos1(0),
+      _pos2(-1),
       _base0(false) {
   _buffer = new char[_buffer_size];
 }
@@ -62,13 +64,12 @@ void igp::input_variant_file::close() {
     _gzinput = 0;
   }
 }
-void igp::input_variant_file::set_format_parameters(unsigned chr_index,
-                                                    unsigned pos_index,
-                                                    unsigned gpos_index,
-                                                    bool base0,
-                                                    unsigned n_tokens) {
+void igp::input_variant_file::set_format_parameters(
+    unsigned chr_index, unsigned pos1_index, int pos2_index,
+    unsigned gpos_index, bool base0, unsigned n_tokens) {
   _chr_index = chr_index;
-  _pos_index = pos_index;
+  _pos1_index = pos1_index;
+  _pos2_index = pos2_index;
   _gpos_index = gpos_index;
   _base0 = base0;
   _line_contents.resize(n_tokens, "");
@@ -105,13 +106,18 @@ bool igp::input_variant_file::get_variant() {
     }
   }
   _chr = _line_contents.at(_chr_index);
-  _pos = _line_contents.at(_pos_index);
+  _pos1 = _line_contents.at(_pos1_index);
+  if (_pos2_index >= 0) {
+    _pos2 = _line_contents.at(static_cast<unsigned>(_pos2_index));
+  }
   return true;
 }
 
 const std::string &igp::input_variant_file::get_chr() const { return _chr; }
 
-const mpz_class &igp::input_variant_file::get_pos() const { return _pos; }
+const mpz_class &igp::input_variant_file::get_pos1() const { return _pos1; }
+
+const mpz_class &igp::input_variant_file::get_pos2() const { return _pos2; }
 
 const std::vector<std::string> &igp::input_variant_file::get_line_contents()
     const {

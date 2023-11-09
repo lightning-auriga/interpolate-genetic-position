@@ -91,7 +91,7 @@ class cargs {
   std::string get_input_preset() const {
     std::string preset = compute_parameter<std::string>("preset");
     if (preset.compare("bim") && preset.compare("map") &&
-        preset.compare("bed")) {
+        preset.compare("bed") && preset.compare("snp")) {
       throw std::runtime_error("invalid input preset format: \"" + preset +
                                "\"");
     }
@@ -132,6 +132,14 @@ class cargs {
   std::string get_output_filename() const {
     return compute_parameter<std::string>("output");
   }
+
+  /*!
+    \brief determine whether genetic position should be output in morgans,
+    instead of centimorgans.
+    \return whether the user has requested that genetic position be output
+    in morgans instead of centimorgans.
+   */
+  bool output_morgans() const { return compute_flag("output-morgans"); }
 
   /*!
     \brief find status of arbitrary flag
