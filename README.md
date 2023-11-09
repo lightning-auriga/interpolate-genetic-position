@@ -3,6 +3,8 @@
 
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/lightning-auriga/interpolate-genetic-position/tree/default.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/lightning-auriga/interpolate-genetic-position/tree/default)
 
+[![codecov](https://codecov.io/gh/lightning-auriga/interpolate-genetic-position/graph/badge.svg?token=l5pw6XfJ7l)](https://codecov.io/gh/lightning-auriga/interpolate-genetic-position)
+
 ## Brief Summary
 
 Use reference genetic map to interpolate genetic position for a query set of variants
