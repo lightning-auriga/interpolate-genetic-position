@@ -107,8 +107,14 @@ bool igp::input_variant_file::get_variant() {
   }
   _chr = _line_contents.at(_chr_index);
   _pos1 = _line_contents.at(_pos1_index);
+  if (_base0) {
+    _pos1 = _pos1 + 1;
+  }
   if (_pos2_index >= 0) {
     _pos2 = _line_contents.at(static_cast<unsigned>(_pos2_index));
+    if (_base0) {
+      _pos2 = _pos2 + 1;
+    }
   }
   return true;
 }

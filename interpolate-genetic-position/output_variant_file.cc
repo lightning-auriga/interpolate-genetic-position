@@ -52,22 +52,15 @@ void igp::output_variant_file::write(
   format_type ft = get_format();
   mpf_class output_gpos = output_morgans() ? gpos / mpf_class("100") : gpos;
   if (ft == BIM || ft == MAP) {
-    out << chr << '\t' << id << '\t' << output_gpos << '\t'
-        << (cmp(pos2, 0) < 0 ? pos1 + 1 : pos1);
+    out << chr << '\t' << id << '\t' << output_gpos << '\t' << pos1;
     if (ft == BIM) {
       out << '\t' << a1 << '\t' << a2;
     }
   } else if (ft == SNP) {
-    out << id << '\t' << chr << '\t' << output_gpos << '\t'
-        << (cmp(pos2, 0) < 0 ? pos1 + 1 : pos1);
+    out << id << '\t' << chr << '\t' << output_gpos << '\t' << pos1;
   } else if (ft == BED) {
-    out << chr << '\t';
-    if (cmp(pos2, 0) < 0) {
-      out << (pos1 - 1) << '\t' << pos1 << '\t';
-    } else {
-      out << pos1 << '\t' << pos2 << '\t';
-    }
-    out << output_gpos;
+    out << chr << '\t' << (pos1 - 1) << '\t' << (cmp(pos2, 0) < 0 ? pos2 : pos1)
+        << '\t' << output_gpos;
   } else {
     throw std::runtime_error(
         "output_variant_file::write: format not supported");
