@@ -245,11 +245,9 @@ TEST_F(geneticMapTest, queryOverlapUpperBound) {
   EXPECT_CALL(mockfile, get_startpos_lower_bound())
       .Times(AnyNumber())
       .WillOnce(Return(mpz_class(100000)))
-      .WillOnce(Return(mpz_class(100000)))
       .WillRepeatedly(Return(mpz_class(200000)));
   EXPECT_CALL(mockfile, get_startpos_upper_bound())
       .Times(AnyNumber())
-      .WillOnce(Return(mpz_class(200000)))
       .WillOnce(Return(mpz_class(200000)))
       .WillRepeatedly(Return(mpz_class(300000)));
   EXPECT_CALL(mockfile, get_gpos_lower_bound())
@@ -325,11 +323,9 @@ TEST_F(geneticMapTest, queryIncrementGeneticMapWhenExceedsPositionRange) {
   EXPECT_CALL(mockfile, get_startpos_lower_bound())
       .Times(AnyNumber())
       .WillOnce(Return(1000))
-      .WillOnce(Return(1000))
       .WillRepeatedly(Return(2000));
   EXPECT_CALL(mockfile, get_startpos_upper_bound())
       .Times(AnyNumber())
-      .WillOnce(Return(2000))
       .WillOnce(Return(2000))
       .WillRepeatedly(Return(3000));
   EXPECT_CALL(mockfile, get_gpos_lower_bound())
