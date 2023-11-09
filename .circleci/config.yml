@@ -23,7 +23,7 @@ jobs:
           command: |
             mamba install -c bioconda -c conda-forge -y curl gnupg boost-cpp gmp zlib libbigwig libtool automake autoconf make gxx gtest gmock
             ./generate.bash
-            ./configure --with-boost=/opt/conda --with-boost-libdir=/opt/conda/lib
+            NM=/opt/conda/bin/x86_64-conda-linux-gnu-nm AR=/opt/conda/bin/x86_64-conda-linux-gnu-ar CC=/opt/conda/bin/x86_64-conda-linux-gnu-gcc CXX=/opt/conda/bin/x86_64-conda-linux-gnu-g++ ./configure --with-boost=/opt/conda --with-boost-libdir=/opt/conda/lib
             make -j2 CXXFLAGS=" --coverage -fprofile-arcs -ftest-coverage -fPIC"
             make -j2 check
             find interpolate-genetic-position -name "*gcda" -delete
