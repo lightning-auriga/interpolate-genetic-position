@@ -1,5 +1,8 @@
 # interpolate-genetic-position
 
+
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/lightning-auriga/interpolate-genetic-position/tree/default.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/lightning-auriga/interpolate-genetic-position/tree/default)
+
 ## Brief Summary
 
 Use reference genetic map to interpolate genetic position for a query set of variants
