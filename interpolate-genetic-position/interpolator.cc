@@ -12,12 +12,11 @@ namespace igp = interpolate_genetic_position;
 
 igp::interpolator::interpolator() {}
 igp::interpolator::~interpolator() throw() {}
-void igp::interpolator::interpolate(const std::string &input_filename,
-                                    const std::string &preset,
-                                    const std::string &genetic_map_filename,
-                                    const std::string &map_format,
-                                    const std::string &output_filename,
-                                    bool output_morgans, bool verbose) const {
+void igp::interpolator::interpolate(
+    const std::string &input_filename, const std::string &preset,
+    const std::string &genetic_map_filename, const std::string &map_format,
+    const std::string &output_filename, bool output_morgans,
+    const double &step_interval, bool verbose) const {
   input_variant_file input_variant_interface;
   input_genetic_map_file genetic_map_interface;
   output_variant_file output_variant_interface;
@@ -29,6 +28,7 @@ void igp::interpolator::interpolate(const std::string &input_filename,
   format_type query_ft = string_to_format_type(preset);
   qf.open(input_filename, query_ft);
   qf.initialize_output(output_filename, query_ft);
+  qf.set_step_interval(step_interval);
   mpf_class gpos_interpolated;
   std::vector<query_result> results;
   while (qf.get()) {

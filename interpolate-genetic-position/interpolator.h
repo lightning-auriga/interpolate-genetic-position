@@ -51,6 +51,11 @@ class interpolator {
    * \param output_filename name of output results file;
    * \param output_morgans whether genetic position should be output
    * in morgans, as opposed to the default centimorgans
+   * \param step_interval fixed genetic distance to add to boundary
+   * between successive query regions in an input bedfile. interpolation
+   * within regions behaves linearly regardless. this functionality,
+   * when set to 0, is effectively disabled. this parameter is ignored
+   * for all input types other than bedfiles.
    * \param verbose whether to emit (extremely) verbose logging to std::cout
    * can be empty string, in which case output is std::cout
    */
@@ -58,7 +63,7 @@ class interpolator {
                    const std::string &genetic_map_filename,
                    const std::string &map_format,
                    const std::string &output_filename, bool output_morgans,
-                   bool verbose) const;
+                   const double &step_interval, bool verbose) const;
 };
 }  // namespace interpolate_genetic_position
 
