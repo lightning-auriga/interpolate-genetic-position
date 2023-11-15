@@ -5,7 +5,7 @@
  Copyright 2023 Lightning Auriga
  */
 
-#include "unit_tests/integration_test.h"
+#include "integration_tests/integration_test.h"
 
 #include "gtest/gtest.h"
 

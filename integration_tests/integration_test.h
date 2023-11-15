@@ -9,8 +9,8 @@
  <https://github.com/google/googletest/tree/main/googlemock>
  */
 
-#ifndef UNIT_TESTS_INTEGRATION_TEST_H_
-#define UNIT_TESTS_INTEGRATION_TEST_H_
+#ifndef INTEGRATION_TESTS_INTEGRATION_TEST_H_
+#define INTEGRATION_TESTS_INTEGRATION_TEST_H_
 
 #include <zlib.h>
 
@@ -44,4 +44,4 @@ class integrationTest : public testing::Test {
   const std::string _in_gmap_tmpfile;
   const std::string _out_tmpfile;
 };
-#endif  // UNIT_TESTS_INTEGRATION_TEST_H_
+#endif  // INTEGRATION_TESTS_INTEGRATION_TEST_H_
