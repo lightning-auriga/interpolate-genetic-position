@@ -59,8 +59,9 @@ void igp::output_variant_file::write(
   } else if (ft == SNP) {
     out << id << '\t' << chr << '\t' << output_gpos << '\t' << pos1;
   } else if (ft == BED) {
-    out << chr << '\t' << (pos1 - 1) << '\t' << (cmp(pos2, 0) > 0 ? rate : pos1)
-        << '\t' << output_gpos;
+    out << chr << '\t' << (pos1 - 1) << '\t'
+        << (cmp(pos2, 0) > 0 ? (pos2 - 1) : pos1) << '\t'
+        << (cmp(pos2, 0) > 0 ? rate : output_gpos);
   } else {
     throw std::runtime_error(
         "output_variant_file::write: format not supported");
