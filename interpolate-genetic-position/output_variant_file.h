@@ -52,8 +52,8 @@ class base_output_variant_file {
    */
   virtual void write(const std::string &chr, const mpz_class &pos1,
                      const mpz_class &pos2, const std::string &id,
-                     const mpf_class &gpos, const std::string &a1,
-                     const std::string &a2) = 0;
+                     const mpf_class &gpos, const mpf_class &rate,
+                     const std::string &a1, const std::string &a2) = 0;
   /*!
    * \brief get descriptor of format of output file
    * \return output file format
@@ -104,8 +104,8 @@ class output_variant_file : public base_output_variant_file {
    */
   void write(const std::string &chr, const mpz_class &pos1,
              const mpz_class &pos2, const std::string &id,
-             const mpf_class &gpos, const std::string &a1,
-             const std::string &a2);
+             const mpf_class &gpos, const mpf_class &rate,
+             const std::string &a1, const std::string &a2);
   /*!
    * \brief get descriptor of format of output file
    * \return output file format

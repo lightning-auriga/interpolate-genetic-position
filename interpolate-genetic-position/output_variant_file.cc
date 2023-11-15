@@ -45,8 +45,8 @@ void igp::output_variant_file::close() {
 
 void igp::output_variant_file::write(
     const std::string &chr, const mpz_class &pos1, const mpz_class &pos2,
-    const std::string &id, const mpf_class &gpos, const std::string &a1,
-    const std::string &a2) {
+    const std::string &id, const mpf_class &gpos, const mpf_class &rate,
+    const std::string &a1, const std::string &a2) {
   // the idea is: format an output line, then emit it to appropriate target
   std::ostringstream out;
   format_type ft = get_format();
@@ -59,7 +59,7 @@ void igp::output_variant_file::write(
   } else if (ft == SNP) {
     out << id << '\t' << chr << '\t' << output_gpos << '\t' << pos1;
   } else if (ft == BED) {
-    out << chr << '\t' << (pos1 - 1) << '\t' << (cmp(pos2, 0) < 0 ? pos2 : pos1)
+    out << chr << '\t' << (pos1 - 1) << '\t' << (cmp(pos2, 0) > 0 ? rate : pos1)
         << '\t' << output_gpos;
   } else {
     throw std::runtime_error(

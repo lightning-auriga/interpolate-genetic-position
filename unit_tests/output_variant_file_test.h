@@ -35,8 +35,8 @@ class mock_output_variant_file : public base_output_variant_file {
   MOCK_METHOD(void, write,
               (const std::string &chr, const mpz_class &pos1,
                const mpz_class &pos2, const std::string &id,
-               const mpf_class &gpos, const std::string &a1,
-               const std::string &a2),
+               const mpf_class &gpos, const mpf_class &rate,
+               const std::string &a1, const std::string &a2),
               (override));
   MOCK_METHOD(format_type, get_format, (), (const, override));
   MOCK_METHOD(void, output_morgans, (bool use_morgans), (override));
