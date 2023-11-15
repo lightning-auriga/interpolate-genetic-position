@@ -122,6 +122,53 @@ std::string integrationTest::load_compressed_file(
   }
 }
 
+void integrationTest::write_bigwig_content(const std::string &filename) const {
+  bigWigFile_t *fp = NULL;
+  const char *chroms[] = {"chr1", "chr2"};
+  const char *chromsUse[] = {"chr1", "chr1", "chr1", "chr2", "chr2", "chr2"};
+  uint32_t chrLens[] = {248956422, 242193529};
+  uint32_t starts[] = {999999, 1999999, 2999999, 999999, 2999999, 4999999};
+  uint32_t ends[] = {1999999, 2999999, 3999999, 2999999, 4999999, 5999999};
+  float values[] = {0.1f, 0.2f, 0.25f, 0.1f, 0.25f, 0.55f};
+  try {
+    if (bwInit(1 << 17) != 0) {
+      throw std::runtime_error("write_bigwig_content: bwInit failed");
+    }
+    fp = bwOpen(filename.c_str(), NULL, "w");
+    if (!fp) {
+      throw std::runtime_error("write_bigwig_content: bwOpen failed");
+    }
+    if (bwCreateHdr(fp, 10)) {
+      throw std::runtime_error("write_bigwig_content: bwCreateHdr failed");
+    }
+    fp->cl = bwCreateChromList(chroms, chrLens, 2);
+    if (!fp->cl) {
+      throw std::runtime_error(
+          "write_bigwig_content: bwCreateChromList failed");
+    }
+    if (bwWriteHdr(fp)) {
+      throw std::runtime_error("write_bigwig_content: bwWriteHdr failed");
+    }
+    if (bwAddIntervals(fp, chromsUse, starts, ends, values, 3)) {
+      throw std::runtime_error(
+          "write_bigwig_content: bwAddIntervals (1) failed");
+    }
+    if (bwAddIntervals(fp, chromsUse + 3, starts + 3, ends + 3, values + 3,
+                       3)) {
+      throw std::runtime_error(
+          "write_bigwig_content: bwAddIntervals (2) failed");
+    }
+    bwClose(fp);
+    bwCleanup();
+  } catch (...) {
+    if (fp) {
+      bwClose(fp);
+    }
+    bwCleanup();
+    throw;
+  }
+}
+
 std::string integrationTest::get_bedfile_content() const {
   return "chr1 499999 1199999 0\n"
          "chr1 1199999 1299999 0\n"
@@ -160,8 +207,6 @@ std::string integrationTest::get_bedgraph_content() const {
          "chr2 2999999 4999999 0.25\n"
          "chr2 4999999 5999999 0.55\n";
 }
-
-std::string integrationTest::get_bigwig_content() const { return ""; }
 
 TEST_F(integrationTest, bedfileInputBoltOutputNoIncrement) {
   std::string input_query =
@@ -259,4 +304,18 @@ TEST_F(integrationTest, bedgraphGeneticMap) {
   EXPECT_EQ(expected_output, observed_output);
 }
 
-TEST_F(integrationTest, bigwigGeneticMap) {}
+TEST_F(integrationTest, bigwigGeneticMap) {
+  std::string input_query =
+      create_plaintext_file(_in_query_tmpfile, get_map_content());
+  write_bigwig_content(_in_gmap_tmpfile);
+  std::string expected_output =
+      "1\trs1\t0\t500000\n"
+      "1\trs2\t0.05\t1500000\n"
+      "3\trs3\t0\t1000000\n";
+  igp::interpolator ip;
+  ip.interpolate(_in_query_tmpfile, "map", _in_gmap_tmpfile, "bigwig",
+                 _out_tmpfile, false, 0.0, false);
+  EXPECT_TRUE(boost::filesystem::exists(_out_tmpfile));
+  std::string observed_output = load_plaintext_file(_out_tmpfile);
+  EXPECT_EQ(expected_output, observed_output);
+}

@@ -12,6 +12,7 @@
 #ifndef INTEGRATION_TESTS_INTEGRATION_TEST_H_
 #define INTEGRATION_TESTS_INTEGRATION_TEST_H_
 
+#include <bigWig.h>
 #include <zlib.h>
 
 #include <iostream>
@@ -39,7 +40,7 @@ class integrationTest : public testing::Test {
   std::string get_map_content() const;
   std::string get_bolt_content() const;
   std::string get_bedgraph_content() const;
-  std::string get_bigwig_content() const;
+  void write_bigwig_content(const std::string &filename) const;
   const std::string _in_query_tmpfile;
   const std::string _in_gmap_tmpfile;
   const std::string _out_tmpfile;
