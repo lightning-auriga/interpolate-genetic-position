@@ -128,9 +128,17 @@ std::string integrationTest::get_bedfile_content() const {
          "chr3 999999 1999999 0\n";
 }
 
-std::string integrationTest::get_bim_content() const { return ""; }
+std::string integrationTest::get_bim_content() const {
+  return "1 rs1 0 500000 A T\n"
+         "1 rs2 0 1500000 C G\n"
+         "3 rs3 0 1000000 A C\n";
+}
 
-std::string integrationTest::get_map_content() const { return ""; }
+std::string integrationTest::get_map_content() const {
+  return "1 rs1 0 500000\n"
+         "1 rs2 0 1500000\n"
+         "3 rs3 0 1000000\n";
+}
 
 std::string integrationTest::get_bolt_content() const {
   return "chr position COMBINED_rate(cM/Mb) Genetic_Map(cM)\n"
@@ -165,9 +173,39 @@ TEST_F(integrationTest, bedfileInputBoltOutput) {
   EXPECT_EQ(expected_output, observed_output);
 }
 
-TEST_F(integrationTest, bimfileInputBimfileOutput) {}
+TEST_F(integrationTest, bimfileInputBimfileOutput) {
+  std::string input_query =
+      create_plaintext_file(_in_query_tmpfile, get_bim_content());
+  std::string input_gmap =
+      create_plaintext_file(_in_gmap_tmpfile, get_bolt_content());
+  std::string expected_output =
+      "1\trs1\t0\t500000\tA\tT\n"
+      "1\trs2\t0.05\t1500000\tC\tG\n"
+      "3\trs3\t0\t1000000\tA\tC\n";
+  igp::interpolator ip;
+  ip.interpolate(_in_query_tmpfile, "bim", _in_gmap_tmpfile, "bolt",
+                 _out_tmpfile, false, 0.0, false);
+  EXPECT_TRUE(boost::filesystem::exists(_out_tmpfile));
+  std::string observed_output = load_plaintext_file(_out_tmpfile);
+  EXPECT_EQ(expected_output, observed_output);
+}
 
-TEST_F(integrationTest, mapfileInputMapfileOutput) {}
+TEST_F(integrationTest, mapfileInputMapfileOutput) {
+  std::string input_query =
+      create_plaintext_file(_in_query_tmpfile, get_map_content());
+  std::string input_gmap =
+      create_plaintext_file(_in_gmap_tmpfile, get_bolt_content());
+  std::string expected_output =
+      "1\trs1\t0\t500000\n"
+      "1\trs2\t0.05\t1500000\n"
+      "3\trs3\t0\t1000000\n";
+  igp::interpolator ip;
+  ip.interpolate(_in_query_tmpfile, "map", _in_gmap_tmpfile, "bolt",
+                 _out_tmpfile, false, 0.0, false);
+  EXPECT_TRUE(boost::filesystem::exists(_out_tmpfile));
+  std::string observed_output = load_plaintext_file(_out_tmpfile);
+  EXPECT_EQ(expected_output, observed_output);
+}
 
 TEST_F(integrationTest, bedgraphGeneticMap) {}
 
