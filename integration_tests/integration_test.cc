@@ -156,19 +156,20 @@ std::string integrationTest::get_bedgraph_content() const { return ""; }
 
 std::string integrationTest::get_bigwig_content() const { return ""; }
 
-TEST_F(integrationTest, bedfileInputBedgraphOutput) {
+TEST_F(integrationTest, bedfileInputBoltOutput) {
   std::string input_query =
       create_plaintext_file(_in_query_tmpfile, get_bedfile_content());
   std::string input_gmap =
       create_plaintext_file(_in_gmap_tmpfile, get_bolt_content());
   std::string expected_output =
-      "chr1\t499999\t999999\t0\n"
-      "chr1\t999999\t1199999\t0.1\n"
-      "chr1\t1199999\t1299999\t0.1\n"
-      "chr1\t1299999\t1499999\t0.1\n"
-      "chr1\t1499999\t1999999\t0.1\n"
-      "chr1\t1999999\t2499999\t0.2\n"
-      "chr3\t999999\t1999999\t0\n";
+      "chr1\t499999\t0\t0\n"
+      "chr1\t999999\t0.1\t0\n"
+      "chr1\t1199999\t0.1\t0.02\n"
+      "chr1\t1299999\t0.1\t0.03\n"
+      "chr1\t1499999\t0.1\t0.05\n"
+      "chr1\t1999999\t0.2\t0.1\n"
+      "chr1\t2499999\t0\t0.2\n"
+      "chr3\t999999\t0\t0\n";
   igp::interpolator ip;
   ip.interpolate(_in_query_tmpfile, "bed", _in_gmap_tmpfile, "bolt",
                  _out_tmpfile, false, 0.0, false);

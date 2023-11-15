@@ -43,6 +43,14 @@ class mock_output_variant_file : public base_output_variant_file {
   MOCK_METHOD(bool, output_morgans, (), (const, override));
   MOCK_METHOD(std::string, get_last_chr, (), (const, override));
   MOCK_METHOD(void, set_last_chr, (const std::string &), (override));
+  MOCK_METHOD(mpf_class, get_last_gpos, (), (const, override));
+  MOCK_METHOD(void, set_last_gpos, (const mpf_class &), (override));
+  MOCK_METHOD(mpf_class, get_last_rate, (), (const, override));
+  MOCK_METHOD(void, set_last_rate, (const mpf_class &), (override));
+  MOCK_METHOD(mpz_class, get_last_pos1, (), (const, override));
+  MOCK_METHOD(void, set_last_pos1, (const mpz_class &), (override));
+  MOCK_METHOD(mpz_class, get_last_pos2, (), (const, override));
+  MOCK_METHOD(void, set_last_pos2, (const mpz_class &), (override));
 };
 }  // namespace interpolate_genetic_position
 #endif  // UNIT_TESTS_OUTPUT_VARIANT_FILE_TEST_H_
