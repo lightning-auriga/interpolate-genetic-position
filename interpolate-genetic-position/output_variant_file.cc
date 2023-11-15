@@ -51,7 +51,7 @@ void igp::output_variant_file::close() {
 void igp::output_variant_file::write(
     const std::string &chr, const mpz_class &pos1, const mpz_class &pos2,
     const std::string &id, const mpf_class &gpos, const mpf_class &rate,
-    const std::string &a1, const std::string &a2) {
+    const std::string &a1, const std::string &a2, const double &step_interval) {
   // the idea is: format an output line, then emit it to appropriate target
   std::ostringstream out;
   format_type ft = get_format();
@@ -61,9 +61,10 @@ void igp::output_variant_file::write(
     // for bed output only, emit dummy results at the end of a chromosome
     if (ft == BED && pos2 > 0 && !get_last_chr().empty()) {
       out << get_last_chr() << '\t' << (get_last_pos2() - 1) << '\t' << "0\t"
-          << (get_last_gpos() + get_last_rate() *
-                                    (get_last_pos2() - get_last_pos1()) /
-                                    mpf_class(1000000.0))
+          << (get_last_gpos() +
+              get_last_rate() * (get_last_pos2() - get_last_pos1()) /
+                  mpf_class(1000000.0) +
+              step_interval)
           << '\n';
     }
     set_last_chr(chr);

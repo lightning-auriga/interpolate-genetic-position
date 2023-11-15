@@ -78,7 +78,7 @@ void igp::query_file::report(const std::vector<query_result> &results) {
         iter->get_gpos() +
             (_ft == BED ? get_step_interval() * get_index_on_chromosome()
                         : 0.0),
-        iter->get_rate(), a1, a2);
+        iter->get_rate(), a1, a2, get_step_interval());
   }
   set_index_on_chromosome(get_index_on_chromosome() + 1);
 }
