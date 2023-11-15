@@ -16,7 +16,8 @@ igp::base_output_variant_file::~base_output_variant_file() throw() {}
 igp::output_variant_file::output_variant_file()
     : igp::base_output_variant_file::base_output_variant_file(),
       _ft(UNKNOWN),
-      _output_morgans(false) {}
+      _output_morgans(false),
+      _last_chr("") {}
 
 igp::output_variant_file::~output_variant_file() throw() { close(); }
 
@@ -47,6 +48,10 @@ void igp::output_variant_file::write(
     const std::string &chr, const mpz_class &pos1, const mpz_class &pos2,
     const std::string &id, const mpf_class &gpos, const mpf_class &rate,
     const std::string &a1, const std::string &a2) {
+  // track when a result is on a different chromosome than the previous ones
+  if (get_last_chr().compare(chr)) {
+    set_last_chr(chr);
+  }
   // the idea is: format an output line, then emit it to appropriate target
   std::ostringstream out;
   format_type ft = get_format();
@@ -85,4 +90,10 @@ bool igp::output_variant_file::output_morgans() const {
 
 void igp::output_variant_file::output_morgans(bool use_morgans) {
   _output_morgans = use_morgans;
+}
+
+std::string igp::output_variant_file::get_last_chr() const { return _last_chr; }
+
+void igp::output_variant_file::set_last_chr(const std::string &chr) {
+  _last_chr = chr;
 }

@@ -71,6 +71,20 @@ class base_output_variant_file {
    * should be morgans
    */
   virtual bool output_morgans() const = 0;
+  /*!
+   * \brief get the chromosome code of the most recently
+   * emitted result
+   * \return the chromosome code of the most recently
+   * emitted result
+   */
+  virtual std::string get_last_chr() const = 0;
+  /*!
+   * \brief set the chromosome code of the most recently
+   * emitted result
+   * \param chr the new chromosome code of the most recently
+   * emitted result
+   */
+  virtual void set_last_chr(const std::string &chr) = 0;
 };
 
 /*!
@@ -123,11 +137,26 @@ class output_variant_file : public base_output_variant_file {
    * should be morgans
    */
   bool output_morgans() const;
+  /*!
+   * \brief get the chromosome code of the most recently
+   * emitted result
+   * \return the chromosome code of the most recently
+   * emitted result
+   */
+  std::string get_last_chr() const;
+  /*!
+   * \brief set the chromosome code of the most recently
+   * emitted result
+   * \param chr the new chromosome code of the most recently
+   * emitted result
+   */
+  void set_last_chr(const std::string &chr);
 
  private:
   std::ofstream _output;  //!< output uncompressed file stream
   format_type _ft;        //!< format of output file
   bool _output_morgans;   //!< whether to emit genetic position as morgans
+  std::string _last_chr;  //!< chromosome of most recently emitted result
 };
 }  // namespace interpolate_genetic_position
 
