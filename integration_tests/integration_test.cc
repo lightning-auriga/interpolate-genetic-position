@@ -123,7 +123,9 @@ std::string integrationTest::load_compressed_file(
 }
 
 std::string integrationTest::get_bedfile_content() const {
-  return "chr1 499999 1499999 0\n"
+  return "chr1 499999 1199999 0\n"
+         "chr1 1199999 1299999 0\n"
+         "chr1 1299999 1499999 0\n"
          "chr1 1499999 2499999 0\n"
          "chr3 999999 1999999 0\n";
 }
@@ -154,14 +156,16 @@ std::string integrationTest::get_bedgraph_content() const { return ""; }
 
 std::string integrationTest::get_bigwig_content() const { return ""; }
 
-TEST_F(integrationTest, bedfileInputBoltOutput) {
+TEST_F(integrationTest, bedfileInputBedgraphOutput) {
   std::string input_query =
       create_plaintext_file(_in_query_tmpfile, get_bedfile_content());
   std::string input_gmap =
       create_plaintext_file(_in_gmap_tmpfile, get_bolt_content());
   std::string expected_output =
       "chr1\t499999\t999999\t0\n"
-      "chr1\t999999\t1499999\t0.1\n"
+      "chr1\t999999\t1199999\t0.1\n"
+      "chr1\t1199999\t1299999\t0.1\n"
+      "chr1\t1299999\t1499999\t0.1\n"
       "chr1\t1499999\t1999999\t0.1\n"
       "chr1\t1999999\t2499999\t0.2\n"
       "chr3\t999999\t1999999\t0\n";
@@ -172,6 +176,8 @@ TEST_F(integrationTest, bedfileInputBoltOutput) {
   std::string observed_output = load_plaintext_file(_out_tmpfile);
   EXPECT_EQ(expected_output, observed_output);
 }
+
+TEST_F(integrationTest, bedfileInputBedgraphOutputBoundaryIncrement) {}
 
 TEST_F(integrationTest, bimfileInputBimfileOutput) {
   std::string input_query =
@@ -210,5 +216,3 @@ TEST_F(integrationTest, mapfileInputMapfileOutput) {
 TEST_F(integrationTest, bedgraphGeneticMap) {}
 
 TEST_F(integrationTest, bigwigGeneticMap) {}
-
-TEST_F(integrationTest, boltGeneticMap) {}
