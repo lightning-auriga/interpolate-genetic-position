@@ -52,8 +52,9 @@ class base_output_variant_file {
    */
   virtual void write(const std::string &chr, const mpz_class &pos1,
                      const mpz_class &pos2, const std::string &id,
-                     const mpf_class &gpos, const std::string &a1,
-                     const std::string &a2) = 0;
+                     const mpf_class &gpos, const mpf_class &rate,
+                     const std::string &a1, const std::string &a2,
+                     const double &step_interval) = 0;
   /*!
    * \brief get descriptor of format of output file
    * \return output file format
@@ -71,6 +72,76 @@ class base_output_variant_file {
    * should be morgans
    */
   virtual bool output_morgans() const = 0;
+  /*!
+   * \brief get the chromosome code of the most recently
+   * emitted result
+   * \return the chromosome code of the most recently
+   * emitted result
+   */
+  virtual std::string get_last_chr() const = 0;
+  /*!
+   * \brief set the chromosome code of the most recently
+   * emitted result
+   * \param chr the new chromosome code of the most recently
+   * emitted result
+   */
+  virtual void set_last_chr(const std::string &chr) = 0;
+  /*!
+   * \brief get the start position of the most recently
+   * emitted result
+   * \return the start position of the most recently
+   * emitted result
+   */
+  virtual mpz_class get_last_pos1() const = 0;
+  /*!
+   * \brief set the start position of the most recently
+   * emitted result
+   * \param pos1 the new start position of the most recently
+   * emitted result
+   */
+  virtual void set_last_pos1(const mpz_class &pos1) = 0;
+  /*!
+   * \brief get the end position of the most recently
+   * emitted result
+   * \return the end position of the most recently
+   * emitted result
+   */
+  virtual mpz_class get_last_pos2() const = 0;
+  /*!
+   * \brief set the end position of the most recently
+   * emitted result
+   * \param pos1 the new end position of the most recently
+   * emitted result
+   */
+  virtual void set_last_pos2(const mpz_class &pos2) = 0;
+  /*!
+   * \brief get the genetic position of the most recently
+   * emitted result
+   * \return the genetic position of the most recently
+   * emitted result
+   */
+  virtual mpf_class get_last_gpos() const = 0;
+  /*!
+   * \brief set the genetic position of the most recently
+   * emitted result
+   * \param gpos the new genetic position of the most recently
+   * emitted result
+   */
+  virtual void set_last_gpos(const mpf_class &gpos) = 0;
+  /*!
+   * \brief get the rate of the most recently
+   * emitted result
+   * \return the rate of the most recently
+   * emitted result
+   */
+  virtual mpf_class get_last_rate() const = 0;
+  /*!
+   * \brief set the rate of the most recently
+   * emitted result
+   * \param gpos the new rate of the most recently
+   * emitted result
+   */
+  virtual void set_last_rate(const mpf_class &rate) = 0;
 };
 
 /*!
@@ -104,8 +175,9 @@ class output_variant_file : public base_output_variant_file {
    */
   void write(const std::string &chr, const mpz_class &pos1,
              const mpz_class &pos2, const std::string &id,
-             const mpf_class &gpos, const std::string &a1,
-             const std::string &a2);
+             const mpf_class &gpos, const mpf_class &rate,
+             const std::string &a1, const std::string &a2,
+             const double &step_interval);
   /*!
    * \brief get descriptor of format of output file
    * \return output file format
@@ -123,11 +195,86 @@ class output_variant_file : public base_output_variant_file {
    * should be morgans
    */
   bool output_morgans() const;
+  /*!
+   * \brief get the chromosome code of the most recently
+   * emitted result
+   * \return the chromosome code of the most recently
+   * emitted result
+   */
+  std::string get_last_chr() const;
+  /*!
+   * \brief set the chromosome code of the most recently
+   * emitted result
+   * \param chr the new chromosome code of the most recently
+   * emitted result
+   */
+  void set_last_chr(const std::string &chr);
+  /*!
+   * \brief get the start position of the most recently
+   * emitted result
+   * \return the start position of the most recently
+   * emitted result
+   */
+  mpz_class get_last_pos1() const;
+  /*!
+   * \brief set the start position of the most recently
+   * emitted result
+   * \param pos1 the new start position of the most recently
+   * emitted result
+   */
+  void set_last_pos1(const mpz_class &pos1);
+  /*!
+   * \brief get the end position of the most recently
+   * emitted result
+   * \return the end position of the most recently
+   * emitted result
+   */
+  mpz_class get_last_pos2() const;
+  /*!
+   * \brief set the end position of the most recently
+   * emitted result
+   * \param pos2 the new end position of the most recently
+   * emitted result
+   */
+  void set_last_pos2(const mpz_class &pos2);
+  /*!
+   * \brief get the genetic position of the most recently
+   * emitted result
+   * \return the genetic position of the most recently
+   * emitted result
+   */
+  mpf_class get_last_gpos() const;
+  /*!
+   * \brief set the genetic position of the most recently
+   * emitted result
+   * \param gpos the new genetic position of the most recently
+   * emitted result
+   */
+  void set_last_gpos(const mpf_class &gpos);
+  /*!
+   * \brief get the rate of the most recently
+   * emitted result
+   * \return the rate of the most recently
+   * emitted result
+   */
+  mpf_class get_last_rate() const;
+  /*!
+   * \brief set the rate of the most recently
+   * emitted result
+   * \param gpos the new rate of the most recently
+   * emitted result
+   */
+  void set_last_rate(const mpf_class &rate);
 
  private:
   std::ofstream _output;  //!< output uncompressed file stream
   format_type _ft;        //!< format of output file
   bool _output_morgans;   //!< whether to emit genetic position as morgans
+  std::string _last_chr;  //!< chromosome of most recently emitted result
+  mpz_class _last_pos1;   //!< start position of most recent result
+  mpz_class _last_pos2;   //!< end position of most recent result
+  mpf_class _last_gpos;   //!< genetic position of most recent result
+  mpf_class _last_rate;   //!< rate of most recent result
 };
 }  // namespace interpolate_genetic_position
 

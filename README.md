@@ -114,6 +114,7 @@ By default, the final compiled program can be run with
 |`--output`<br>`-o`|Output file. Will match format of input. Cannot currently be gzipped. If not specified, will be written to stdout.|
 |`--verbose`<br>`-v`|Whether to print extremely verbose debug logs. You probably don't want this.|
 |`--output-morgans`|Report output genetic position in morgans, instead of the default centimorgans.|
+|`--region-step-interval`|Add a fixed genetic distance at the boundaries of end positions of bedfile region queries, such that the output data have a step-like structure. This functionality is included for experimental purposes, and in most applications this setting should be kept at its default of 0.|
 
 Note that, of the above, either `-i` or `-g` can be read from stdin, but not both.
 

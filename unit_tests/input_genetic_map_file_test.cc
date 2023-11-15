@@ -46,8 +46,8 @@ TEST_F(inputGeneticMapFileTest, geneticMapUnderstandsBedgraph) {
   EXPECT_FALSE(mapfile.eof());
   EXPECT_EQ(mapfile.get_chr_lower_bound(), "chr1");
   EXPECT_EQ(mapfile.get_chr_upper_bound(), "chr1");
-  EXPECT_EQ(mapfile.get_startpos_lower_bound(), mpz_class(0));
-  EXPECT_EQ(mapfile.get_startpos_upper_bound(), mpz_class(1));
+  EXPECT_EQ(mapfile.get_startpos_lower_bound(), mpz_class(1));
+  EXPECT_EQ(mapfile.get_startpos_upper_bound(), mpz_class(2));
   EXPECT_EQ(mapfile.get_gpos_lower_bound(), mpf_class("0.0"));
   EXPECT_EQ(cmp(abs(mapfile.get_gpos_upper_bound() - mpf_class("0.000000012")),
                 _mpf_error_tolerance),
@@ -57,8 +57,8 @@ TEST_F(inputGeneticMapFileTest, geneticMapUnderstandsBedgraph) {
   EXPECT_TRUE(mapfile.get());
   EXPECT_EQ(mapfile.get_chr_lower_bound(), "chr1");
   EXPECT_EQ(mapfile.get_chr_upper_bound(), "chr4");
-  EXPECT_EQ(mapfile.get_startpos_lower_bound(), mpz_class(1));
-  EXPECT_EQ(mapfile.get_startpos_upper_bound(), mpz_class(2));
+  EXPECT_EQ(mapfile.get_startpos_lower_bound(), mpz_class(2));
+  EXPECT_EQ(mapfile.get_startpos_upper_bound(), mpz_class(3));
   EXPECT_EQ(cmp(abs(mapfile.get_gpos_lower_bound() - mpf_class("0.000000012")),
                 _mpf_error_tolerance),
             -1);

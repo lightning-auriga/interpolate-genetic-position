@@ -16,7 +16,12 @@ igp::base_output_variant_file::~base_output_variant_file() throw() {}
 igp::output_variant_file::output_variant_file()
     : igp::base_output_variant_file::base_output_variant_file(),
       _ft(UNKNOWN),
-      _output_morgans(false) {}
+      _output_morgans(false),
+      _last_chr(""),
+      _last_pos1(0),
+      _last_pos2(0),
+      _last_gpos(0.0),
+      _last_rate(0.0) {}
 
 igp::output_variant_file::~output_variant_file() throw() { close(); }
 
@@ -45,29 +50,39 @@ void igp::output_variant_file::close() {
 
 void igp::output_variant_file::write(
     const std::string &chr, const mpz_class &pos1, const mpz_class &pos2,
-    const std::string &id, const mpf_class &gpos, const std::string &a1,
-    const std::string &a2) {
+    const std::string &id, const mpf_class &gpos, const mpf_class &rate,
+    const std::string &a1, const std::string &a2, const double &step_interval) {
   // the idea is: format an output line, then emit it to appropriate target
   std::ostringstream out;
   format_type ft = get_format();
   mpf_class output_gpos = output_morgans() ? gpos / mpf_class("100") : gpos;
+  // track when a result is on a different chromosome than the previous ones
+  if (get_last_chr().compare(chr)) {
+    // for bed output only, emit dummy results at the end of a chromosome
+    if (ft == BED && pos2 > 0 && !get_last_chr().empty()) {
+      out << get_last_chr() << '\t' << (get_last_pos2() - 1) << '\t' << "0\t"
+          << (get_last_gpos() +
+              get_last_rate() * (get_last_pos2() - get_last_pos1()) /
+                  mpf_class(1000000.0) +
+              step_interval)
+          << '\n';
+    }
+    set_last_chr(chr);
+  }
+  set_last_pos1(pos1);
+  set_last_pos2(pos2);
+  set_last_gpos(output_gpos);
+  set_last_rate(rate);
   if (ft == BIM || ft == MAP) {
-    out << chr << '\t' << id << '\t' << output_gpos << '\t'
-        << (cmp(pos2, 0) < 0 ? pos1 + 1 : pos1);
+    out << chr << '\t' << id << '\t' << output_gpos << '\t' << pos1;
     if (ft == BIM) {
       out << '\t' << a1 << '\t' << a2;
     }
   } else if (ft == SNP) {
-    out << id << '\t' << chr << '\t' << output_gpos << '\t'
-        << (cmp(pos2, 0) < 0 ? pos1 + 1 : pos1);
+    out << id << '\t' << chr << '\t' << output_gpos << '\t' << pos1;
   } else if (ft == BED) {
-    out << chr << '\t';
-    if (cmp(pos2, 0) < 0) {
-      out << (pos1 - 1) << '\t' << pos1 << '\t';
-    } else {
-      out << pos1 << '\t' << pos2 << '\t';
-    }
-    out << output_gpos;
+    out << chr << '\t' << (pos1 - 1) << '\t' << (cmp(pos2, 0) > 0 ? rate : pos1)
+        << '\t' << output_gpos;
   } else {
     throw std::runtime_error(
         "output_variant_file::write: format not supported");
@@ -91,4 +106,34 @@ bool igp::output_variant_file::output_morgans() const {
 
 void igp::output_variant_file::output_morgans(bool use_morgans) {
   _output_morgans = use_morgans;
+}
+
+std::string igp::output_variant_file::get_last_chr() const { return _last_chr; }
+
+void igp::output_variant_file::set_last_chr(const std::string &chr) {
+  _last_chr = chr;
+}
+
+mpf_class igp::output_variant_file::get_last_gpos() const { return _last_gpos; }
+
+void igp::output_variant_file::set_last_gpos(const mpf_class &gpos) {
+  _last_gpos = gpos;
+}
+
+mpf_class igp::output_variant_file::get_last_rate() const { return _last_rate; }
+
+void igp::output_variant_file::set_last_rate(const mpf_class &rate) {
+  _last_rate = rate;
+}
+
+mpz_class igp::output_variant_file::get_last_pos1() const { return _last_pos1; }
+
+void igp::output_variant_file::set_last_pos1(const mpz_class &pos1) {
+  _last_pos1 = pos1;
+}
+
+mpz_class igp::output_variant_file::get_last_pos2() const { return _last_pos2; }
+
+void igp::output_variant_file::set_last_pos2(const mpz_class &pos2) {
+  _last_pos2 = pos2;
 }

@@ -25,5 +25,9 @@ void interpolate_genetic_position::cargs::initialize_options() {
       boost::program_options::value<std::string>()->default_value(""),
       "name of output file (default: write to stdout)")(
       "output-morgans",
-      "emit output genetic position in morgans instead of centimorgans");
+      "emit output genetic position in morgans instead of centimorgans")(
+      "region-step-interval",
+      boost::program_options::value<double>()->default_value(0.0),
+      "genetic distance increment to add at boundaries of bed interval; "
+      "experimental, generally should be kept at default");
 }

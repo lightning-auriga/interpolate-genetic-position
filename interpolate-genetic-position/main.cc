@@ -44,13 +44,20 @@ int main(int argc, char **argv) {
   std::string output = ap.get_output_filename();
   bool verbose = ap.verbose();
   bool output_morgans = ap.output_morgans();
+  double step_interval = ap.get_region_step_interval();
   if (input.empty() && genetic_map.empty()) {
     throw std::runtime_error("only one of -i and -g can be read from stdin");
+  }
+  if (igp::string_to_format_type(preset) != igp::BED &&
+      fabs(step_interval) > DBL_EPSILON) {
+    std::cerr << "warning: step interval parameter is only respected "
+              << "with bedfile (range) input" << std::endl;
+    step_interval = 0.0;
   }
 
   igp::interpolator ip;
   ip.interpolate(input, preset, genetic_map, map_format, output, output_morgans,
-                 verbose);
+                 step_interval, verbose);
 
   if (verbose) {
     std::cout << "all done woo!" << std::endl;

@@ -86,6 +86,8 @@ bool igp::input_genetic_map_file::get() {
                       &_endpos_upper_bound, &_rate_upper_bound)) {
       return false;
     }
+    _startpos_upper_bound = _startpos_upper_bound + 1;
+    _endpos_upper_bound = _endpos_upper_bound + 1;
     // as with bedgraph below, requires interpolation
     if (_chr_upper_bound == _chr_lower_bound) {
       _gpos_upper_bound = _gpos_lower_bound +
@@ -131,6 +133,8 @@ bool igp::input_genetic_map_file::get() {
           "input_genetic_map_file::get: cannot parse bedgraph line \"" + line +
           "\"");
     }
+    _startpos_upper_bound = _startpos_upper_bound + 1;
+    _endpos_upper_bound = _endpos_upper_bound + 1;
     if (_chr_upper_bound == _chr_lower_bound) {
       _gpos_upper_bound = _gpos_lower_bound +
                           _rate_lower_bound *

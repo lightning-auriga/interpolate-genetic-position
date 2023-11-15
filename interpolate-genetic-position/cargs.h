@@ -142,6 +142,22 @@ class cargs {
   bool output_morgans() const { return compute_flag("output-morgans"); }
 
   /*!
+   * \brief get fixed genetic distance to add to the boundary between
+   * successive interpolated regions, when using bedfile input.
+   * \return fixed genetic distance to add.
+   *
+   * This parameter is designed to enable experimental injection of artificial
+   * genetic breakpoints at fixed regions of the genome. Interpolation within
+   * the regions remains the same, but the fixed distance is added between
+   * regions, creating a step function-like distance. There are only extremely
+   * experimental applications of this functionality; the default of 0 will
+   * cause standard interpolation to be performed without introduciing
+   * artificial breakpoints, and should be used in almost all cases.
+   */
+  double get_region_step_interval() const {
+    return compute_parameter<double>("region-step-interval");
+  }
+  /*!
     \brief find status of arbitrary flag
     @param tag name of flag
     \return whether the flag is set
