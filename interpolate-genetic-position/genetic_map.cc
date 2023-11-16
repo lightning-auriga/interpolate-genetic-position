@@ -269,7 +269,8 @@ void igp::genetic_map::query(const std::string &chr_query,
                                                         : endpos_upper_bound) -
              startpos_upper_bound) /
                 mb_adjustment * _interface->get_rate_upper_bound();
-        result->set_endpos(cmp(pos1_query, endpos_upper_bound) == -1
+        result->set_endpos(cmp(pos1_query, endpos_upper_bound) == -1 &&
+                                   cmp(pos2_query, 0) >= 0
                                ? endpos_upper_bound
                                : pos2_query);
         result->set_rate(cmp(pos1_query, endpos_upper_bound) == -1
