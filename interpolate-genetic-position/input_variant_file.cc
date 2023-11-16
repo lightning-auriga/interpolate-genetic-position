@@ -101,7 +101,7 @@ bool igp::input_variant_file::get_input_line(std::string *line) {
     }
     *line = std::string(_buffer);
   } else {
-    getline(std::cin, *line);
+    getline(*get_fallback_stream(), *line);
   }
   return true;
 }
@@ -150,5 +150,5 @@ bool igp::input_variant_file::eof() {
   if (_gzinput) {
     return gzeof(_gzinput);
   }
-  return std::cin.peek() == EOF;
+  return get_fallback_stream()->peek() == EOF;
 }
