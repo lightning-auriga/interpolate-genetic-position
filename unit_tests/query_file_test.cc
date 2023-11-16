@@ -52,3 +52,29 @@ TEST(queryFileTest, canInitializeBedfile) {
   igp::query_file qf(&mock_infile, &mock_outfile);
   qf.open(bedfilename, igp::BED);
 }
+
+TEST(queryFileTest, canReadFromCin) {
+  std::string map_content =
+      "1 rs1 0 100\n"
+      "1 rs2 0 200\n"
+      "2 rs3 0 300\n";
+  std::istringstream strm1(map_content);
+  igp::input_variant_file infile;
+  infile.set_fallback_stream(&strm1);
+  igp::mock_output_variant_file mock_outfile;
+  igp::query_file qf(&infile, &mock_outfile);
+  qf.open("", igp::MAP);
+  EXPECT_TRUE(qf.get());
+  EXPECT_EQ(qf.get_chr(), "1");
+  EXPECT_EQ(qf.get_pos1(), mpz_class(100));
+  EXPECT_EQ(qf.get_pos2(), mpz_class(-1));
+  EXPECT_TRUE(qf.get());
+  EXPECT_EQ(qf.get_chr(), "1");
+  EXPECT_EQ(qf.get_pos1(), mpz_class(200));
+  EXPECT_EQ(qf.get_pos2(), mpz_class(-1));
+  EXPECT_TRUE(qf.get());
+  EXPECT_EQ(qf.get_chr(), "2");
+  EXPECT_EQ(qf.get_pos1(), mpz_class(300));
+  EXPECT_EQ(qf.get_pos2(), mpz_class(-1));
+  EXPECT_FALSE(qf.get());
+}
