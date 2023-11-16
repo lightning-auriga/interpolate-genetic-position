@@ -20,6 +20,7 @@ void igp::interpolator::interpolate(
   input_variant_file input_variant_interface;
   input_genetic_map_file genetic_map_interface;
   output_variant_file output_variant_interface;
+  input_variant_interface.set_fallback_stream(&std::cin);
   output_variant_interface.output_morgans(output_morgans);
   genetic_map_interface.set_fallback_stream(&std::cin);
   genetic_map gm(&genetic_map_interface);

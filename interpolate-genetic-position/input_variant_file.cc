@@ -64,6 +64,19 @@ void igp::input_variant_file::close() {
     _gzinput = 0;
   }
 }
+
+void igp::input_variant_file::set_fallback_stream(std::istream *ptr) {
+  _fallback = ptr;
+}
+
+std::istream *igp::input_variant_file::get_fallback_stream() const {
+  if (!_fallback) {
+    throw std::runtime_error(
+        "ivf::get_fallback_stream: called on NULL pointer");
+  }
+  return _fallback;
+}
+
 void igp::input_variant_file::set_format_parameters(
     unsigned chr_index, unsigned pos1_index, int pos2_index,
     unsigned gpos_index, bool base0, unsigned n_tokens) {
