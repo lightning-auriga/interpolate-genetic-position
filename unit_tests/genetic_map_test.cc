@@ -632,3 +632,27 @@ TEST_F(geneticMapTest,
             -1);
   EXPECT_EQ(result.get_rate(), mpf_class("20.1"));
 }
+
+TEST_F(geneticMapTest, geneticMapFromCin) {
+  std::string genetic_map_content =
+      "chr position COMBINED_rate(cM/Mb) Genetic_Map(cM)\n"
+      "1 100000 1.2 0.0\n"
+      "1 900000 0.0 0.96\n"
+      "2 100000 3.0 0.0\n"
+      "2 800000 2.0 2.1";
+  std::istringstream strm1(genetic_map_content);
+  igp::input_genetic_map_file realfile;
+  realfile.set_fallback_stream(&strm1);
+  realfile.open("", igp::BOLT);
+  igp::genetic_map gm(&realfile);
+  igp::query_result result;
+  std::string query_chr = "1";
+  mpz_class query_pos = 1000000;
+  bool verbose = false;
+  gm.query(query_chr, query_pos, -1, verbose, &result);
+  EXPECT_EQ(result.get_chr(), "1");
+  EXPECT_EQ(result.get_startpos(), mpz_class(1000000));
+  EXPECT_EQ(result.get_endpos(), mpz_class(-1));
+  EXPECT_EQ(result.get_gpos(), mpf_class("0.96"));
+  EXPECT_EQ(result.get_rate(), mpf_class(0.0));
+}
