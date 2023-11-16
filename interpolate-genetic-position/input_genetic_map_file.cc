@@ -60,13 +60,23 @@ void igp::input_genetic_map_file::open(const std::string &filename,
   } else {  // file is streamed from cin
     if (_ft == BOLT) {
       std::string line = "";
-      getline(std::cin, line);
+      getline(*get_fallback_stream(), line);
     }
   }
   // Load the first two values, such that a valid range is available at the
   // beginning of iteration.
   get();
   get();
+}
+void igp::input_genetic_map_file::set_fallback_stream(std::istream *ptr) {
+  _fallback = ptr;
+}
+std::istream *igp::input_genetic_map_file::get_fallback_stream() const {
+  if (!_fallback) {
+    throw std::runtime_error(
+        "igmf::get_fallback_stream: called on NULL pointer");
+  }
+  return _fallback;
 }
 bool igp::input_genetic_map_file::get() {
   _chr_lower_bound = _chr_upper_bound;
@@ -106,10 +116,10 @@ bool igp::input_genetic_map_file::get() {
     }
     line = std::string(_buffer);
   } else {
-    if (std::cin.peek() == EOF) {
+    if (get_fallback_stream()->peek() == EOF) {
       return false;
     }
-    getline(std::cin, line);
+    getline(*get_fallback_stream(), line);
   }
   std::istringstream strm1(line);
   if (_ft == BOLT) {
@@ -175,7 +185,7 @@ bool igp::input_genetic_map_file::eof() {
   if (_bwinput.is_open()) {
     return _bwinput.eof();
   }
-  return std::cin.peek() == EOF;
+  return get_fallback_stream()->peek() == EOF;
 }
 std::string igp::input_genetic_map_file::get_chr_lower_bound() const {
   return _chr_lower_bound;

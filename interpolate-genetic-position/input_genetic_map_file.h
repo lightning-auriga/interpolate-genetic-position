@@ -45,6 +45,20 @@ class base_input_genetic_map_file {
    */
   virtual void open(const std::string &filename, format_type ft) = 0;
   /*!
+   * \brief set the fallback stream for data
+   * \param ptr pointer to the fallback stream
+   *
+   * This is intended to be cin, but is exposed for testing
+   */
+  virtual void set_fallback_stream(std::istream *ptr) = 0;
+  /*!
+   * \brief get the fallback stream for data
+   * \return pointer to the fallback stream
+   *
+   * This is intended to be cin, but is exposed for testing
+   */
+  virtual std::istream *get_fallback_stream() const = 0;
+  /*!
    * \brief get the next genetic map entry from file and
    * store it in internal buffer
    * \return boolean indicating whether a new file entry
@@ -135,6 +149,20 @@ class input_genetic_map_file : public base_input_genetic_map_file {
    */
   void open(const std::string &filename, format_type ft);
   /*!
+   * \brief set the fallback stream for data
+   * \param ptr pointer to the fallback stream
+   *
+   * This is intended to be cin, but is exposed for testing
+   */
+  void set_fallback_stream(std::istream *ptr);
+  /*!
+   * \brief get the fallback stream for data
+   * \return pointer to the fallback stream
+   *
+   * This is intended to be cin, but is exposed for testing
+   */
+  std::istream *get_fallback_stream() const;
+  /*!
    * \brief get the next genetic map entry from file and
    * store it in internal buffer
    * \return boolean indicating whether a new file entry
@@ -207,6 +235,7 @@ class input_genetic_map_file : public base_input_genetic_map_file {
  private:
   std::ifstream _input;          //!< file connection for plaintext input
   gzFile _gzinput;               //!< file connection for gzipped input
+  std::istream *_fallback;       //!< pointer to fallback stream connection
   bigwig_reader _bwinput;        //!< file connection for bigwigs
   char *_buffer;                 //!< character buffer for gzinput line reading
   unsigned _buffer_size;         //!< size of gzinput buffer, in bytes
