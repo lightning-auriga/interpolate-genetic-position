@@ -13,7 +13,7 @@
 namespace igp = interpolate_genetic_position;
 
 cargsTest::cargsTest()
-    : testing::Test(), _argv1(NULL), _argv2(NULL), _argv3(NULL) {
+    : testing::Test(), _argv1(NULL), _argv2(NULL), _argv3(NULL), _argv4(NULL) {
   std::string test1 = "progname -h";
   populate(test1, &_argvec1, &_argv1);
   std::string test2 =
@@ -22,6 +22,8 @@ cargsTest::cargsTest()
   populate(test2, &_argvec2, &_argv2);
   std::string test3 = "progname -i fn1 -p bim -g fn2 -m bedgraph -o fn3 -v";
   populate(test3, &_argvec3, &_argv3);
+  std::string test4 = "progname -i fn1 -p bedgraph -g fn2 -m map -o fn3";
+  populate(test4, &_argvec4, &_argv4);
 }
 
 cargsTest::~cargsTest() {
@@ -33,6 +35,9 @@ cargsTest::~cargsTest() {
   }
   if (_argv3) {
     delete[] _argv3;
+  }
+  if (_argv4) {
+    delete[] _argv4;
   }
 }
 
@@ -108,4 +113,10 @@ TEST_F(cargsTest, detectStepInterval) {
   EXPECT_EQ(ap1.get_region_step_interval(), 1.23);
   igp::cargs ap2(_argvec3.size(), _argv3);
   EXPECT_EQ(ap2.get_region_step_interval(), 0.0);
+}
+
+TEST_F(cargsTest, detectImproperFormats) {
+  igp::cargs ap(_argvec4.size(), _argv4);
+  EXPECT_THROW(ap.get_input_preset(), std::runtime_error);
+  EXPECT_THROW(ap.get_map_format(), std::runtime_error);
 }
