@@ -62,15 +62,27 @@ those will be described and exposed to user configuration as much as possible.
 
 ## Installation
 
-The recommended installation method for this package _will be_ via my conda channel; but while
-this is in pre-release development, interested users will have to build from source.
+There are two primary installation methods, depending on your needs.
 
-### Requirements
+### With conda (recommended)
+
+  - If needed, [install mamba](https://mamba.readthedocs.io/en/latest/mamba-installation.html#mamba-install)
+  - Install the package with mamba:
+
+    `mamba create -n igp -c https://raw.githubusercontent.com/lightning-auriga/conda-builds/default/conda-builds -c bioconda -c conda-forge interpolate-genetic-position`
+  - Activate the resulting environment:
+
+    `mamba activate igp`
+  - The tool should now be available as `interpolate-genetic-position.out`
+
+### Manual Build
+
+#### Requirements
 
 See the provided [environment.yaml](environment.yaml) file for conda-formatted dependencies for
 building this package.
 
-### Build
+#### Build
 
 By default, a build process involving a [conda/mamba](https://mamba.readthedocs.io/en/latest/installation.html) environment is supported.
 
@@ -100,7 +112,7 @@ By default, a build process involving a [conda/mamba](https://mamba.readthedocs.
 
 By default, the final compiled program can be run with
 
-`./interpolate-genetic-position.out`
+`interpolate-genetic-position.out`
 
 
 ### Command Line Parameters
