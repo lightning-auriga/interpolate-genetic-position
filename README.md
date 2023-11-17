@@ -115,6 +115,8 @@ By default, the final compiled program can be run with
 |`--verbose`<br>`-v`|Whether to print extremely verbose debug logs. You probably don't want this.|
 |`--output-morgans`|Report output genetic position in morgans, instead of the default centimorgans.|
 |`--region-step-interval`|Add a fixed genetic distance at the boundaries of end positions of bedfile region queries, such that the output data have a step-like structure. This functionality is included for experimental purposes, and in most applications this setting should be kept at its default of 0.|
+|`--help`<br>`-h`|Print brief help message and exit.|
+|`--version`|Print version string for current build.|
 
 Note that, of the above, either `-i` or `-g` can be read from stdin, but not both.
 
