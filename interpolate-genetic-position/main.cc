@@ -27,7 +27,7 @@ namespace igp = interpolate_genetic_position;
   @param argc number of command line entries, including program name
   @param argv array of command line entries
  */
-int main(int argc, char **argv) {
+int main(int argc, const char** const argv) {
   // parse command line input
   igp::cargs ap(argc, argv);
   // if help is requested or no flags specified

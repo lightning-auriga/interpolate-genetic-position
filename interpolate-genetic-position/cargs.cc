@@ -13,7 +13,8 @@ igp::cargs::cargs() {
   throw std::domain_error("cargs: do not use default constructor");
 }
 
-igp::cargs::cargs(int argc, char **argv) : _desc("Recognized options") {
+igp::cargs::cargs(int argc, const char **const argv)
+    : _desc("Recognized options") {
   initialize_options();
   boost::program_options::store(
       boost::program_options::parse_command_line(argc, argv, _desc), _vm);
