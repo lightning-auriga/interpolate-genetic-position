@@ -31,21 +31,16 @@ class cargs {
     @param argc number of arguments including program name
     @param argv string array containing actual arguments
    */
-  cargs(int argc, char **argv) : _desc("Recognized options") {
-    initialize_options();
-    boost::program_options::store(
-        boost::program_options::parse_command_line(argc, argv, _desc), _vm);
-    boost::program_options::notify(_vm);
-  }
+  cargs(int argc, char **argv);
   /*!
     \brief copy constructor
     @param obj existing cargs object
    */
-  cargs(const cargs &obj) : _desc(obj._desc), _vm(obj._vm) {}
+  cargs(const cargs &obj);
   /*!
     \brief destructor
    */
-  ~cargs() throw() {}
+  ~cargs() throw();
 
   /*!
     \brief set user help documentation and default values for parameters as
@@ -63,13 +58,13 @@ class cargs {
     This test is separate from whether the user has run the software with no
     flags
    */
-  bool help() const { return compute_flag("help"); }
+  bool help() const;
 
   /*!
    * \brief determine whether the user has requested (extremely) verbose debug
    * logging \return whether the user has requested verbose logging
    */
-  bool verbose() const { return compute_flag("verbose"); }
+  bool verbose() const;
 
   /*!
    * \brief get name of input variant/region query file
@@ -77,9 +72,7 @@ class cargs {
    *
    * this string can be empty, in which case input is pulled from cin
    */
-  std::string get_input_filename() const {
-    return compute_parameter<std::string>("input");
-  }
+  std::string get_input_filename() const;
   /*!
    * \brief get input variant/region file format
    * \return input variant/region file format
@@ -88,22 +81,12 @@ class cargs {
    * accepted values are: "bim", "map", "bed". input
    * format also controls output behavior.
    */
-  std::string get_input_preset() const {
-    std::string preset = compute_parameter<std::string>("preset");
-    if (preset.compare("bim") && preset.compare("map") &&
-        preset.compare("bed") && preset.compare("snp")) {
-      throw std::runtime_error("invalid input preset format: \"" + preset +
-                               "\"");
-    }
-    return preset;
-  }
+  std::string get_input_preset() const;
   /*!
    * \brief get name of input recombination map
    * \return name of input recombination map
    */
-  std::string get_recombination_map() const {
-    return compute_parameter<std::string>("genetic-map");
-  }
+  std::string get_recombination_map() const;
   /*!
    * \brief get input recombination map format
    * \return input recombination map format
@@ -117,21 +100,11 @@ class cargs {
    *     - note that this needs to be converted to bedgraph before being used
    * with this software
    */
-  std::string get_map_format() const {
-    std::string map_format = compute_parameter<std::string>("map-format");
-    if (map_format.compare("bolt") && map_format.compare("bedgraph") &&
-        map_format.compare("bigwig")) {
-      throw std::runtime_error("invalid genetic map format: \"" + map_format +
-                               "\"");
-    }
-    return map_format;
-  }
+  std::string get_map_format() const;
   /*!
    *
    */
-  std::string get_output_filename() const {
-    return compute_parameter<std::string>("output");
-  }
+  std::string get_output_filename() const;
 
   /*!
     \brief determine whether genetic position should be output in morgans,
@@ -139,7 +112,7 @@ class cargs {
     \return whether the user has requested that genetic position be output
     in morgans instead of centimorgans.
    */
-  bool output_morgans() const { return compute_flag("output-morgans"); }
+  bool output_morgans() const;
 
   /*!
    * \brief get fixed genetic distance to add to the boundary between
@@ -154,9 +127,7 @@ class cargs {
    * cause standard interpolation to be performed without introduciing
    * artificial breakpoints, and should be used in almost all cases.
    */
-  double get_region_step_interval() const {
-    return compute_parameter<double>("region-step-interval");
-  }
+  double get_region_step_interval() const;
   /*!
     \brief find status of arbitrary flag
     @param tag name of flag
@@ -167,7 +138,7 @@ class cargs {
     to type out the custom access functions or want to allow dynamic
     specification from a config file.
    */
-  bool compute_flag(const std::string &tag) const { return _vm.count(tag); }
+  bool compute_flag(const std::string &tag) const;
   /*!
     \brief find value of arbitrary parameter
     @tparam value_type class to which the value should be cast
@@ -190,17 +161,14 @@ class cargs {
 
     Parameter should probably be std::cout or std::cerr at your preference.
    */
-  void print_help(std::ostream &out) {
-    if (!(out << _desc))
-      throw std::domain_error("cargs::print_help: unable to write to stream");
-  }
+  void print_help(std::ostream &out);
 
  private:
   /*!
     \brief default constructor
     \warning disabled
    */
-  cargs() { throw std::domain_error("cargs: do not use default constructor"); }
+  cargs();
   boost::program_options::options_description
       _desc;  //!< help documentation string
   boost::program_options::variables_map
