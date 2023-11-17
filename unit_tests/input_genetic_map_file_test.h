@@ -32,6 +32,8 @@ class mock_input_genetic_map_file : public base_input_genetic_map_file {
   // mocks
   MOCK_METHOD(void, open, (const std::string &filename, format_type ft),
               (override));
+  MOCK_METHOD(void, set_fallback_stream, (std::istream * ptr), (override));
+  MOCK_METHOD(std::istream *, get_fallback_stream, (), (const, override));
   MOCK_METHOD(bool, get, (), (override));
   MOCK_METHOD(void, close, (), (override));
   MOCK_METHOD(bool, eof, (), (override));

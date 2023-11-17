@@ -47,6 +47,20 @@ class base_input_variant_file {
    */
   virtual void close() = 0;
   /*!
+   * \brief set the fallback stream for data
+   * \param ptr pointer to the fallback stream
+   *
+   * This is intended to be cin, but is exposed for testing
+   */
+  virtual void set_fallback_stream(std::istream *ptr) = 0;
+  /*!
+   * \brief get the fallback stream for data
+   * \return pointer to the fallback stream
+   *
+   * This is intended to be cin, but is exposed for testing
+   */
+  virtual std::istream *get_fallback_stream() const = 0;
+  /*!
    * \brief set parameters controlling interpretation
    * of input lines
    * \param chr_index base 0 index of chromosome in line tokens
@@ -126,6 +140,20 @@ class input_variant_file : public base_input_variant_file {
    */
   void close();
   /*!
+   * \brief set the fallback stream for data
+   * \param ptr pointer to the fallback stream
+   *
+   * This is intended to be cin, but is exposed for testing
+   */
+  void set_fallback_stream(std::istream *ptr);
+  /*!
+   * \brief get the fallback stream for data
+   * \return pointer to the fallback stream
+   *
+   * This is intended to be cin, but is exposed for testing
+   */
+  std::istream *get_fallback_stream() const;
+  /*!
    * \brief set parameters controlling interpretation
    * of input lines
    * \param chr_index base 0 index of chromosome in line tokens
@@ -181,6 +209,7 @@ class input_variant_file : public base_input_variant_file {
  private:
   std::ifstream _input;                     //!< input uncompressed file stream
   gzFile _gzinput;                          //!< input gzipped file pointer
+  std::istream *_fallback;                  //!< fallback input stream
   char *_buffer;                            //!< character buffer for zlib reads
   std::vector<std::string> _line_contents;  //!< tokenized input line
   unsigned _buffer_size;                    //!< size of allocated buffer

@@ -31,6 +31,8 @@ class mock_input_variant_file : public base_input_variant_file {
   // mocks
   MOCK_METHOD(void, open, (const std::string &filename), (override));
   MOCK_METHOD(void, close, (), (override));
+  MOCK_METHOD(void, set_fallback_stream, (std::istream * ptr), (override));
+  MOCK_METHOD(std::istream *, get_fallback_stream, (), (const, override));
   MOCK_METHOD(void, set_format_parameters,
               (unsigned chr_index, unsigned pos1_index, int pos2_index,
                unsigned gpos_index, bool base0, unsigned n_tokens),

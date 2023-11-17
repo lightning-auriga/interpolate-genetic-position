@@ -287,6 +287,59 @@ TEST_F(integrationTest, mapfileInputMapfileOutput) {
   EXPECT_EQ(expected_output, observed_output);
 }
 
+TEST_F(integrationTest, gzippedMapfileInputMapfileOutput) {
+  const std::string in_query_tmpfile =
+      boost::filesystem::unique_path().native() + ".gz";
+  try {
+    std::string input_query =
+        create_compressed_file(in_query_tmpfile, get_map_content());
+    std::string input_gmap =
+        create_plaintext_file(_in_gmap_tmpfile, get_bolt_content());
+    std::string expected_output =
+        "1\trs1\t0\t500000\n"
+        "1\trs2\t0.05\t1500000\n"
+        "3\trs3\t0\t1000000\n";
+    igp::interpolator ip;
+    ip.interpolate(in_query_tmpfile, "map", _in_gmap_tmpfile, "bolt",
+                   _out_tmpfile, false, 0.0, false);
+    EXPECT_TRUE(boost::filesystem::exists(_out_tmpfile));
+    std::string observed_output = load_plaintext_file(_out_tmpfile);
+    EXPECT_EQ(expected_output, observed_output);
+    boost::filesystem::remove(in_query_tmpfile);
+  } catch (...) {
+    if (boost::filesystem::exists(in_query_tmpfile)) {
+      boost::filesystem::remove(in_query_tmpfile);
+    }
+    throw;
+  }
+}
+
+TEST_F(integrationTest, gzippedBoltGeneticMap) {
+  const std::string in_gmap_tmpfile =
+      boost::filesystem::unique_path().native() + ".gz";
+  try {
+    std::string input_query =
+        create_plaintext_file(_in_query_tmpfile, get_map_content());
+    std::string input_gmap =
+        create_compressed_file(in_gmap_tmpfile, get_bolt_content());
+    std::string expected_output =
+        "1\trs1\t0\t500000\n"
+        "1\trs2\t0.05\t1500000\n"
+        "3\trs3\t0\t1000000\n";
+    igp::interpolator ip;
+    ip.interpolate(_in_query_tmpfile, "map", in_gmap_tmpfile, "bolt",
+                   _out_tmpfile, false, 0.0, false);
+    EXPECT_TRUE(boost::filesystem::exists(_out_tmpfile));
+    std::string observed_output = load_plaintext_file(_out_tmpfile);
+    EXPECT_EQ(expected_output, observed_output);
+    boost::filesystem::remove(in_gmap_tmpfile);
+  } catch (...) {
+    if (boost::filesystem::exists(in_gmap_tmpfile)) {
+      boost::filesystem::remove(in_gmap_tmpfile);
+    }
+  }
+}
+
 TEST_F(integrationTest, bedgraphGeneticMap) {
   std::string input_query =
       create_plaintext_file(_in_query_tmpfile, get_map_content());
