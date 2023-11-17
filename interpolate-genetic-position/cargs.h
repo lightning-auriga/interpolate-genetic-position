@@ -102,7 +102,8 @@ class cargs {
    */
   std::string get_map_format() const;
   /*!
-   *
+   * \brief get name of output file
+   * \return name of output file
    */
   std::string get_output_filename() const;
 
