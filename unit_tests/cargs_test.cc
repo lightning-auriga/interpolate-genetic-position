@@ -13,7 +13,12 @@
 namespace igp = interpolate_genetic_position;
 
 cargsTest::cargsTest()
-    : testing::Test(), _argv1(NULL), _argv2(NULL), _argv3(NULL), _argv4(NULL) {
+    : testing::Test(),
+      _argv1(NULL),
+      _argv2(NULL),
+      _argv3(NULL),
+      _argv4(NULL),
+      _argv5(NULL) {
   std::string test1 = "progname -h";
   populate(test1, &_argvec1, &_argv1);
   std::string test2 =
@@ -24,6 +29,8 @@ cargsTest::cargsTest()
   populate(test3, &_argvec3, &_argv3);
   std::string test4 = "progname -i fn1 -p bedgraph -g fn2 -m map -o fn3";
   populate(test4, &_argvec4, &_argv4);
+  std::string test5 = "progname --version";
+  populate(test5, &_argvec5, &_argv5);
 }
 
 cargsTest::~cargsTest() {
@@ -38,6 +45,9 @@ cargsTest::~cargsTest() {
   }
   if (_argv4) {
     delete[] _argv4;
+  }
+  if (_argv5) {
+    delete[] _argv5;
   }
 }
 
@@ -78,6 +88,13 @@ TEST_F(cargsTest, printHelp) {
   EXPECT_EQ(o.str().find("Recognized options:"), 0UL);
 }
 
+TEST_F(cargsTest, printVersion) {
+  std::ostringstream o;
+  igp::cargs ap(_argvec5.size(), _argv5);
+  ap.print_version(o);
+  EXPECT_EQ(o.str().find("interpolate-genetic-position"), 0UL);
+}
+
 TEST_F(cargsTest, detectHelp) {
   igp::cargs ap1(_argvec1.size(), _argv1);
   EXPECT_TRUE(ap1.help());
@@ -90,6 +107,13 @@ TEST_F(cargsTest, detectVerbose) {
   EXPECT_TRUE(ap1.verbose());
   igp::cargs ap2(_argvec2.size(), _argv2);
   EXPECT_FALSE(ap2.verbose());
+}
+
+TEST_F(cargsTest, detectVersion) {
+  igp::cargs ap1(_argvec5.size(), _argv5);
+  EXPECT_TRUE(ap1.version());
+  igp::cargs ap2(_argvec1.size(), _argv1);
+  EXPECT_FALSE(ap2.version());
 }
 
 TEST_F(cargsTest, basicAccessors) {
