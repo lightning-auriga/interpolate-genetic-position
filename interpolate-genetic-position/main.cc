@@ -32,8 +32,13 @@ int main(int argc, const char** const argv) {
   igp::cargs ap(argc, argv);
   // if help is requested or no flags specified
   if (ap.help() || argc == 1) {
-    // print a help message and exist
+    // print a help message and exit
     ap.print_help(std::cout);
+    return 0;
+  }
+  if (ap.version()) {
+    // print version information and exit
+    ap.print_version(std::cout);
     return 0;
   }
 

@@ -28,6 +28,7 @@ igp::cargs::~cargs() throw() {}
 void igp::cargs::initialize_options() {
   _desc.add_options()("help,h", "emit this help message")(
       "verbose,v", "emit extremely verbose debug logs")(
+      "version", "emit program version and exit")(
       "input,i",
       boost::program_options::value<std::string>()->default_value(""),
       "name of input variant/region query file (default: read from stdin)")(
@@ -53,6 +54,8 @@ void igp::cargs::initialize_options() {
 bool igp::cargs::help() const { return compute_flag("help"); }
 
 bool igp::cargs::verbose() const { return compute_flag("verbose"); }
+
+bool igp::cargs::version() const { return compute_flag("version"); }
 
 std::string igp::cargs::get_input_filename() const {
   return compute_parameter<std::string>("input");
@@ -100,4 +103,9 @@ bool igp::cargs::compute_flag(const std::string &tag) const {
 void igp::cargs::print_help(std::ostream &out) {
   if (!(out << _desc))
     throw std::domain_error("cargs::print_help: unable to write to stream");
+}
+
+void igp::cargs::print_version(std::ostream &out) {
+  if (!(out << INTERPOLATE_GENETIC_POSITION_PACKAGE_STRING << std::endl))
+    throw std::domain_error("cargs::print_version: unable to write to stream");
 }

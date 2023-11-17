@@ -18,6 +18,7 @@
 #include <vector>
 
 #include "boost/program_options.hpp"
+#include "interpolate-genetic-position/config.h"
 
 namespace interpolate_genetic_position {
 /*!
@@ -65,6 +66,12 @@ class cargs {
    * logging \return whether the user has requested verbose logging
    */
   bool verbose() const;
+
+  /*!
+   * \brief determine whether the user has requested the program version
+   * \return whether the user has requested the program version
+   */
+  bool version() const;
 
   /*!
    * \brief get name of input variant/region query file
@@ -163,6 +170,12 @@ class cargs {
     Parameter should probably be std::cout or std::cerr at your preference.
    */
   void print_help(std::ostream &out);
+
+  /*!
+   * \brief report version information to arbitrary output stream
+   * \param out stream to which to write version information
+   */
+  void print_version(std::ostream &out);
 
  private:
   /*!
