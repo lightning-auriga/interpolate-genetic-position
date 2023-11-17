@@ -157,8 +157,25 @@ The following primary maps are supported by this tool:
     fine-grained recombination map, the intervals themselves could be a memory block. If you convert such a map to
     bedgraph (and sort it) in advance, the program will stream linewise and have fixed, constant, low memory use.
 
+## Notes Specific to Interval (bedfile) Input
 
+For idiosyncratic reasons, input queries in bed format are emitted as bolt-format genetic maps. This is due to the need
+to specify both rate and position in the output blocks. Note that query blocks are fragmented based on whatever
+mosaic pattern in which they happen to intersect with the initial genetic map. Due to the lack of end positions in
+bolt format maps, a final bolt entry per-chromosome is injected into the output with fixed rate 0, to prevent implied
+interpolation with the rate of the last estimated block.
+
+The flag `--region-step-interval [double-precision value]` causes the bolt-format genetic map emitted for
+bedfile queries to contain stepwise increments in genetic position at the end position of each query interval.
+This is for experimental purposes; for most practical uses of this tool, this flag should be left at its default of 0.
+
+## I/O Streams
+
+This program can accept input files as streams and can emit output to stream. To have a file be read from
+or written to stream, simply omit its relevant flag (`-i`, `-g`, `-o`). For input streams, the corresponding
+format flag should still be set. Only one input stream (either `-i` or `-g`) can be read from an input stream
+per run.
 
 ## Version History
 
-28 10 2023: project generated from cookiecutter template
+See ChangeLog.md.
