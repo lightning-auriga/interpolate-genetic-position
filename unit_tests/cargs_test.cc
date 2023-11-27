@@ -27,7 +27,7 @@ cargsTest::cargsTest()
   populate(test2, &_argvec2, &_argv2);
   std::string test3 = "progname -i fn1 -p bim -g fn2 -m bedgraph -o fn3 -v";
   populate(test3, &_argvec3, &_argv3);
-  std::string test4 = "progname -i fn1 -p bedgraph -g fn2 -m map -o fn3";
+  std::string test4 = "progname -i fn1 -p bedgraph -g fn2 -m map -o fn3 -f vcf";
   populate(test4, &_argvec4, &_argv4);
   std::string test5 = "progname --version";
   populate(test5, &_argvec5, &_argv5);
@@ -144,4 +144,5 @@ TEST_F(cargsTest, detectImproperFormats) {
   igp::cargs ap(_argvec4.size(), _argv4);
   EXPECT_THROW(ap.get_input_preset(), std::runtime_error);
   EXPECT_THROW(ap.get_map_format(), std::runtime_error);
+  EXPECT_THROW(ap.get_output_format(), std::runtime_error);
 }
