@@ -47,6 +47,7 @@ int main(int argc, const char** const argv) {
   std::string genetic_map = ap.get_recombination_map();
   std::string map_format = ap.get_map_format();
   std::string output = ap.get_output_filename();
+  std::string output_format = ap.get_output_format();
   bool verbose = ap.verbose();
   bool output_morgans = ap.output_morgans();
   double step_interval = ap.get_region_step_interval();
@@ -61,8 +62,8 @@ int main(int argc, const char** const argv) {
   }
 
   igp::interpolator ip;
-  ip.interpolate(input, preset, genetic_map, map_format, output, output_morgans,
-                 step_interval, verbose);
+  ip.interpolate(input, preset, genetic_map, map_format, output, output_format,
+                 output_morgans, step_interval, verbose);
 
   if (verbose) {
     std::cout << "all done woo!" << std::endl;

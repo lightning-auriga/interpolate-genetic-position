@@ -5,6 +5,7 @@ dependencies:
   - gmp
   - zlib
   - libbigwig
+  - htslib
 # required for commitizen
   - nodejs
   - pre-commit

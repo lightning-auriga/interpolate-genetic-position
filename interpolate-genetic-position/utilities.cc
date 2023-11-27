@@ -18,6 +18,7 @@ igp::format_type igp::string_to_format_type(const std::string &name) {
   if (!name.compare("map")) return MAP;
   if (!name.compare("bed")) return BED;
   if (!name.compare("snp")) return SNP;
+  if (!name.compare("vcf")) return VCF;
   throw std::runtime_error(
       "string_to_format_type: unrecognized type "
       "descriptor: \"" +

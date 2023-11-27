@@ -37,7 +37,6 @@ class mock_input_variant_file : public base_input_variant_file {
               (unsigned chr_index, unsigned pos1_index, int pos2_index,
                unsigned gpos_index, bool base0, unsigned n_tokens),
               (override));
-  MOCK_METHOD(bool, get_input_line, (std::string * line), (override));
   MOCK_METHOD(bool, get_variant, (), (override));
   MOCK_METHOD(const std::string &, get_chr, (), (const, override));
   MOCK_METHOD(const mpz_class &, get_pos1, (), (const, override));

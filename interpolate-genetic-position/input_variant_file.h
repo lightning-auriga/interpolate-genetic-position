@@ -19,6 +19,7 @@
 #include <string>
 #include <vector>
 
+#include "htslib/synced_bcf_reader.h"
 #include "interpolate-genetic-position/utilities.h"
 
 namespace interpolate_genetic_position {
@@ -74,13 +75,6 @@ class base_input_variant_file {
   virtual void set_format_parameters(unsigned chr_index, unsigned pos1_index,
                                      int pos2_index, unsigned gpos_index,
                                      bool base0, unsigned n_tokens) = 0;
-  /*!
-   * \brief get a single line from an input stream
-   * \param line pointer to allocated string that will contain line,
-   * or equivalent, depending on input type
-   * \return whether access operation was successful
-   */
-  virtual bool get_input_line(std::string *line) = 0;
   /*!
    * \brief get next marker's metadata from input connection
    * \return whether a variant was successfully accessed from file
@@ -168,13 +162,6 @@ class input_variant_file : public base_input_variant_file {
                              int pos2_index, unsigned gpos_index, bool base0,
                              unsigned n_tokens);
   /*!
-   * \brief get a single line from an input stream
-   * \param line pointer to allocated string that will contain line,
-   * or equivalent, depending on input type
-   * \return whether access operation was successful
-   */
-  bool get_input_line(std::string *line);
-  /*!
    * \brief get next marker's metadata from input connection
    * \return whether a variant was successfully accessed from file
    */
@@ -209,6 +196,7 @@ class input_variant_file : public base_input_variant_file {
  private:
   std::ifstream _input;                     //!< input uncompressed file stream
   gzFile _gzinput;                          //!< input gzipped file pointer
+  bcf_srs_t *_sr;                           //!< synced reader for input vcfs
   std::istream *_fallback;                  //!< fallback input stream
   char *_buffer;                            //!< character buffer for zlib reads
   std::vector<std::string> _line_contents;  //!< tokenized input line

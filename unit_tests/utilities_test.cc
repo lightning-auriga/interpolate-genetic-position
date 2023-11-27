@@ -40,6 +40,10 @@ TEST(utilitiesTest, snpNameConversion) {
   EXPECT_EQ(igp::string_to_format_type("snp"), igp::SNP);
 }
 
+TEST(utilitiesTest, vcfNameConversion) {
+  EXPECT_EQ(igp::string_to_format_type("vcf"), igp::VCF);
+}
+
 TEST(utilitiesTest, chromosomeToIntegerAutosome) {
   int chrint = 0;
   EXPECT_TRUE(igp::chromosome_to_integer("2", &chrint));

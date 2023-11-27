@@ -48,7 +48,8 @@ class interpolator {
    * \param preset descriptor of input query file format
    * \param genetic_map name of input recombination map file
    * \param map_format descriptor of genetic map format
-   * \param output_filename name of output results file;
+   * \param output_filename name of output results file
+   * \param output_format descriptor of output results file
    * \param output_morgans whether genetic position should be output
    * in morgans, as opposed to the default centimorgans
    * \param step_interval fixed genetic distance to add to boundary
@@ -62,7 +63,8 @@ class interpolator {
   void interpolate(const std::string &input_filename, const std::string &preset,
                    const std::string &genetic_map_filename,
                    const std::string &map_format,
-                   const std::string &output_filename, bool output_morgans,
+                   const std::string &output_filename,
+                   const std::string &output_format, bool output_morgans,
                    const double &step_interval, bool verbose) const;
 };
 }  // namespace interpolate_genetic_position
