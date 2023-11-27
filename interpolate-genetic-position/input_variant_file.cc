@@ -125,7 +125,7 @@ bool igp::input_variant_file::get_variant() {
         bcf_seqname_safe(bcf_sr_get_header(_sr, 0), bcf_sr_get_line(_sr, 0)));
     bcf_unpack(bcf_sr_get_line(_sr, 0), BCF_UN_STR);
     _varid = std::string(bcf_sr_get_line(_sr, 0)->d.id);
-    _pos1 = bcf_sr_get_line(_sr, 0)->pos - 1;
+    _pos1 = bcf_sr_get_line(_sr, 0)->pos + 1;
     return true;
   }
   // other stream types are text line parsers of various kinds
