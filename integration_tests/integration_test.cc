@@ -208,6 +208,21 @@ std::string integrationTest::get_bedgraph_content() const {
          "chr2 4999999 5999999 0.55\n";
 }
 
+TEST_F(integrationTest, vcfInputMapOutput) {
+  std::string input_gmap =
+      create_plaintext_file(_in_gmap_tmpfile, get_bolt_content());
+  std::string expected_output =
+      "chr1\trs1\t0\t500000\n"
+      "chr1\trs2\t0.05\t1500000\n"
+      "chr3\trs3\t0\t1000000\n";
+  igp::interpolator ip;
+  ip.interpolate("unit_tests/test.vcf.gz", "vcf", _in_gmap_tmpfile, "bolt",
+                 _out_tmpfile, "map", false, 0.0, false);
+  EXPECT_TRUE(boost::filesystem::exists(_out_tmpfile));
+  std::string observed_output = load_plaintext_file(_out_tmpfile);
+  EXPECT_EQ(expected_output, observed_output);
+}
+
 TEST_F(integrationTest, bedfileInputBoltOutputNoIncrement) {
   std::string input_query =
       create_plaintext_file(_in_query_tmpfile, get_bedfile_content());
