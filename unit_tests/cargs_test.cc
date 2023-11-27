@@ -23,7 +23,7 @@ cargsTest::cargsTest()
   populate(test1, &_argvec1, &_argv1);
   std::string test2 =
       "progname -i fn1 -p bed -g fn2 -m bolt -o fn3 --output-morgans "
-      "--region-step-interval 1.23";
+      "--region-step-interval 1.23 -f map";
   populate(test2, &_argvec2, &_argv2);
   std::string test3 = "progname -i fn1 -p bim -g fn2 -m bedgraph -o fn3 -v";
   populate(test3, &_argvec3, &_argv3);
@@ -123,6 +123,7 @@ TEST_F(cargsTest, basicAccessors) {
   EXPECT_EQ(ap.get_recombination_map(), "fn2");
   EXPECT_EQ(ap.get_map_format(), "bolt");
   EXPECT_EQ(ap.get_output_filename(), "fn3");
+  EXPECT_EQ(ap.get_output_format(), "map");
 }
 
 TEST_F(cargsTest, detectOutputMorgans) {
