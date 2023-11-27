@@ -77,25 +77,25 @@ By default, a build process involving a [conda/mamba](https://mamba.readthedocs.
   - if you wish to use `conda` and it's not currently available, you can install it with the instructions [here](https://mamba.readthedocs.io/en/latest/mamba-installation.html#mamba-install)
   - navigate into your project directory (interpolate-genetic-position)
   - create the `conda` environment for installation as follows:
-  
+
      `mamba env create -f environment.yaml`
   - activate the conda environment:
-  
+
      `mamba activate interpolate-genetic-position-env`
   - update (create) the necessary `configure` scripts with `autoreconf`:
-  
+
      `autoreconf --force --install`
-	 
+
      - note that this can also be run with `./generate.bash` inside the repo
   - run `configure`:
-  
+
 	 `./configure --with-boost=${CONDA_PREFIX} --with-boost-libdir=${CONDA_PREFIX}/lib`
 
 	 - if you are planning on installing software to a local directory, run instead `./configure --prefix=/install/dir [...]`
   - run `make -j{ncores}`
 
   - if desired, run `make install`. if permissions issues are reported, see above for reconfiguring with `./configure --prefix`.
-  
+
 ## Usage
 
 By default, the final compiled program can be run with

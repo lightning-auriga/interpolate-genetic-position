@@ -30,7 +30,7 @@ namespace interpolate_genetic_position {
 class bigwig_reader {
  public:
   /*!
-   * \brief default contructor
+   * \brief default constructor
    *
    * This does *not* allocate internal memory.
    */
