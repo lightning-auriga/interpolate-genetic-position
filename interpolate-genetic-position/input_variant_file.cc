@@ -25,6 +25,7 @@ igp::input_variant_file::input_variant_file()
       _pos2_index(-1),
       _gpos_index(0),
       _chr(""),
+      _varid(""),
       _pos1(0),
       _pos2(-1),
       _base0(false),
@@ -122,6 +123,8 @@ bool igp::input_variant_file::get_variant() {
     // for other filetypes
     _chr = std::string(
         bcf_seqname_safe(bcf_sr_get_header(_sr, 0), bcf_sr_get_line(_sr, 0)));
+    bcf_unpack(bcf_sr_get_line(_sr, 0), BCF_UN_STR);
+    _varid = std::string(bcf_sr_get_line(_sr, 0)->d.id);
     _pos1 = bcf_sr_get_line(_sr, 0)->pos - 1;
     return true;
   }
@@ -164,6 +167,8 @@ const std::string &igp::input_variant_file::get_chr() const { return _chr; }
 const mpz_class &igp::input_variant_file::get_pos1() const { return _pos1; }
 
 const mpz_class &igp::input_variant_file::get_pos2() const { return _pos2; }
+
+const std::string &igp::input_variant_file::get_varid() const { return _varid; }
 
 const std::vector<std::string> &igp::input_variant_file::get_line_contents()
     const {

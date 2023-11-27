@@ -96,6 +96,13 @@ class base_input_variant_file {
    */
   virtual const mpz_class &get_pos2() const = 0;
   /*!
+   * \brief get variant ID
+   * \return variant ID
+   *
+   * at time of writing, only used for vcfs
+   */
+  virtual const std::string &get_varid() const = 0;
+  /*!
    * \brief get vector containing tokenized representation of current line
    * \return vector containing tokenized representation of current line
    */
@@ -182,6 +189,13 @@ class input_variant_file : public base_input_variant_file {
    */
   const mpz_class &get_pos2() const;
   /*!
+   * \brief get variant ID
+   * \return variant ID
+   *
+   * at time of writing, only used for vcfs
+   */
+  const std::string &get_varid() const;
+  /*!
    * \brief get vector containing tokenized representation of current line
    * \return vector containing tokenized representation of current line
    */
@@ -206,6 +220,7 @@ class input_variant_file : public base_input_variant_file {
   int _pos2_index;       //!< for e.g. bedfiles, index of end position of region
   unsigned _gpos_index;  //!< index of genetic position in line
   std::string _chr;      //!< chromosome of current marker
+  std::string _varid;    //!< ID of current marker
   mpz_class _pos1;       //!< physical position of current marker
   mpz_class _pos2;       //!< for e.g. bedfiles, end position of region
   bool _base0;           //!< whether physical position is base 0
