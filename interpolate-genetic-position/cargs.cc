@@ -67,7 +67,7 @@ std::string igp::cargs::get_input_filename() const {
 std::string igp::cargs::get_input_preset() const {
   std::string preset = compute_parameter<std::string>("preset");
   if (preset.compare("bim") && preset.compare("map") && preset.compare("bed") &&
-      preset.compare("snp")) {
+      preset.compare("snp") && preset.compare("vcf")) {
     throw std::runtime_error("invalid input preset format: \"" + preset + "\"");
   }
   return preset;
