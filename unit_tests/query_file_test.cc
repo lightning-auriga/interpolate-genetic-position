@@ -53,6 +53,26 @@ TEST(queryFileTest, canInitializeBedfile) {
   qf.open(bedfilename, igp::BED);
 }
 
+TEST(queryFileTest, canInitializeVcf) {
+  igp::mock_input_variant_file mock_infile;
+  igp::mock_output_variant_file mock_outfile;
+  std::string vcfname = "test.vcf";
+  EXPECT_CALL(mock_infile, set_format_parameters(0, 1, -1, -1, false, 9))
+      .Times(1)
+      .WillOnce(Return());
+  EXPECT_CALL(mock_infile, open(vcfname)).Times(1).WillOnce(Return());
+  igp::query_file qf(&mock_infile, &mock_outfile);
+  qf.open(vcfname, igp::VCF);
+}
+
+TEST(queryFileTest, canDetectInvalidVcf) {
+  igp::input_variant_file infile;
+  igp::output_variant_file outfile;
+  std::string fakename = "test.vcf";
+  igp::query_file qf(&infile, &outfile);
+  EXPECT_THROW(qf.open(fakename, igp::VCF), std::runtime_error);
+}
+
 TEST(queryFileTest, canReadFromCin) {
   std::string map_content =
       "1 rs1 0 100\n"
