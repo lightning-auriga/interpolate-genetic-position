@@ -174,5 +174,8 @@ bool igp::input_variant_file::eof() {
   if (_gzinput) {
     return gzeof(_gzinput);
   }
+  if (_sr) {
+    return !bcf_sr_has_line(_sr, 0);
+  }
   return get_fallback_stream()->peek() == EOF;
 }
