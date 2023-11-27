@@ -27,7 +27,8 @@ igp::input_variant_file::input_variant_file()
       _chr(""),
       _pos1(0),
       _pos2(-1),
-      _base0(false) {
+      _base0(false),
+      _vcf_eof(false) {
   _buffer = new char[_buffer_size];
 }
 
@@ -78,6 +79,7 @@ void igp::input_variant_file::close() {
   if (_sr) {
     bcf_sr_destroy(_sr);
     _sr = 0;
+    _vcf_eof = false;
   }
 }
 
@@ -113,6 +115,7 @@ bool igp::input_variant_file::get_variant() {
   // vcf input only: extract fields with htslib and return
   if (_sr) {
     if (!bcf_sr_next_line(_sr)) {
+      _vcf_eof = true;
       return false;
     }
     // use htslib internal accessors, and skip downstream logic
@@ -175,7 +178,7 @@ bool igp::input_variant_file::eof() {
     return gzeof(_gzinput);
   }
   if (_sr) {
-    return !bcf_sr_has_line(_sr, 0);
+    return _vcf_eof;
   }
   return get_fallback_stream()->peek() == EOF;
 }

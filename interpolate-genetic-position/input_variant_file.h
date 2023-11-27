@@ -209,6 +209,7 @@ class input_variant_file : public base_input_variant_file {
   mpz_class _pos1;       //!< physical position of current marker
   mpz_class _pos2;       //!< for e.g. bedfiles, end position of region
   bool _base0;           //!< whether physical position is base 0
+  bool _vcf_eof;         //!< track whether vcf eof has been encountered
 };
 }  // namespace interpolate_genetic_position
 
