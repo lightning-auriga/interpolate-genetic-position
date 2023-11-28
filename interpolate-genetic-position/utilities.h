@@ -78,6 +78,18 @@ std::string make_chr_bigwig_friendly(const std::string &chr);
  */
 std::string next_chromosome(const std::string &current_chr);
 /*!
+ * \brief verify valid combination of input and output format
+ * @param informat_str string representation of input format
+ * specified by user
+ * @param outformat_str string representation of output format
+ * requested by user
+ *
+ * Note that this will return silently if the combination is
+ * valid, and throw std::domain_error otherwise.
+ */
+void check_io_combinations(const std::string &informat_str,
+                           const std::string &outformat_str);
+/*!
  * \class query_result
  * \brief store information required to represent the result
  * of a query to a genetic map object

@@ -54,6 +54,7 @@ int main(int argc, const char** const argv) {
   if (input.empty() && genetic_map.empty()) {
     throw std::runtime_error("only one of -i and -g can be read from stdin");
   }
+  igp::check_io_combinations(preset, output_format);
   if (igp::string_to_format_type(preset) != igp::BED &&
       fabs(step_interval) > DBL_EPSILON) {
     std::cerr << "warning: step interval parameter is only respected "

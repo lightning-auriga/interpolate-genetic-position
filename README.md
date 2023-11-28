@@ -108,7 +108,7 @@ By default, the final compiled program can be run with
 |Parameter|Description|
 |---|---|
 |`--input`<br>`-i`|Input file of variants or regions to annotate. Needs to be sorted, chromosome and position. Can be gzipped. If not specified, will be read as plaintext from stdin.|
-|`--preset`<br>`-p`|Format of input variant file. Accepted formats: `bim`, `map`, `snp`, `bed`.|
+|`--preset`<br>`-p`|Format of input variant file. Accepted formats: `bim`, `map`, `snp`, `vcf`, `bed`.|
 |`--genetic-map`<br>`-g`|Input recombination map. Needs to be sorted, chromosome and position. Can be gzipped (except bigwigs). If not specified, will be read as plaintext from stdin.|
 |`--map-format`<br>`-m`|Format of recombination map. Accepted formats: `bolt`, `bedgraph`, `bigwig` (see below for further discussion).|
 |`--output`<br>`-o`|Output file. Will match format of input. Cannot currently be gzipped. If not specified, will be written to stdout.|
@@ -119,6 +119,21 @@ By default, the final compiled program can be run with
 |`--version`|Print version string for current build.|
 
 Note that, of the above, either `-i` or `-g` can be read from stdin, but not both.
+
+## Valid Combinations of Input and Output Formats
+
+This program can attempt to automatically reformat input files into different format output
+files, but the effectiveness of such a conversion with the available information varies.
+
+|Input Format|Valid Output Formats|Notes|
+|---|---|---|
+|bim|bim, map, snp||
+|map|map|Map files lack allele information, and so allele-containing formats are not possible.|
+|snp|bim, map, snp||
+|vcf|bim, map, snp|Vcf is not itself a supported output format|
+|bed|bed|Input bed regions are converted into bolt-format genetic maps|
+
+
 
 ## How to Choose a Recombination Rate File
 
