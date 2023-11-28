@@ -130,9 +130,9 @@ void igp::genetic_map::query(const std::string &chr_query,
                  query_startpos_vs_upper_bound == -1) {
         // beginning of chromosome
         if (verbose) {
-          get_logstm() << "\t\tbeginning of chromosome, before rate estimates "
-                          "start; setting to 0"
-                       << std::endl;
+          get_logstrm() << "\t\tbeginning of chromosome, before rate estimates "
+                           "start; setting to 0"
+                        << std::endl;
         }
         result->set_gpos(0.0);
         result->set_endpos(cmp(pos2_query, startpos_lower_bound) < 0
