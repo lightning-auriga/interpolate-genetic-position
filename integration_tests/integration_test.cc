@@ -244,40 +244,42 @@ TEST_F(integrationTest, bedfileInputBoltOutputNoIncrement) {
   std::string input_gmap =
       create_plaintext_file(_in_gmap_tmpfile, get_bolt_content());
   std::string expected_output =
-      "chr1\t499999\t0\t0\n"
-      "chr1\t999999\t0.1\t0\n"
-      "chr1\t1199999\t0.1\t0.02\n"
-      "chr1\t1299999\t0.1\t0.03\n"
-      "chr1\t1499999\t0.1\t0.05\n"
-      "chr1\t1999999\t0.2\t0.1\n"
-      "chr1\t2499999\t0\t0.2\n"
-      "chr3\t999999\t0\t0\n";
+      "chr\tposition\tCOMBINED_rate(cM/Mb)\tGenetic_Map(cM)\n"
+      "chr1\t500000\t0\t0\n"
+      "chr1\t1000000\t0.1\t0\n"
+      "chr1\t1200000\t0.1\t0.02\n"
+      "chr1\t1300000\t0.1\t0.03\n"
+      "chr1\t1500000\t0.1\t0.05\n"
+      "chr1\t2000000\t0.2\t0.1\n"
+      "chr1\t2500000\t0\t0.2\n"
+      "chr3\t1000000\t0\t0\n";
   igp::interpolator ip;
   ip.interpolate(_in_query_tmpfile, "bed", _in_gmap_tmpfile, "bolt",
-                 _out_tmpfile, "bed", false, 0.0, false);
+                 _out_tmpfile, "bolt", false, 0.0, false);
   EXPECT_TRUE(boost::filesystem::exists(_out_tmpfile));
   std::string observed_output = load_plaintext_file(_out_tmpfile);
   EXPECT_EQ(expected_output, observed_output);
 }
 
-TEST_F(integrationTest, bedfileInputBedgraphOutputBoundaryIncrement) {
+TEST_F(integrationTest, bedfileInputBoltOutputBoundaryIncrement) {
   std::string input_query =
       create_plaintext_file(_in_query_tmpfile, get_bedfile_content());
   std::string input_gmap =
       create_plaintext_file(_in_gmap_tmpfile, get_bolt_content());
   double boundary_increment = 1.0;
   std::string expected_output =
-      "chr1\t499999\t0\t0\n"
-      "chr1\t999999\t0.1\t0\n"
-      "chr1\t1199999\t0.1\t1.02\n"
-      "chr1\t1299999\t0.1\t2.03\n"
-      "chr1\t1499999\t0.1\t3.05\n"
-      "chr1\t1999999\t0.2\t3.1\n"
-      "chr1\t2499999\t0\t4.2\n"
-      "chr3\t999999\t0\t0\n";
+      "chr\tposition\tCOMBINED_rate(cM/Mb)\tGenetic_Map(cM)\n"
+      "chr1\t500000\t0\t0\n"
+      "chr1\t1000000\t0.1\t0\n"
+      "chr1\t1200000\t0.1\t1.02\n"
+      "chr1\t1300000\t0.1\t2.03\n"
+      "chr1\t1500000\t0.1\t3.05\n"
+      "chr1\t2000000\t0.2\t3.1\n"
+      "chr1\t2500000\t0\t4.2\n"
+      "chr3\t1000000\t0\t0\n";
   igp::interpolator ip;
   ip.interpolate(_in_query_tmpfile, "bed", _in_gmap_tmpfile, "bolt",
-                 _out_tmpfile, "bed", false, boundary_increment, false);
+                 _out_tmpfile, "bolt", false, boundary_increment, false);
   EXPECT_TRUE(boost::filesystem::exists(_out_tmpfile));
   std::string observed_output = load_plaintext_file(_out_tmpfile);
   EXPECT_EQ(expected_output, observed_output);

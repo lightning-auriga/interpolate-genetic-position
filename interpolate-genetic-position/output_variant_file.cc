@@ -27,6 +27,8 @@ igp::output_variant_file::~output_variant_file() throw() { close(); }
 
 void igp::output_variant_file::open(const std::string &filename,
                                     format_type ft) {
+  std::string bolt_header =
+      "chr\tposition\tCOMBINED_rate(cM/Mb)\tGenetic_Map(cM)\n";
   // set output format
   _ft = ft;
   // this needs to be updated to catch vcfs
@@ -38,7 +40,15 @@ void igp::output_variant_file::open(const std::string &filename,
       throw std::runtime_error("output_variant_file: cannot open file \"" +
                                filename + "\"");
     }
-  }  // otherwise, filename is empty, and the object will write to std::cout
+    if (_ft == BOLT) {
+      _output << bolt_header;
+    }
+  } else {  // otherwise, filename is empty, and the object will write to
+            // std::cout
+    if (_ft == BOLT) {
+      std::cout << bolt_header;
+    }
+  }
 }
 
 void igp::output_variant_file::close() {
@@ -58,9 +68,9 @@ void igp::output_variant_file::write(
   mpf_class output_gpos = output_morgans() ? gpos / mpf_class("100") : gpos;
   // track when a result is on a different chromosome than the previous ones
   if (get_last_chr().compare(chr)) {
-    // for bed output only, emit dummy results at the end of a chromosome
-    if (ft == BED && pos2 > 0 && !get_last_chr().empty()) {
-      out << get_last_chr() << '\t' << (get_last_pos2() - 1) << '\t' << "0\t"
+    // for bolt output only, emit dummy results at the end of a chromosome
+    if (ft == BOLT && pos2 > 0 && !get_last_chr().empty()) {
+      out << get_last_chr() << '\t' << get_last_pos2() << '\t' << "0\t"
           << (get_last_gpos() +
               get_last_rate() * (get_last_pos2() - get_last_pos1()) /
                   mpf_class(1000000.0) +
@@ -80,9 +90,8 @@ void igp::output_variant_file::write(
     }
   } else if (ft == SNP) {
     out << id << '\t' << chr << '\t' << output_gpos << '\t' << pos1;
-  } else if (ft == BED) {
-    out << chr << '\t' << (pos1 - 1) << '\t' << (cmp(pos2, 0) > 0 ? rate : pos1)
-        << '\t' << output_gpos;
+  } else if (ft == BOLT) {
+    out << chr << '\t' << pos1 << '\t' << rate << '\t' << output_gpos;
   } else {
     throw std::runtime_error(
         "output_variant_file::write: format not supported");

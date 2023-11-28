@@ -112,6 +112,7 @@ By default, the final compiled program can be run with
 |`--genetic-map`<br>`-g`|Input recombination map. Needs to be sorted, chromosome and position. Can be gzipped (except bigwigs). If not specified, will be read as plaintext from stdin.|
 |`--map-format`<br>`-m`|Format of recombination map. Accepted formats: `bolt`, `bedgraph`, `bigwig` (see below for further discussion).|
 |`--output`<br>`-o`|Output file. Will match format of input. Cannot currently be gzipped. If not specified, will be written to stdout.|
+|`--output-format`<br>`-f`|Format of output file. Accepted formats: `bolt`, `bim`, `map`, `snp (see below for further discussion).|
 |`--verbose`<br>`-v`|Whether to print extremely verbose debug logs. You probably don't want this.|
 |`--output-morgans`|Report output genetic position in morgans, instead of the default centimorgans.|
 |`--region-step-interval`|Add a fixed genetic distance at the boundaries of end positions of bedfile region queries, such that the output data have a step-like structure. This functionality is included for experimental purposes, and in most applications this setting should be kept at its default of 0.|
@@ -131,7 +132,7 @@ files, but the effectiveness of such a conversion with the available information
 |map|map|Map files lack allele information, and so allele-containing formats are not possible.|
 |snp|bim, map, snp||
 |vcf|bim, map, snp|Vcf is not itself a supported output format. Note that for markers with multiple alternate alleles, only the first will be reported.|
-|bed|bed|Input bed regions are converted into bolt-format genetic maps.|
+|bed|bolt|Input bed regions are converted into bolt-format genetic maps.|
 
 
 
@@ -218,7 +219,7 @@ Regions don't have a single genetic distance associated with them, and so for co
 a bed region file, the output becomes a genetic map with associated genetic distance and rate (cM/Mb) data.
 
 ```bash
-interpolate-genetic-position.out -i infile.bed -p bed -g genetic_map.tsv -m bolt -o new_recombination_map.tsv -f bed
+interpolate-genetic-position.out -i infile.bed -p bed -g genetic_map.tsv -m bolt -o new_recombination_map.tsv -f bolt
 ```
 
 ### Take a bed file of regions, turn it into its own recombination map, and use that map to annotate a second file
@@ -228,7 +229,7 @@ from stream by leaving the corresponding argument unspecified. Note that the cor
 is still required. The output can also be streamed in the same manner with the same restriction.
 
 ```bash
-interpolate-genetic-position.out -i infile.bed -p bed -g genetic_map.tsv -m bolt -f bed |
+interpolate-genetic-position.out -i infile.bed -p bed -g genetic_map.tsv -m bolt -f bolt |
 interpolate-genetic-position.out -i infile.vcf -p vcf -m bolt -o annotated_variants.map -f map
 ```
 

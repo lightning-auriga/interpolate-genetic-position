@@ -119,9 +119,9 @@ void igp::check_io_combinations(const std::string &informat_str,
                               ", valid output format is map");
     }
   } else if (informat == BED) {
-    if (outformat != BED) {
+    if (outformat != BOLT) {
       throw std::domain_error("for input format " + informat_str +
-                              ", valid output format is bed");
+                              ", valid output format is bolt");
     }
   } else {
     throw std::domain_error("unrecognized input format: " + informat_str);

@@ -44,7 +44,7 @@ void igp::cargs::initialize_options() {
       boost::program_options::value<std::string>()->default_value(""),
       "name of output file (default: write to stdout)")(
       "output-format,f", boost::program_options::value<std::string>(),
-      "format of output file (accepted values: bim, map, snp, bed)")(
+      "format of output file (accepted values: bim, map, snp, bolt)")(
       "output-morgans",
       "emit output genetic position in morgans instead of centimorgans")(
       "region-step-interval",
@@ -93,7 +93,7 @@ std::string igp::cargs::get_output_filename() const {
 std::string igp::cargs::get_output_format() const {
   std::string output_format = compute_parameter<std::string>("output-format");
   if (output_format.compare("bim") && output_format.compare("map") &&
-      output_format.compare("bed") && output_format.compare("snp")) {
+      output_format.compare("bolt") && output_format.compare("snp")) {
     throw std::runtime_error("invalid output format: \"" + output_format +
                              "\"");
   }
