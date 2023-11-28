@@ -68,7 +68,9 @@ TEST_F(geneticMapTest, queryBeyondEndOfChromosomePointEstimates) {
   igp::query_result result;
   std::string query_chr = "1";
   mpz_class query_pos = 1000000;
-  bool verbose = false;
+  bool verbose = true;
+  std::ostringstream logstrm;
+  gm.set_logstrm(&logstrm);
   gm.query(query_chr, query_pos, -1, verbose, &result);
   EXPECT_EQ(result.get_gpos(), mpf_class(23.4));
 }
@@ -99,7 +101,9 @@ TEST_F(geneticMapTest, queryBeyondEndOfChromosomeRegionEstimates) {
   igp::query_result result;
   std::string query_chr = "1";
   mpz_class query_pos = 1000000;
-  bool verbose = false;
+  bool verbose = true;
+  std::ostringstream logstrm;
+  gm.set_logstrm(&logstrm);
   gm.query(query_chr, query_pos, -1, verbose, &result);
   mpf_class gpos_expected("23.4615");
   EXPECT_EQ(cmp(abs(result.get_gpos() - gpos_expected), _mpf_error_tolerance),
@@ -120,7 +124,9 @@ TEST_F(geneticMapTest, queryBeyondEndOfFile) {
   igp::query_result result;
   std::string query_chr = "M";
   mpz_class query_pos = 1000000;
-  bool verbose = false;
+  bool verbose = true;
+  std::ostringstream logstrm;
+  gm.set_logstrm(&logstrm);
   gm.query(query_chr, query_pos, -1, verbose, &result);
   EXPECT_EQ(result.get_gpos(), mpf_class(0.0));
 }
@@ -139,7 +145,9 @@ TEST_F(geneticMapTest, queryInteriorUncoveredChromosome) {
   igp::query_result result;
   std::string query_chr = "2";
   mpz_class query_pos = 1000000;
-  bool verbose = false;
+  bool verbose = true;
+  std::ostringstream logstrm;
+  gm.set_logstrm(&logstrm);
   gm.query(query_chr, query_pos, -1, verbose, &result);
   EXPECT_EQ(result.get_gpos(), mpf_class(0.0));
 }
@@ -164,7 +172,9 @@ TEST_F(geneticMapTest, queryBeginningOfChromosome) {
   igp::query_result result;
   std::string query_chr = "1";
   mpz_class query_pos = 50000;
-  bool verbose = false;
+  bool verbose = true;
+  std::ostringstream logstrm;
+  gm.set_logstrm(&logstrm);
   gm.query(query_chr, query_pos, -1, verbose, &result);
   EXPECT_EQ(result.get_gpos(), mpf_class(0.0));
 }
@@ -195,7 +205,9 @@ TEST_F(geneticMapTest, queryStandardInterpolation) {
   igp::query_result result;
   std::string query_chr = "1";
   mpz_class query_pos = 150000;
-  bool verbose = false;
+  bool verbose = true;
+  std::ostringstream logstrm;
+  gm.set_logstrm(&logstrm);
   gm.query(query_chr, query_pos, -1, verbose, &result);
   mpf_class gpos_expected("0.0035");
   EXPECT_EQ(cmp(abs(result.get_gpos() - gpos_expected), _mpf_error_tolerance),
@@ -226,7 +238,9 @@ TEST_F(geneticMapTest, queryOverlapLowerBound) {
   igp::query_result result;
   std::string query_chr = "1";
   mpz_class query_pos = 100000;
-  bool verbose = false;
+  bool verbose = true;
+  std::ostringstream logstrm;
+  gm.set_logstrm(&logstrm);
   gm.query(query_chr, query_pos, -1, verbose, &result);
   EXPECT_EQ(result.get_gpos(), mpf_class("0.001"));
 }
@@ -258,7 +272,9 @@ TEST_F(geneticMapTest, queryOverlapUpperBound) {
   igp::query_result result;
   std::string query_chr = "1";
   mpz_class query_pos = 200000;
-  bool verbose = false;
+  bool verbose = true;
+  std::ostringstream logstrm;
+  gm.set_logstrm(&logstrm);
   gm.query(query_chr, query_pos, -1, verbose, &result);
   EXPECT_EQ(result.get_gpos(), mpf_class("0.002"));
 }
@@ -276,7 +292,9 @@ TEST_F(geneticMapTest, queryDetectsUnsortedChromosomes) {
   igp::query_result result;
   std::string query_chr = "2";
   mpz_class query_pos = 100000;
-  bool verbose = false;
+  bool verbose = true;
+  std::ostringstream logstrm;
+  gm.set_logstrm(&logstrm);
   EXPECT_THROW(gm.query(query_chr, query_pos, -1, verbose, &result),
                std::runtime_error);
 }
@@ -301,7 +319,9 @@ TEST_F(geneticMapTest, queryDetectsUnsortedPositions) {
   igp::query_result result;
   std::string query_chr = "1";
   mpz_class query_pos = 5000;
-  bool verbose = false;
+  bool verbose = true;
+  std::ostringstream logstrm;
+  gm.set_logstrm(&logstrm);
   EXPECT_THROW(gm.query(query_chr, query_pos, -1, verbose, &result),
                std::runtime_error);
 }
@@ -338,7 +358,9 @@ TEST_F(geneticMapTest, queryIncrementGeneticMapWhenExceedsPositionRange) {
   igp::query_result result;
   std::string query_chr = "1";
   mpz_class query_pos = 2500;
-  bool verbose = false;
+  bool verbose = true;
+  std::ostringstream logstrm;
+  gm.set_logstrm(&logstrm);
   gm.query(query_chr, query_pos, -1, verbose, &result);
   mpf_class gpos_expected("0.245615");
   EXPECT_EQ(cmp(abs(result.get_gpos() - gpos_expected), _mpf_error_tolerance),
@@ -370,7 +392,9 @@ TEST_F(geneticMapTest, queryIncrementGeneticMapWhenExceedsLowerChromosome) {
   igp::query_result result;
   std::string query_chr = "2";
   mpz_class query_pos = 50000;
-  bool verbose = false;
+  bool verbose = true;
+  std::ostringstream logstrm;
+  gm.set_logstrm(&logstrm);
   gm.query(query_chr, query_pos, -1, verbose, &result);
   EXPECT_EQ(result.get_gpos(), mpf_class("0.0"));
 }
@@ -402,7 +426,9 @@ TEST_F(geneticMapTest, queryIncrementGeneticMapWhenExceedsUpperChromosome) {
   igp::query_result result;
   std::string query_chr = "2";
   mpz_class query_pos = 50000;
-  bool verbose = false;
+  bool verbose = true;
+  std::ostringstream logstrm;
+  gm.set_logstrm(&logstrm);
   gm.query(query_chr, query_pos, -1, verbose, &result);
   EXPECT_EQ(result.get_gpos(), mpf_class("0.0"));
 }
@@ -439,7 +465,9 @@ TEST_F(geneticMapTest, queryChromMatchEndOfBoltStyleMap) {
   igp::query_result result;
   std::string query_chr = "2";
   mpz_class query_pos = 200000;
-  bool verbose = false;
+  bool verbose = true;
+  std::ostringstream logstrm;
+  gm.set_logstrm(&logstrm);
   gm.query(query_chr, query_pos, -1, verbose, &result);
   EXPECT_EQ(result.get_startpos(), mpz_class(200000));
   EXPECT_EQ(result.get_endpos(), mpz_class(-1));
@@ -482,7 +510,9 @@ TEST_F(geneticMapTest, querySameChromBeyondEndOfBedgraphStyleMap) {
   igp::query_result result;
   std::string query_chr = "2";
   mpz_class query_pos = 400000;
-  bool verbose = false;
+  bool verbose = true;
+  std::ostringstream logstrm;
+  gm.set_logstrm(&logstrm);
   gm.query(query_chr, query_pos, -1, verbose, &result);
   EXPECT_EQ(result.get_startpos(), mpz_class(400000));
   EXPECT_EQ(result.get_endpos(), mpz_class(-1));
@@ -527,7 +557,9 @@ TEST_F(geneticMapTest, querySameChromWithinEndOfBedgraphStyleMap) {
   igp::query_result result;
   std::string query_chr = "2";
   mpz_class query_pos = 250000;
-  bool verbose = false;
+  bool verbose = true;
+  std::ostringstream logstrm;
+  gm.set_logstrm(&logstrm);
   gm.query(query_chr, query_pos, -1, verbose, &result);
   EXPECT_EQ(result.get_startpos(), mpz_class(250000));
   EXPECT_EQ(result.get_endpos(), mpz_class(-1));
@@ -575,7 +607,9 @@ TEST_F(geneticMapTest,
   std::string query_chr = "2";
   mpz_class query_startpos = 250000;
   mpz_class query_endpos = 275000;
-  bool verbose = false;
+  bool verbose = true;
+  std::ostringstream logstrm;
+  gm.set_logstrm(&logstrm);
   gm.query(query_chr, query_startpos, query_endpos, verbose, &result);
   EXPECT_EQ(result.get_startpos(), mpz_class(250000));
   EXPECT_EQ(result.get_endpos(), mpz_class(275000));
@@ -623,7 +657,9 @@ TEST_F(geneticMapTest,
   std::string query_chr = "2";
   mpz_class query_startpos = 250000;
   mpz_class query_endpos = 350000;
-  bool verbose = false;
+  bool verbose = true;
+  std::ostringstream logstrm;
+  gm.set_logstrm(&logstrm);
   gm.query(query_chr, query_startpos, query_endpos, verbose, &result);
   EXPECT_EQ(result.get_startpos(), mpz_class(250000));
   EXPECT_EQ(result.get_endpos(), mpz_class(300000));
@@ -648,7 +684,9 @@ TEST_F(geneticMapTest, geneticMapFromCin) {
   igp::query_result result;
   std::string query_chr = "1";
   mpz_class query_pos = 1000000;
-  bool verbose = false;
+  bool verbose = true;
+  std::ostringstream logstrm;
+  gm.set_logstrm(&logstrm);
   gm.query(query_chr, query_pos, -1, verbose, &result);
   EXPECT_EQ(result.get_chr(), "1");
   EXPECT_EQ(result.get_startpos(), mpz_class(1000000));
