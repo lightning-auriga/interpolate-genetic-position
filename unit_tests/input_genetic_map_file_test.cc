@@ -107,3 +107,26 @@ TEST_F(inputGeneticMapFileTest, geneticMapUnderstandsBolt) {
   EXPECT_FALSE(mapfile.get());
   EXPECT_NO_THROW(mapfile.close());
 }
+
+TEST_F(inputGeneticMapFileTest, catchesNonexistentGzippedFile) {
+  igp::input_genetic_map_file mapfile;
+  EXPECT_THROW(mapfile.open("nonsensefile.gz", igp::BOLT), std::runtime_error);
+}
+
+TEST_F(inputGeneticMapFileTest, catchesNonexistentPlaintextFile) {
+  igp::input_genetic_map_file mapfile;
+  EXPECT_THROW(mapfile.open("nonsensefile.txt", igp::BOLT), std::runtime_error);
+}
+
+TEST_F(inputGeneticMapFileTest, catchesNullFallbackStream) {
+  igp::input_genetic_map_file mapfile;
+  mapfile.set_fallback_stream(NULL);
+  EXPECT_THROW(mapfile.get_fallback_stream(), std::runtime_error);
+}
+
+TEST_F(inputGeneticMapFileTest, catchesEofInFallbackStream) {
+  igp::input_genetic_map_file mapfile;
+  std::istringstream strm1("");
+  mapfile.set_fallback_stream(&strm1);
+  EXPECT_FALSE(mapfile.get());
+}
