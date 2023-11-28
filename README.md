@@ -130,8 +130,8 @@ files, but the effectiveness of such a conversion with the available information
 |bim|bim, map, snp||
 |map|map|Map files lack allele information, and so allele-containing formats are not possible.|
 |snp|bim, map, snp||
-|vcf|bim, map, snp|Vcf is not itself a supported output format|
-|bed|bed|Input bed regions are converted into bolt-format genetic maps|
+|vcf|bim, map, snp|Vcf is not itself a supported output format. Note that for markers with multiple alternate alleles, only the first will be reported.|
+|bed|bed|Input bed regions are converted into bolt-format genetic maps.|
 
 
 
