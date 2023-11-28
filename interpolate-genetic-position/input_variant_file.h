@@ -19,6 +19,7 @@
 #include <string>
 #include <vector>
 
+#include "htslib/synced_bcf_reader.h"
 #include "interpolate-genetic-position/utilities.h"
 
 namespace interpolate_genetic_position {
@@ -75,13 +76,6 @@ class base_input_variant_file {
                                      int pos2_index, unsigned gpos_index,
                                      bool base0, unsigned n_tokens) = 0;
   /*!
-   * \brief get a single line from an input stream
-   * \param line pointer to allocated string that will contain line,
-   * or equivalent, depending on input type
-   * \return whether access operation was successful
-   */
-  virtual bool get_input_line(std::string *line) = 0;
-  /*!
    * \brief get next marker's metadata from input connection
    * \return whether a variant was successfully accessed from file
    */
@@ -101,6 +95,27 @@ class base_input_variant_file {
    * \return end position of current region
    */
   virtual const mpz_class &get_pos2() const = 0;
+  /*!
+   * \brief get variant ID
+   * \return variant ID
+   *
+   * at time of writing, only used for vcfs
+   */
+  virtual const std::string &get_varid() const = 0;
+  /*!
+   * \brief get first allele
+   * \return first allele
+   *
+   * at time of writing, only used for vcfs
+   */
+  virtual const std::string &get_a1() const = 0;
+  /*!
+   * \brief get second allele
+   * \return second allele
+   *
+   * at time of writing, only used for vcfs
+   */
+  virtual const std::string &get_a2() const = 0;
   /*!
    * \brief get vector containing tokenized representation of current line
    * \return vector containing tokenized representation of current line
@@ -168,13 +183,6 @@ class input_variant_file : public base_input_variant_file {
                              int pos2_index, unsigned gpos_index, bool base0,
                              unsigned n_tokens);
   /*!
-   * \brief get a single line from an input stream
-   * \param line pointer to allocated string that will contain line,
-   * or equivalent, depending on input type
-   * \return whether access operation was successful
-   */
-  bool get_input_line(std::string *line);
-  /*!
    * \brief get next marker's metadata from input connection
    * \return whether a variant was successfully accessed from file
    */
@@ -195,6 +203,27 @@ class input_variant_file : public base_input_variant_file {
    */
   const mpz_class &get_pos2() const;
   /*!
+   * \brief get variant ID
+   * \return variant ID
+   *
+   * at time of writing, only used for vcfs
+   */
+  const std::string &get_varid() const;
+  /*!
+   * \brief get first allele
+   * \return first allele
+   *
+   * at time of writing, only used for vcfs
+   */
+  const std::string &get_a1() const;
+  /*!
+   * \brief get second allele
+   * \return second allele
+   *
+   * at time of writing, only used for vcfs
+   */
+  const std::string &get_a2() const;
+  /*!
    * \brief get vector containing tokenized representation of current line
    * \return vector containing tokenized representation of current line
    */
@@ -209,6 +238,7 @@ class input_variant_file : public base_input_variant_file {
  private:
   std::ifstream _input;                     //!< input uncompressed file stream
   gzFile _gzinput;                          //!< input gzipped file pointer
+  bcf_srs_t *_sr;                           //!< synced reader for input vcfs
   std::istream *_fallback;                  //!< fallback input stream
   char *_buffer;                            //!< character buffer for zlib reads
   std::vector<std::string> _line_contents;  //!< tokenized input line
@@ -218,9 +248,13 @@ class input_variant_file : public base_input_variant_file {
   int _pos2_index;       //!< for e.g. bedfiles, index of end position of region
   unsigned _gpos_index;  //!< index of genetic position in line
   std::string _chr;      //!< chromosome of current marker
+  std::string _varid;    //!< ID of current marker
   mpz_class _pos1;       //!< physical position of current marker
   mpz_class _pos2;       //!< for e.g. bedfiles, end position of region
+  std::string _a1;       //!< first allele of current marker
+  std::string _a2;       //!< second allele of current marker
   bool _base0;           //!< whether physical position is base 0
+  bool _vcf_eof;         //!< track whether vcf eof has been encountered
 };
 }  // namespace interpolate_genetic_position
 

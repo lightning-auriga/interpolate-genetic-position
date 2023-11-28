@@ -93,9 +93,20 @@ class genetic_map {
    * \brief close any input connection
    */
   void close();
+  /*!
+   * \brief get reference to logging stream
+   * \return reference to logging stream
+   */
+  std::ostream &get_logstrm() const;
+  /*!
+   * \brief set pointer to logging stream
+   * @param ptr pointer to logging stream
+   */
+  void set_logstrm(std::ostream *ptr);
 
  private:
   base_input_genetic_map_file *_interface;  //!< pointer to interface object
+  std::ostream *_logstrm;  //!< pointer to stream for verbose logging
 };
 }  // namespace interpolate_genetic_position
 

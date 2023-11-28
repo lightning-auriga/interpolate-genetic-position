@@ -18,7 +18,7 @@ igp::genetic_map::genetic_map(const genetic_map &obj) {
       "genetic_map: copy constructor operation is invalid for this class");
 }
 igp::genetic_map::genetic_map(base_input_genetic_map_file *ptr)
-    : _interface(ptr) {}
+    : _interface(ptr), _logstrm(&std::cerr) {}
 igp::genetic_map::~genetic_map() throw() { _interface->close(); }
 void igp::genetic_map::open(const std::string &filename, format_type ft) {
   _interface->open(filename, ft);
@@ -62,8 +62,8 @@ void igp::genetic_map::query(const std::string &chr_query,
   direction query_vs_upper_bound = EQUAL;
   mpf_class mb_adjustment = 1000000.0;
   if (verbose) {
-    std::cout << "query: chr is " << chr_query << ", pos is " << pos1_query
-              << std::endl;
+    get_logstrm() << "query: chr is " << chr_query << ", pos is " << pos1_query
+                  << std::endl;
   }
   result->set_chr(chr_query);
   result->set_startpos(pos1_query);
@@ -84,7 +84,7 @@ void igp::genetic_map::query(const std::string &chr_query,
     query_vs_upper_bound = chromosome_compare(chr_query, chr_upper_bound);
     if (query_vs_lower_bound == EQUAL && query_vs_upper_bound == EQUAL) {
       if (verbose) {
-        std::cout << "\tsame chromosome, position comparing" << std::endl;
+        get_logstrm() << "\tsame chromosome, position comparing" << std::endl;
       }
       // proceed to position comparison
       // this early check enforces strict position ordering, and prevents
@@ -104,8 +104,8 @@ void igp::genetic_map::query(const std::string &chr_query,
       if (query_startpos_vs_lower_bound == 0 &&
           query_startpos_vs_upper_bound == -1) {
         if (verbose) {
-          std::cout << "\t\tmatches lower boundary exactly: "
-                    << _interface->get_gpos_lower_bound() << std::endl;
+          get_logstrm() << "\t\tmatches lower boundary exactly: "
+                        << _interface->get_gpos_lower_bound() << std::endl;
         }
         // exact lower boundary rate
         result->set_gpos(_interface->get_gpos_lower_bound());
@@ -120,18 +120,19 @@ void igp::genetic_map::query(const std::string &chr_query,
         // since this is *waves hands* the same thing as the exact lower
         // boundary rate, get() once here and have the other logic deal with it
         if (verbose) {
-          std::cout << "\t\tmatches upper boundary exactly, so incrementing to "
-                       "use that logic"
-                    << std::endl;
+          get_logstrm()
+              << "\t\tmatches upper boundary exactly, so incrementing to "
+                 "use that logic"
+              << std::endl;
         }
         _interface->get();
       } else if (query_startpos_vs_lower_bound == -1 &&
                  query_startpos_vs_upper_bound == -1) {
         // beginning of chromosome
         if (verbose) {
-          std::cout << "\t\tbeginning of chromosome, before rate estimates "
-                       "start; setting to 0"
-                    << std::endl;
+          get_logstrm() << "\t\tbeginning of chromosome, before rate estimates "
+                           "start; setting to 0"
+                        << std::endl;
         }
         result->set_gpos(0.0);
         result->set_endpos(cmp(pos2_query, startpos_lower_bound) < 0
@@ -146,13 +147,14 @@ void igp::genetic_map::query(const std::string &chr_query,
                          (pos1_query - startpos_lower_bound) / mb_adjustment *
                              _interface->get_rate_lower_bound());
         if (verbose) {
-          std::cout << "interpolated: gpos_lower_bound = "
-                    << _interface->get_gpos_lower_bound()
-                    << ", pos_lower_bound = " << startpos_lower_bound
-                    << ", pos_upper_bound = " << startpos_upper_bound
-                    << ", rate_lower_bound = "
-                    << _interface->get_rate_lower_bound()
-                    << ", interpolation = " << result->get_gpos() << std::endl;
+          get_logstrm() << "interpolated: gpos_lower_bound = "
+                        << _interface->get_gpos_lower_bound()
+                        << ", pos_lower_bound = " << startpos_lower_bound
+                        << ", pos_upper_bound = " << startpos_upper_bound
+                        << ", rate_lower_bound = "
+                        << _interface->get_rate_lower_bound()
+                        << ", interpolation = " << result->get_gpos()
+                        << std::endl;
         }
         result->set_endpos(cmp(pos2_query, startpos_upper_bound) < 0
                                ? pos2_query
@@ -162,8 +164,8 @@ void igp::genetic_map::query(const std::string &chr_query,
       } else {
         // query is greater than both positions; increment
         if (verbose) {
-          std::cout << "past current loaded window, incrementing range"
-                    << std::endl;
+          get_logstrm() << "past current loaded window, incrementing range"
+                        << std::endl;
         }
         _interface->get();
       }
@@ -200,16 +202,16 @@ void igp::genetic_map::query(const std::string &chr_query,
                              : 0.0);
       }
       if (verbose) {
-        std::cout << "\tchromosome beyond end of range, setting to "
-                  << gpos_interpolated << std::endl;
+        get_logstrm() << "\tchromosome beyond end of range, setting to "
+                      << gpos_interpolated << std::endl;
       }
       result->set_gpos(gpos_interpolated);
       return;
     } else if (query_vs_upper_bound == LESS_THAN) {
       // no estimate for relevant chromosome; set to 0?
       if (verbose) {
-        std::cout << "\tno estimate for entire chromosome, setting to 0"
-                  << std::endl;
+        get_logstrm() << "\tno estimate for entire chromosome, setting to 0"
+                      << std::endl;
       }
       result->set_gpos(0.0);
       result->set_endpos(pos2_query);
@@ -217,12 +219,12 @@ void igp::genetic_map::query(const std::string &chr_query,
       return;
     } else if (query_vs_lower_bound == GREATER_THAN) {
       if (verbose) {
-        std::cout << "\tgenetic map range needs incrementing" << std::endl;
+        get_logstrm() << "\tgenetic map range needs incrementing" << std::endl;
       }
       _interface->get();
       if (query_vs_upper_bound == GREATER_THAN) {
         if (verbose) {
-          std::cout << "\t\ttwice!" << std::endl;
+          get_logstrm() << "\t\ttwice!" << std::endl;
         }
         _interface->get();
       }
@@ -279,7 +281,7 @@ void igp::genetic_map::query(const std::string &chr_query,
                              : 0.0);
       }
       if (verbose) {
-        std::cout
+        get_logstrm()
             << "\tfinal value, beyond boundary of loaded data; setting to "
             << gpos_interpolated << std::endl;
       }
@@ -289,8 +291,8 @@ void igp::genetic_map::query(const std::string &chr_query,
       // We may eventually want to let the user specify that this should
       // fall back to the naive estimator.
       if (verbose) {
-        std::cout << "\tfinal loaded data don't match chromosome, "
-                  << "setting to 0" << std::endl;
+        get_logstrm() << "\tfinal loaded data don't match chromosome, "
+                      << "setting to 0" << std::endl;
       }
       result->set_gpos(0.0);
       result->set_endpos(pos2_query);
@@ -306,3 +308,7 @@ void igp::genetic_map::query(const std::string &chr_query,
         "handle this for you, at the cost of RAM.");
   }
 }
+
+std::ostream &igp::genetic_map::get_logstrm() const { return *_logstrm; }
+
+void igp::genetic_map::set_logstrm(std::ostream *ptr) { _logstrm = ptr; }

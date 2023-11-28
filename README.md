@@ -89,25 +89,25 @@ By default, a build process involving a [conda/mamba](https://mamba.readthedocs.
   - if you wish to use `conda` and it's not currently available, you can install it with the instructions [here](https://mamba.readthedocs.io/en/latest/mamba-installation.html#mamba-install)
   - navigate into your project directory (interpolate-genetic-position)
   - create the `conda` environment for installation as follows:
-  
+
      `mamba env create -f environment.yaml`
   - activate the conda environment:
-  
+
      `mamba activate interpolate-genetic-position-env`
   - update (create) the necessary `configure` scripts with `autoreconf`:
-  
+
      `autoreconf --force --install`
-	 
+
      - note that this can also be run with `./generate.bash` inside the repo
   - run `configure`:
-  
+
 	 `./configure --with-boost=${CONDA_PREFIX} --with-boost-libdir=${CONDA_PREFIX}/lib`
 
 	 - if you are planning on installing software to a local directory, run instead `./configure --prefix=/install/dir [...]`
   - run `make -j{ncores}`
 
   - if desired, run `make install`. if permissions issues are reported, see above for reconfiguring with `./configure --prefix`.
-  
+
 ## Usage
 
 By default, the final compiled program can be run with
@@ -120,10 +120,11 @@ By default, the final compiled program can be run with
 |Parameter|Description|
 |---|---|
 |`--input`<br>`-i`|Input file of variants or regions to annotate. Needs to be sorted, chromosome and position. Can be gzipped. If not specified, will be read as plaintext from stdin.|
-|`--preset`<br>`-p`|Format of input variant file. Accepted formats: `bim`, `map`, `snp`, `bed`.|
+|`--preset`<br>`-p`|Format of input variant file. Accepted formats: `bim`, `map`, `snp`, `vcf`, `bed`.|
 |`--genetic-map`<br>`-g`|Input recombination map. Needs to be sorted, chromosome and position. Can be gzipped (except bigwigs). If not specified, will be read as plaintext from stdin.|
 |`--map-format`<br>`-m`|Format of recombination map. Accepted formats: `bolt`, `bedgraph`, `bigwig` (see below for further discussion).|
 |`--output`<br>`-o`|Output file. Will match format of input. Cannot currently be gzipped. If not specified, will be written to stdout.|
+|`--output-format`<br>`-f`|Format of output file. Accepted formats: `bolt`, `bim`, `map`, `snp (see below for further discussion).|
 |`--verbose`<br>`-v`|Whether to print extremely verbose debug logs. You probably don't want this.|
 |`--output-morgans`|Report output genetic position in morgans, instead of the default centimorgans.|
 |`--region-step-interval`|Add a fixed genetic distance at the boundaries of end positions of bedfile region queries, such that the output data have a step-like structure. This functionality is included for experimental purposes, and in most applications this setting should be kept at its default of 0.|
@@ -131,6 +132,21 @@ By default, the final compiled program can be run with
 |`--version`|Print version string for current build.|
 
 Note that, of the above, either `-i` or `-g` can be read from stdin, but not both.
+
+## Valid Combinations of Input and Output Formats
+
+This program can attempt to automatically reformat input files into different format output
+files, but the effectiveness of such a conversion with the available information varies.
+
+|Input Format|Valid Output Formats|Notes|
+|---|---|---|
+|bim|bim, map, snp||
+|map|map|Map files lack allele information, and so allele-containing formats are not possible.|
+|snp|bim, map, snp||
+|vcf|bim, map, snp|Vcf is not itself a supported output format. Note that for markers with multiple alternate alleles, only the first will be reported.|
+|bed|bolt|Input bed regions are converted into bolt-format genetic maps.|
+
+
 
 ## How to Choose a Recombination Rate File
 
@@ -189,6 +205,45 @@ This program can accept input files as streams and can emit output to stream. To
 or written to stream, simply omit its relevant flag (`-i`, `-g`, `-o`). For input streams, the corresponding
 format flag should still be set. Only one input stream (either `-i` or `-g`) can be read from an input stream
 per run.
+
+## Example Use Cases
+
+### Take a plink-format genotype dataset, annotate with interpolated genetic positions
+
+This is the most basic expected use case.
+
+```bash
+interpolate-genetic-position.out -i infile.bim -p bim -g genetic_map.tsv -m bolt -o infile_with_gpos.bim -f bim
+```
+
+### Take a vcf, annotate markers with interpolated genetic positions
+
+Note that vcf **output** format is not supported, so you'll have to do some further processing if you want to add
+the interpolated values back into e.g. the INFO field somewhere.
+
+```bash
+interpolate-genetic-position.out -i infile.vcf.gz -p vcf -g genetic_map.tsv -m bolt -o interpolated_values.map -f map
+```
+
+### Take a bed file of regions, turn it into its own recombination map
+
+Regions don't have a single genetic distance associated with them, and so for completeness, when annotating
+a bed region file, the output becomes a genetic map with associated genetic distance and rate (cM/Mb) data.
+
+```bash
+interpolate-genetic-position.out -i infile.bed -p bed -g genetic_map.tsv -m bolt -o new_recombination_map.tsv -f bolt
+```
+
+### Take a bed file of regions, turn it into its own recombination map, and use that map to annotate a second file
+
+Either the input query file (`-i`), or the input recombination map (`-g`), but not both at once, can be read
+from stream by leaving the corresponding argument unspecified. Note that the corresponding format flag
+is still required. The output can also be streamed in the same manner with the same restriction.
+
+```bash
+interpolate-genetic-position.out -i infile.bed -p bed -g genetic_map.tsv -m bolt -f bolt |
+interpolate-genetic-position.out -i infile.vcf -p vcf -m bolt -o annotated_variants.map -f map
+```
 
 ## Version History
 

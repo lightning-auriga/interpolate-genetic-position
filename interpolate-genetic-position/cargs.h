@@ -113,6 +113,11 @@ class cargs {
    * \return name of output file
    */
   std::string get_output_filename() const;
+  /*!
+   * \brief get requested format of output file
+   * \return output file format
+   */
+  std::string get_output_format() const;
 
   /*!
     \brief determine whether genetic position should be output in morgans,

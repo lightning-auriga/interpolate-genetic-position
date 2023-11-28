@@ -18,6 +18,7 @@ igp::format_type igp::string_to_format_type(const std::string &name) {
   if (!name.compare("map")) return MAP;
   if (!name.compare("bed")) return BED;
   if (!name.compare("snp")) return SNP;
+  if (!name.compare("vcf")) return VCF;
   throw std::runtime_error(
       "string_to_format_type: unrecognized type "
       "descriptor: \"" +
@@ -102,3 +103,27 @@ const mpf_class &igp::query_result::get_gpos() const { return _gpos; }
 void igp::query_result::set_rate(const mpf_class &rate) { _rate = rate; }
 
 const mpf_class &igp::query_result::get_rate() const { return _rate; }
+
+void igp::check_io_combinations(const std::string &informat_str,
+                                const std::string &outformat_str) {
+  format_type informat = string_to_format_type(informat_str);
+  format_type outformat = string_to_format_type(outformat_str);
+  if (informat == SNP || informat == BIM || informat == VCF) {
+    if (outformat != MAP && outformat != SNP && outformat != BIM) {
+      throw std::domain_error("for input format " + informat_str +
+                              ", valid output formats are: bim, map, snp");
+    }
+  } else if (informat == MAP) {
+    if (outformat != MAP) {
+      throw std::domain_error("for input format " + informat_str +
+                              ", valid output format is map");
+    }
+  } else if (informat == BED) {
+    if (outformat != BOLT) {
+      throw std::domain_error("for input format " + informat_str +
+                              ", valid output format is bolt");
+    }
+  } else {
+    throw std::domain_error("unrecognized input format: " + informat_str);
+  }
+}

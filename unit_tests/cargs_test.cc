@@ -23,11 +23,11 @@ cargsTest::cargsTest()
   populate(test1, &_argvec1, &_argv1);
   std::string test2 =
       "progname -i fn1 -p bed -g fn2 -m bolt -o fn3 --output-morgans "
-      "--region-step-interval 1.23";
+      "--region-step-interval 1.23 -f map";
   populate(test2, &_argvec2, &_argv2);
   std::string test3 = "progname -i fn1 -p bim -g fn2 -m bedgraph -o fn3 -v";
   populate(test3, &_argvec3, &_argv3);
-  std::string test4 = "progname -i fn1 -p bedgraph -g fn2 -m map -o fn3";
+  std::string test4 = "progname -i fn1 -p bedgraph -g fn2 -m map -o fn3 -f vcf";
   populate(test4, &_argvec4, &_argv4);
   std::string test5 = "progname --version";
   populate(test5, &_argvec5, &_argv5);
@@ -123,6 +123,7 @@ TEST_F(cargsTest, basicAccessors) {
   EXPECT_EQ(ap.get_recombination_map(), "fn2");
   EXPECT_EQ(ap.get_map_format(), "bolt");
   EXPECT_EQ(ap.get_output_filename(), "fn3");
+  EXPECT_EQ(ap.get_output_format(), "map");
 }
 
 TEST_F(cargsTest, detectOutputMorgans) {
@@ -143,4 +144,5 @@ TEST_F(cargsTest, detectImproperFormats) {
   igp::cargs ap(_argvec4.size(), _argv4);
   EXPECT_THROW(ap.get_input_preset(), std::runtime_error);
   EXPECT_THROW(ap.get_map_format(), std::runtime_error);
+  EXPECT_THROW(ap.get_output_format(), std::runtime_error);
 }

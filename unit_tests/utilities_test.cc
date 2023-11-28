@@ -40,6 +40,10 @@ TEST(utilitiesTest, snpNameConversion) {
   EXPECT_EQ(igp::string_to_format_type("snp"), igp::SNP);
 }
 
+TEST(utilitiesTest, vcfNameConversion) {
+  EXPECT_EQ(igp::string_to_format_type("vcf"), igp::VCF);
+}
+
 TEST(utilitiesTest, chromosomeToIntegerAutosome) {
   int chrint = 0;
   EXPECT_TRUE(igp::chromosome_to_integer("2", &chrint));
@@ -153,4 +157,27 @@ TEST(utilitiesTest, integerToChromosome26) {
 
 TEST(utilitiesTest, integerToChromosome27) {
   EXPECT_THROW(igp::integer_to_chromosome(27), std::runtime_error);
+}
+
+TEST(utilitiesTest, detectInvalidFormatCombinations) {
+  EXPECT_THROW(igp::check_io_combinations("bed", "bim"), std::domain_error);
+  EXPECT_NO_THROW(igp::check_io_combinations("bed", "bolt"));
+  EXPECT_THROW(igp::check_io_combinations("bed", "map"), std::domain_error);
+  EXPECT_THROW(igp::check_io_combinations("bed", "snp"), std::domain_error);
+  EXPECT_NO_THROW(igp::check_io_combinations("bim", "bim"));
+  EXPECT_THROW(igp::check_io_combinations("bim", "bolt"), std::domain_error);
+  EXPECT_NO_THROW(igp::check_io_combinations("bim", "map"));
+  EXPECT_NO_THROW(igp::check_io_combinations("bim", "snp"));
+  EXPECT_THROW(igp::check_io_combinations("map", "bim"), std::domain_error);
+  EXPECT_THROW(igp::check_io_combinations("map", "bolt"), std::domain_error);
+  EXPECT_NO_THROW(igp::check_io_combinations("map", "map"));
+  EXPECT_THROW(igp::check_io_combinations("map", "snp"), std::domain_error);
+  EXPECT_NO_THROW(igp::check_io_combinations("snp", "bim"));
+  EXPECT_THROW(igp::check_io_combinations("snp", "bolt"), std::domain_error);
+  EXPECT_NO_THROW(igp::check_io_combinations("snp", "map"));
+  EXPECT_NO_THROW(igp::check_io_combinations("snp", "snp"));
+  EXPECT_NO_THROW(igp::check_io_combinations("vcf", "bim"));
+  EXPECT_THROW(igp::check_io_combinations("vcf", "bolt"), std::domain_error);
+  EXPECT_NO_THROW(igp::check_io_combinations("vcf", "map"));
+  EXPECT_NO_THROW(igp::check_io_combinations("vcf", "snp"));
 }

@@ -33,7 +33,7 @@ void igp::cargs::initialize_options() {
       boost::program_options::value<std::string>()->default_value(""),
       "name of input variant/region query file (default: read from stdin)")(
       "preset,p", boost::program_options::value<std::string>(),
-      "format of input file (accepted values: bim, map, snp, bed)")(
+      "format of input file (accepted values: bim, map, snp, vcf, bed)")(
       "genetic-map,g",
       boost::program_options::value<std::string>()->default_value(""),
       "name of input genetic recombination map (default: read from stdin)")(
@@ -43,6 +43,8 @@ void igp::cargs::initialize_options() {
       "output,o",
       boost::program_options::value<std::string>()->default_value(""),
       "name of output file (default: write to stdout)")(
+      "output-format,f", boost::program_options::value<std::string>(),
+      "format of output file (accepted values: bim, map, snp, bolt)")(
       "output-morgans",
       "emit output genetic position in morgans instead of centimorgans")(
       "region-step-interval",
@@ -64,7 +66,7 @@ std::string igp::cargs::get_input_filename() const {
 std::string igp::cargs::get_input_preset() const {
   std::string preset = compute_parameter<std::string>("preset");
   if (preset.compare("bim") && preset.compare("map") && preset.compare("bed") &&
-      preset.compare("snp")) {
+      preset.compare("snp") && preset.compare("vcf")) {
     throw std::runtime_error("invalid input preset format: \"" + preset + "\"");
   }
   return preset;
@@ -86,6 +88,16 @@ std::string igp::cargs::get_map_format() const {
 
 std::string igp::cargs::get_output_filename() const {
   return compute_parameter<std::string>("output");
+}
+
+std::string igp::cargs::get_output_format() const {
+  std::string output_format = compute_parameter<std::string>("output-format");
+  if (output_format.compare("bim") && output_format.compare("map") &&
+      output_format.compare("bolt") && output_format.compare("snp")) {
+    throw std::runtime_error("invalid output format: \"" + output_format +
+                             "\"");
+  }
+  return output_format;
 }
 
 bool igp::cargs::output_morgans() const {

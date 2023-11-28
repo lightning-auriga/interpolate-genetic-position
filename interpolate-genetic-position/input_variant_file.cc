@@ -16,6 +16,8 @@ igp::base_input_variant_file::~base_input_variant_file() throw() {}
 igp::input_variant_file::input_variant_file()
     : igp::base_input_variant_file::base_input_variant_file(),
       _gzinput(0),
+      _sr(0),
+      _fallback(0),
       _buffer(0),
       _buffer_size(1000),
       _chr_index(0),
@@ -23,9 +25,13 @@ igp::input_variant_file::input_variant_file()
       _pos2_index(-1),
       _gpos_index(0),
       _chr(""),
+      _varid(""),
       _pos1(0),
       _pos2(-1),
-      _base0(false) {
+      _a1(""),
+      _a2(""),
+      _base0(false),
+      _vcf_eof(false) {
   _buffer = new char[_buffer_size];
 }
 
@@ -39,7 +45,17 @@ igp::input_variant_file::~input_variant_file() throw() {
 
 void igp::input_variant_file::open(const std::string &filename) {
   // this needs to be updated to catch vcfs
-  if (filename.rfind(".gz") == filename.size() - 3) {
+  if (filename.rfind(".vcf.gz") == filename.size() - 7 ||
+      filename.rfind(".vcf") == filename.size() - 4 ||
+      filename.rfind(".bcf") == filename.size() - 4) {
+    _sr = bcf_sr_init();
+    hts_set_log_level(HTS_LOG_OFF);
+    if (!bcf_sr_add_reader(_sr, filename.c_str())) {
+      throw std::runtime_error("input_variant_file: " +
+                               std::string(bcf_sr_strerror(_sr->errnum)));
+    }
+    hts_set_log_level(HTS_LOG_WARNING);
+  } else if (filename.rfind(".gz") == filename.size() - 3) {
     _gzinput = gzopen(filename.c_str(), "rb");
     if (!_gzinput) {
       throw std::runtime_error("input_variant_file: cannot open gzfile \"" +
@@ -62,6 +78,11 @@ void igp::input_variant_file::close() {
   if (_gzinput) {
     gzclose(_gzinput);
     _gzinput = 0;
+  }
+  if (_sr) {
+    bcf_sr_destroy(_sr);
+    _sr = 0;
+    _vcf_eof = false;
   }
 }
 
@@ -88,29 +109,41 @@ void igp::input_variant_file::set_format_parameters(
   _line_contents.resize(n_tokens, "");
 }
 
-bool igp::input_variant_file::get_input_line(std::string *line) {
+bool igp::input_variant_file::get_variant() {
+  std::string line = "", catcher = "";
+  // as best as possible, check streams for closed status
   if (eof()) {
-    *line = "";
     return false;
   }
+  // vcf input only: extract fields with htslib and return
+  if (_sr) {
+    if (!bcf_sr_next_line(_sr)) {
+      _vcf_eof = true;
+      return false;
+    }
+    // use htslib internal accessors, and skip downstream logic
+    // for other filetypes
+    _chr = std::string(
+        bcf_seqname_safe(bcf_sr_get_header(_sr, 0), bcf_sr_get_line(_sr, 0)));
+    bcf_unpack(bcf_sr_get_line(_sr, 0), BCF_UN_STR);
+    _varid = std::string(bcf_sr_get_line(_sr, 0)->d.id);
+    _a1 = std::string(bcf_sr_get_line(_sr, 0)->d.allele[0]);
+    _a2 = std::string(bcf_sr_get_line(_sr, 0)->d.allele[1]);
+    _pos1 = bcf_sr_get_line(_sr, 0)->pos + 1;
+    return true;
+  }
+  // other stream types are text line parsers of various kinds
   if (_input.is_open()) {
-    getline(_input, *line);
+    getline(_input, line);
   } else if (_gzinput) {
     if (gzgets(_gzinput, _buffer, _buffer_size) == Z_NULL) {
       return false;
     }
-    *line = std::string(_buffer);
+    line = std::string(_buffer);
   } else {
-    getline(*get_fallback_stream(), *line);
+    getline(*get_fallback_stream(), line);
   }
-  return true;
-}
 
-bool igp::input_variant_file::get_variant() {
-  std::string line = "", catcher = "";
-  if (!get_input_line(&line)) {
-    return false;
-  }
   std::istringstream strm1(line);
   for (unsigned i = 0; i < _line_contents.size(); ++i) {
     if (!(strm1 >> _line_contents.at(i))) {
@@ -129,6 +162,7 @@ bool igp::input_variant_file::get_variant() {
       _pos2 = _pos2 + 1;
     }
   }
+
   return true;
 }
 
@@ -137,6 +171,12 @@ const std::string &igp::input_variant_file::get_chr() const { return _chr; }
 const mpz_class &igp::input_variant_file::get_pos1() const { return _pos1; }
 
 const mpz_class &igp::input_variant_file::get_pos2() const { return _pos2; }
+
+const std::string &igp::input_variant_file::get_varid() const { return _varid; }
+
+const std::string &igp::input_variant_file::get_a1() const { return _a1; }
+
+const std::string &igp::input_variant_file::get_a2() const { return _a2; }
 
 const std::vector<std::string> &igp::input_variant_file::get_line_contents()
     const {
@@ -149,6 +189,9 @@ bool igp::input_variant_file::eof() {
   }
   if (_gzinput) {
     return gzeof(_gzinput);
+  }
+  if (_sr) {
+    return _vcf_eof;
   }
   return get_fallback_stream()->peek() == EOF;
 }

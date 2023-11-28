@@ -37,6 +37,9 @@ void igp::query_file::open(const std::string &filename, format_type ft) {
     _interface->set_format_parameters(0, 1, 2, 4, true, 4);
   } else if (_ft == SNP) {
     _interface->set_format_parameters(1, 3, -1, 2, false, 4);
+  } else if (_ft == VCF) {
+    // these are ignored due to use of htslib
+    _interface->set_format_parameters(0, 1, -1, -1, false, 9);
   }
 }
 void igp::query_file::initialize_output(const std::string &filename,
@@ -72,6 +75,11 @@ void igp::query_file::report(const std::vector<query_result> &results) {
     if (_ft == BIM) {
       a1 = _interface->get_line_contents().at(4);
       a2 = _interface->get_line_contents().at(5);
+    }
+    if (_ft == VCF) {
+      id = _interface->get_varid();
+      a1 = _interface->get_a1();
+      a2 = _interface->get_a2();
     }
     _output->write(
         iter->get_chr(), iter->get_startpos(), iter->get_endpos(), id,
