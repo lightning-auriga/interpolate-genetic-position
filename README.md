@@ -193,6 +193,45 @@ or written to stream, simply omit its relevant flag (`-i`, `-g`, `-o`). For inpu
 format flag should still be set. Only one input stream (either `-i` or `-g`) can be read from an input stream
 per run.
 
+## Example Use Cases
+
+### Take a plink-format genotype dataset, annotate with interpolated genetic positions
+
+This is the most basic expected use case.
+
+```bash
+interpolate-genetic-position.out -i infile.bim -p bim -g genetic_map.tsv -m bolt -o infile_with_gpos.bim -f bim
+```
+
+### Take a vcf, annotate markers with interpolated genetic positions
+
+Note that vcf **output** format is not supported, so you'll have to do some further processing if you want to add
+the interpolated values back into e.g. the INFO field somewhere.
+
+```bash
+interpolate-genetic-position.out -i infile.vcf.gz -p vcf -g genetic_map.tsv -m bolt -o interpolated_values.map -f map
+```
+
+### Take a bed file of regions, turn it into its own recombination map
+
+Regions don't have a single genetic distance associated with them, and so for completeness, when annotating
+a bed region file, the output becomes a genetic map with associated genetic distance and rate (cM/Mb) data.
+
+```bash
+interpolate-genetic-position.out -i infile.bed -p bed -g genetic_map.tsv -m bolt -o new_recombination_map.tsv -f bed
+```
+
+### Take a bed file of regions, turn it into its own recombination map, and use that map to annotate a second file
+
+Either the input query file (`-i`), or the input recombination map (`-g`), but not both at once, can be read
+from stream by leaving the corresponding argument unspecified. Note that the corresponding format flag
+is still required. The output can also be streamed in the same manner with the same restriction.
+
+```bash
+interpolate-genetic-position.out -i infile.bed -p bed -g genetic_map.tsv -m bolt -f bed |
+interpolate-genetic-position.out -i infile.vcf -p vcf -m bolt -o annotated_variants.map -f map
+```
+
 ## Version History
 
 See ChangeLog.md.
