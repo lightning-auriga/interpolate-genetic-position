@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.71])
-AC_INIT(interpolate-genetic-position, 1.0.0, lightning.auriga@gmail.com)
+AC_INIT(interpolate-genetic-position, 1.1.0, lightning.auriga@gmail.com)
 AC_CONFIG_AUX_DIR([.])
 AM_INIT_AUTOMAKE([-Wall -Werror subdir-objects])
 AM_SILENT_RULES([yes])
@@ -50,7 +50,7 @@ AC_CHECK_LIB([m],[cos])
 
 AC_CONFIG_FILES([
  Makefile
- interpolate-genetic-position-1.0.0.pc
+ interpolate-genetic-position-1.1.0.pc
 ])
 
 AC_OUTPUT
