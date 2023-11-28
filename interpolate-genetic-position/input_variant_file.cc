@@ -28,6 +28,8 @@ igp::input_variant_file::input_variant_file()
       _varid(""),
       _pos1(0),
       _pos2(-1),
+      _a1(""),
+      _a2(""),
       _base0(false),
       _vcf_eof(false) {
   _buffer = new char[_buffer_size];
@@ -125,6 +127,8 @@ bool igp::input_variant_file::get_variant() {
         bcf_seqname_safe(bcf_sr_get_header(_sr, 0), bcf_sr_get_line(_sr, 0)));
     bcf_unpack(bcf_sr_get_line(_sr, 0), BCF_UN_STR);
     _varid = std::string(bcf_sr_get_line(_sr, 0)->d.id);
+    _a1 = std::string(bcf_sr_get_line(_sr, 0)->d.allele[0]);
+    _a2 = std::string(bcf_sr_get_line(_sr, 0)->d.allele[1]);
     _pos1 = bcf_sr_get_line(_sr, 0)->pos + 1;
     return true;
   }
@@ -169,6 +173,10 @@ const mpz_class &igp::input_variant_file::get_pos1() const { return _pos1; }
 const mpz_class &igp::input_variant_file::get_pos2() const { return _pos2; }
 
 const std::string &igp::input_variant_file::get_varid() const { return _varid; }
+
+const std::string &igp::input_variant_file::get_a1() const { return _a1; }
+
+const std::string &igp::input_variant_file::get_a2() const { return _a2; }
 
 const std::vector<std::string> &igp::input_variant_file::get_line_contents()
     const {

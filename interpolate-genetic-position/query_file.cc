@@ -78,6 +78,8 @@ void igp::query_file::report(const std::vector<query_result> &results) {
     }
     if (_ft == VCF) {
       id = _interface->get_varid();
+      a1 = _interface->get_a1();
+      a2 = _interface->get_a2();
     }
     _output->write(
         iter->get_chr(), iter->get_startpos(), iter->get_endpos(), id,

@@ -103,6 +103,20 @@ class base_input_variant_file {
    */
   virtual const std::string &get_varid() const = 0;
   /*!
+   * \brief get first allele
+   * \return first allele
+   *
+   * at time of writing, only used for vcfs
+   */
+  virtual const std::string &get_a1() const = 0;
+  /*!
+   * \brief get second allele
+   * \return second allele
+   *
+   * at time of writing, only used for vcfs
+   */
+  virtual const std::string &get_a2() const = 0;
+  /*!
    * \brief get vector containing tokenized representation of current line
    * \return vector containing tokenized representation of current line
    */
@@ -196,6 +210,20 @@ class input_variant_file : public base_input_variant_file {
    */
   const std::string &get_varid() const;
   /*!
+   * \brief get first allele
+   * \return first allele
+   *
+   * at time of writing, only used for vcfs
+   */
+  const std::string &get_a1() const;
+  /*!
+   * \brief get second allele
+   * \return second allele
+   *
+   * at time of writing, only used for vcfs
+   */
+  const std::string &get_a2() const;
+  /*!
    * \brief get vector containing tokenized representation of current line
    * \return vector containing tokenized representation of current line
    */
@@ -223,6 +251,8 @@ class input_variant_file : public base_input_variant_file {
   std::string _varid;    //!< ID of current marker
   mpz_class _pos1;       //!< physical position of current marker
   mpz_class _pos2;       //!< for e.g. bedfiles, end position of region
+  std::string _a1;       //!< first allele of current marker
+  std::string _a2;       //!< second allele of current marker
   bool _base0;           //!< whether physical position is base 0
   bool _vcf_eof;         //!< track whether vcf eof has been encountered
 };
