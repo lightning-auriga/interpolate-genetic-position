@@ -33,7 +33,7 @@ void igp::cargs::initialize_options() {
       boost::program_options::value<std::string>()->default_value(""),
       "name of input variant/region query file (default: read from stdin)")(
       "preset,p", boost::program_options::value<std::string>(),
-      "format of input file (accepted values: bim, map, snp, bed)")(
+      "format of input file (accepted values: bim, map, snp, vcf, bed)")(
       "genetic-map,g",
       boost::program_options::value<std::string>()->default_value(""),
       "name of input genetic recombination map (default: read from stdin)")(
@@ -43,8 +43,7 @@ void igp::cargs::initialize_options() {
       "output,o",
       boost::program_options::value<std::string>()->default_value(""),
       "name of output file (default: write to stdout)")(
-      "output-format,f",
-      boost::program_options::value<std::string>()->default_value(""),
+      "output-format,f", boost::program_options::value<std::string>(),
       "format of output file (accepted values: bim, map, snp, bed)")(
       "output-morgans",
       "emit output genetic position in morgans instead of centimorgans")(
