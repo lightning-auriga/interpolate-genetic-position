@@ -29,6 +29,23 @@ TEST(vardataTest, copyConstructor) {
   EXPECT_EQ(vd1.get_varid(), vd2.get_varid());
 }
 
+TEST(vardataTest, assignmentOperator) {
+  igp::vardata vd1;
+  vd1.set_chr("chr1");
+  vd1.set_pos1(100);
+  vd1.set_pos2(200);
+  vd1.set_a1("A");
+  vd1.set_a2("T");
+  vd1.set_varid("rs1");
+  igp::vardata vd2 = vd1;
+  EXPECT_EQ(vd1.get_chr(), vd2.get_chr());
+  EXPECT_EQ(vd1.get_pos1(), vd2.get_pos1());
+  EXPECT_EQ(vd1.get_pos2(), vd2.get_pos2());
+  EXPECT_EQ(vd1.get_a1(), vd2.get_a1());
+  EXPECT_EQ(vd1.get_a2(), vd2.get_a2());
+  EXPECT_EQ(vd1.get_varid(), vd2.get_varid());
+}
+
 TEST(vardataTest, testGetSet) {
   igp::vardata vd;
   vd.set_chr("chr1");
