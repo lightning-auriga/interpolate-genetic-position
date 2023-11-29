@@ -23,6 +23,16 @@ igp::vardata::vardata(const vardata &obj)
 
 igp::vardata::~vardata() throw() {}
 
+igp::vardata &igp::vardata::operator=(const igp::vardata &obj) {
+  set_chr(obj.get_chr());
+  set_pos1(obj.get_pos1());
+  set_pos2(obj.get_pos2());
+  set_a1(obj.get_a1());
+  set_a2(obj.get_a2());
+  set_varid(obj.get_varid());
+  return *this;
+}
+
 const std::string &igp::vardata::get_chr() const { return _chr; }
 
 void igp::vardata::set_chr(const std::string &chr) { _chr = chr; }
@@ -62,7 +72,8 @@ igp::input_variant_file::input_variant_file()
       _pos2_index(-1),
       _gpos_index(0),
       _base0(false),
-      _vcf_eof(false) {
+      _vcf_eof(false),
+      _buffer_full(false) {
   _buffer = new char[_buffer_size];
 }
 

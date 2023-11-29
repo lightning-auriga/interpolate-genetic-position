@@ -42,6 +42,12 @@ class vardata {
    */
   ~vardata() throw();
   /*!
+   * \brief assignment operator
+   * \param obj value to copy into *this
+   * \return reference to this object
+   */
+  vardata &operator=(const vardata &obj);
+  /*!
    * \brief get chromosome of currently loaded marker
    * \return chromosome of currently loaded marker
    */
@@ -344,6 +350,7 @@ class input_variant_file : public base_input_variant_file {
   vardata _bufferedvar;  //!< stored information for buffered query
   bool _base0;           //!< whether physical position is base 0
   bool _vcf_eof;         //!< track whether vcf eof has been encountered
+  bool _buffer_full;     //!< track whether there is a buffered variant
 };
 
 }  // namespace interpolate_genetic_position
