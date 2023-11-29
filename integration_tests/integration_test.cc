@@ -420,10 +420,11 @@ TEST_F(integrationTest, bedfileInputBoltOutputSparseQueries) {
       "chr22\t17086809\t17087057\t7.31739e-12\t0.00353872510698944\n");
   std::string expected_output =
       "chr\tposition\tCOMBINED_rate(cM/Mb)\tGenetic_Map(cM)\n"
-      "chr22\t17083847\t4.00811\t0.000387462396\n"
-      "chr22\t17084018\t1.91398e-06\t0.001072849206\n"
-      "chr22\t17084051\t1.91398e-06\t0.001072849\n"
-      "chr22\t17084146\t0\t0.001072849\n";
+      "chr22\t17083847\t4.00811\t0.000387462\n"
+      "chr22\t17084001\t4.00811\t0.00100471\n"
+      "chr22\t17084018\t1.91398e-06\t0.00107285\n"
+      "chr22\t17084051\t1.91398e-06\t0.00107285\n"
+      "chr22\t17084146\t0\t0.00107285\n";
   igp::interpolator ip;
   ip.interpolate(_in_query_tmpfile, "bed", _in_gmap_tmpfile, "bedgraph",
                  _out_tmpfile, "bolt", false, 0.0, false);
