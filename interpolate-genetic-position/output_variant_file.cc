@@ -53,6 +53,23 @@ void igp::output_variant_file::open(const std::string &filename,
 
 void igp::output_variant_file::close() {
   if (_output.is_open()) {
+    // only for BOLT output: make sure the end of the last chromosome has
+    // a placeholder entry with 0 rate
+    if (get_format() == BOLT && cmp(get_last_rate(), 0) != 0) {
+      std::ostringstream out;
+      out << get_last_chr() << '\t' << get_last_pos2() << '\t' << "0\t"
+          << (get_last_gpos() + get_last_rate() *
+                                    (get_last_pos2() - get_last_pos1()) /
+                                    mpf_class(1000000.0));
+      if (_output.is_open()) {
+        if (!(_output << out.str() << '\n')) {
+          throw std::runtime_error(
+              "output_variant_file::write: cannot write to file");
+        }
+      } else {
+        std::cout << out.str() << '\n';
+      }
+    }
     _output.close();
     _output.clear();
   }

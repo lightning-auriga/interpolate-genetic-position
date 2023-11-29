@@ -153,10 +153,18 @@ void igp::input_variant_file::set_format_parameters(
 
 bool igp::input_variant_file::get_variant() {
   std::string line = "", catcher = "";
+  // if the buffer has something in it, use that only
+  if (_buffer_full) {
+    _currentvar = _bufferedvar;
+    _buffer_full = false;
+    return true;
+  }
+
   // as best as possible, check streams for closed status
   if (eof()) {
     return false;
   }
+
   // vcf input only: extract fields with htslib and return
   if (_sr) {
     if (!bcf_sr_next_line(_sr)) {
@@ -174,6 +182,7 @@ bool igp::input_variant_file::get_variant() {
     _currentvar.set_pos1(bcf_sr_get_line(_sr, 0)->pos + 1);
     return true;
   }
+
   // other stream types are text line parsers of various kinds
   if (_input.is_open()) {
     getline(_input, line);
@@ -186,6 +195,10 @@ bool igp::input_variant_file::get_variant() {
     getline(*get_fallback_stream(), line);
   }
 
+  // store whatever is in the current stored variant in the buffer
+  _bufferedvar = _currentvar;
+
+  // populate the current variant
   std::istringstream strm1(line);
   for (unsigned i = 0; i < _line_contents.size(); ++i) {
     if (!(strm1 >> _line_contents.at(i))) {
@@ -203,6 +216,21 @@ bool igp::input_variant_file::get_variant() {
         mpz_class(_line_contents.at(static_cast<unsigned>(_pos2_index))));
     if (_base0) {
       _currentvar.set_pos2(_currentvar.get_pos2() + 1);
+    }
+  }
+
+  // now, only if the inputs are regions, determine whether
+  // the buffered and current variants are on the same chromosome
+  // but not contiguous, and if so, create a fake query that fills
+  // that non-contiguous region
+  if (_pos2_index >= 0) {
+    if (!_currentvar.get_chr().compare(_bufferedvar.get_chr()) &&
+        cmp(_currentvar.get_pos1(), _bufferedvar.get_pos2()) != 0) {
+      mpz_class breakpoint = _bufferedvar.get_pos2();
+      _bufferedvar = _currentvar;
+      _currentvar.set_pos2(_currentvar.get_pos1());
+      _currentvar.set_pos1(breakpoint);
+      _buffer_full = true;
     }
   }
 
