@@ -22,7 +22,6 @@ igp::query_file::query_file(base_input_variant_file *inptr,
     : _interface(inptr),
       _ft(UNKNOWN),
       _output(outptr),
-      _step_interval(0.0),
       _index_on_chromosome(0) {}
 igp::query_file::~query_file() throw() {}
 void igp::query_file::open(const std::string &filename, format_type ft) {
@@ -85,16 +84,25 @@ void igp::query_file::report(const std::vector<query_result> &results) {
         iter->get_chr(), iter->get_startpos(), iter->get_endpos(), id,
         iter->get_gpos() +
             (_ft == BED ? get_step_interval() * get_index_on_chromosome()
-                        : 0.0),
-        iter->get_rate(), a1, a2, get_step_interval());
+                        : mpf_class("0.0")),
+        iter->get_rate(), a1, a2);
   }
   set_index_on_chromosome(get_index_on_chromosome() + 1);
 }
-const double &igp::query_file::get_step_interval() const {
-  return _step_interval;
+const mpf_class &igp::query_file::get_step_interval() const {
+  if (_output) {
+    return _output->get_step_interval();
+  }
+  throw std::runtime_error(
+      "query_file::get_step_interval: called on unset output");
 }
-void igp::query_file::set_step_interval(const double &step) {
-  _step_interval = step;
+void igp::query_file::set_step_interval(const mpf_class &step) {
+  if (_output) {
+    _output->set_step_interval(step);
+    return;
+  }
+  throw std::runtime_error(
+      "query_file::set_step_interval: called on unset output");
 }
 unsigned igp::query_file::get_index_on_chromosome() const {
   return _index_on_chromosome;

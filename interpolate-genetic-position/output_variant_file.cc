@@ -21,7 +21,8 @@ igp::output_variant_file::output_variant_file()
       _last_pos1(0),
       _last_pos2(0),
       _last_gpos(0.0),
-      _last_rate(0.0) {}
+      _last_rate(0.0),
+      _step_interval(0.0) {}
 
 igp::output_variant_file::~output_variant_file() throw() { close(); }
 
@@ -78,11 +79,12 @@ void igp::output_variant_file::close() {
 void igp::output_variant_file::write(
     const std::string &chr, const mpz_class &pos1, const mpz_class &pos2,
     const std::string &id, const mpf_class &gpos, const mpf_class &rate,
-    const std::string &a1, const std::string &a2, const double &step_interval) {
+    const std::string &a1, const std::string &a2) {
   // the idea is: format an output line, then emit it to appropriate target
   std::ostringstream out;
   format_type ft = get_format();
   mpf_class output_gpos = output_morgans() ? gpos / mpf_class("100") : gpos;
+  mpf_class step_interval = get_step_interval();
   // track when a result is on a different chromosome than the previous ones
   if (get_last_chr().compare(chr)) {
     // for bolt output only, emit dummy results at the end of a chromosome
@@ -162,4 +164,13 @@ mpz_class igp::output_variant_file::get_last_pos2() const { return _last_pos2; }
 
 void igp::output_variant_file::set_last_pos2(const mpz_class &pos2) {
   _last_pos2 = pos2;
+}
+
+const mpf_class &igp::output_variant_file::get_step_interval() const {
+  return _step_interval;
+}
+
+void igp::output_variant_file::set_step_interval(
+    const mpf_class &step_interval) {
+  _step_interval = step_interval;
 }

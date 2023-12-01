@@ -100,12 +100,12 @@ class query_file {
    * \brief get the fixed interval to add to output
    * \return fixed interval to add to output
    */
-  const double &get_step_interval() const;
+  const mpf_class &get_step_interval() const;
   /*!
    * \brief set the fixed interval to add to output
    * \param step fixed interval to add to output
    */
-  void set_step_interval(const double &step);
+  void set_step_interval(const mpf_class &step);
   /*!
    * \brief get the index of this result among results
    * for this chromosome
@@ -151,9 +151,8 @@ class query_file {
   base_input_variant_file *_interface;  //!< input file handler
   format_type _ft;                      //!< stored format of input filestream
   base_output_variant_file *_output;    //!< interface class to output
-  double _step_interval;          //!< fixed genetic distance to add to interval
-  unsigned _index_on_chromosome;  //!< how many queries have been returned on
-                                  //!< this chromosome
+  unsigned _index_on_chromosome;     //!< how many queries have been returned on
+                                     //!< this chromosome
   std::string _previous_chromosome;  //!< name of chromosome for prior output
 };
 }  // namespace interpolate_genetic_position
