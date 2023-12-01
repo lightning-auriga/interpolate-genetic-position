@@ -59,9 +59,10 @@ void igp::output_variant_file::close() {
     if (get_format() == BOLT && cmp(get_last_rate(), 0) != 0) {
       std::ostringstream out;
       out << get_last_chr() << '\t' << get_last_pos2() << '\t' << "0\t"
-          << (get_last_gpos() + get_last_rate() *
-                                    (get_last_pos2() - get_last_pos1()) /
-                                    mpf_class(1000000.0));
+          << (get_last_gpos() +
+              get_last_rate() * (get_last_pos2() - get_last_pos1()) /
+                  mpf_class(1000000.0) +
+              get_step_interval());
       if (_output.is_open()) {
         if (!(_output << out.str() << '\n')) {
           throw std::runtime_error(
