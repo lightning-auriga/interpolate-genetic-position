@@ -35,7 +35,8 @@ class mock_input_variant_file : public base_input_variant_file {
   MOCK_METHOD(std::istream *, get_fallback_stream, (), (const, override));
   MOCK_METHOD(void, set_format_parameters,
               (unsigned chr_index, unsigned pos1_index, int pos2_index,
-               unsigned gpos_index, bool base0, unsigned n_tokens),
+               unsigned gpos_index, int annotation_index, bool base0,
+               unsigned n_tokens),
               (override));
   MOCK_METHOD(bool, get_variant, (), (override));
   MOCK_METHOD(const std::string &, get_chr, (), (const, override));
@@ -44,6 +45,7 @@ class mock_input_variant_file : public base_input_variant_file {
   MOCK_METHOD(const std::string &, get_varid, (), (const, override));
   MOCK_METHOD(const std::string &, get_a1, (), (const, override));
   MOCK_METHOD(const std::string &, get_a2, (), (const, override));
+  MOCK_METHOD(const std::string &, get_annotation, (), (const override));
   MOCK_METHOD(const std::vector<std::string> &, get_line_contents, (),
               (const, override));
   MOCK_METHOD(bool, eof, (), (override));

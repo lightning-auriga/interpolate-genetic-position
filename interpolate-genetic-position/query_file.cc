@@ -29,16 +29,16 @@ void igp::query_file::open(const std::string &filename, format_type ft) {
   _interface->open(filename);
   // handle file formats
   if (_ft == BIM) {
-    _interface->set_format_parameters(0, 3, -1, 2, false, 6);
+    _interface->set_format_parameters(0, 3, -1, 2, -1, false, 6);
   } else if (_ft == MAP) {
-    _interface->set_format_parameters(0, 3, -1, 2, false, 4);
+    _interface->set_format_parameters(0, 3, -1, 2, -1, false, 4);
   } else if (_ft == BED) {
-    _interface->set_format_parameters(0, 1, 2, 4, true, 4);
+    _interface->set_format_parameters(0, 1, 2, 4, 3, true, 4);
   } else if (_ft == SNP) {
-    _interface->set_format_parameters(1, 3, -1, 2, false, 4);
+    _interface->set_format_parameters(1, 3, -1, 2, -1, false, 4);
   } else if (_ft == VCF) {
     // these are ignored due to use of htslib
-    _interface->set_format_parameters(0, 1, -1, -1, false, 9);
+    _interface->set_format_parameters(0, 1, -1, -1, -1, false, 9);
   }
 }
 void igp::query_file::initialize_output(const std::string &filename,

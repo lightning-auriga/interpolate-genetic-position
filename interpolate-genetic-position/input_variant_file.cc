@@ -11,7 +11,13 @@
 namespace igp = interpolate_genetic_position;
 
 igp::vardata::vardata()
-    : _chr(""), _varid(""), _pos1(-1), _pos2(-1), _a1(""), _a2("") {}
+    : _chr(""),
+      _varid(""),
+      _pos1(-1),
+      _pos2(-1),
+      _a1(""),
+      _a2(""),
+      _annotation("") {}
 
 igp::vardata::vardata(const vardata &obj)
     : _chr(obj._chr),
@@ -19,7 +25,8 @@ igp::vardata::vardata(const vardata &obj)
       _pos1(obj._pos1),
       _pos2(obj._pos2),
       _a1(obj._a1),
-      _a2(obj._a2) {}
+      _a2(obj._a2),
+      _annotation(obj._annotation) {}
 
 igp::vardata::~vardata() throw() {}
 
@@ -30,6 +37,7 @@ igp::vardata &igp::vardata::operator=(const igp::vardata &obj) {
   set_a1(obj.get_a1());
   set_a2(obj.get_a2());
   set_varid(obj.get_varid());
+  set_annotation(obj.get_annotation());
   return *this;
 }
 
@@ -57,6 +65,12 @@ const std::string &igp::vardata::get_a2() const { return _a2; }
 
 void igp::vardata::set_a2(const std::string &a2) { _a2 = a2; }
 
+const std::string &igp::vardata::get_annotation() const { return _annotation; }
+
+void igp::vardata::set_annotation(const std::string &annotation) {
+  _annotation = annotation;
+}
+
 igp::base_input_variant_file::base_input_variant_file() {}
 igp::base_input_variant_file::~base_input_variant_file() throw() {}
 
@@ -71,6 +85,7 @@ igp::input_variant_file::input_variant_file()
       _pos1_index(0),
       _pos2_index(-1),
       _gpos_index(0),
+      _annotation_index(-1),
       _base0(false),
       _vcf_eof(false),
       _buffer_full(false) {
@@ -142,11 +157,12 @@ std::istream *igp::input_variant_file::get_fallback_stream() const {
 
 void igp::input_variant_file::set_format_parameters(
     unsigned chr_index, unsigned pos1_index, int pos2_index,
-    unsigned gpos_index, bool base0, unsigned n_tokens) {
+    unsigned gpos_index, int annotation_index, bool base0, unsigned n_tokens) {
   _chr_index = chr_index;
   _pos1_index = pos1_index;
   _pos2_index = pos2_index;
   _gpos_index = gpos_index;
+  _annotation_index = annotation_index;
   _base0 = base0;
   _line_contents.resize(n_tokens, "");
 }
@@ -218,8 +234,15 @@ bool igp::input_variant_file::get_variant() {
       _currentvar.set_pos2(_currentvar.get_pos2() + 1);
     }
   }
+  // only if the inputs are regions, determine whether
+  // if the input data format has an annotation entry,
+  // store the annotation entry. this is intended to
+  // be column 4 of bedfile queries
+  if (_annotation_index >= 0) {
+    _currentvar.set_annotation(
+        _line_contents.at(static_cast<unsigned>(_annotation_index)));
+  }
 
-  // now, only if the inputs are regions, determine whether
   // the buffered and current variants are on the same chromosome
   // but not contiguous, and if so, create a fake query that fills
   // that non-contiguous region
@@ -259,6 +282,10 @@ const std::string &igp::input_variant_file::get_a1() const {
 
 const std::string &igp::input_variant_file::get_a2() const {
   return _currentvar.get_a2();
+}
+
+const std::string &igp::input_variant_file::get_annotation() const {
+  return _currentvar.get_annotation();
 }
 
 const std::vector<std::string> &igp::input_variant_file::get_line_contents()
