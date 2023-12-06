@@ -151,6 +151,18 @@ class base_output_variant_file {
    * \param step_interval the experimental step interval
    */
   virtual void set_step_interval(const mpf_class &step_interval) = 0;
+  /*!
+   * \brief get the index of this result among results
+   * for this chromosome
+   * \return index of this result
+   */
+  virtual unsigned get_index_on_chromosome() const = 0;
+  /*!
+   * \brief set the index of this result among results
+   * for this chromosome
+   * \param index index of this result
+   */
+  virtual void set_index_on_chromosome(unsigned index) = 0;
 };
 
 /*!
@@ -283,6 +295,18 @@ class output_variant_file : public base_output_variant_file {
    * \param step_interval the experimental step interval
    */
   void set_step_interval(const mpf_class &step_interval);
+  /*!
+   * \brief get the index of this result among results
+   * for this chromosome
+   * \return index of this result
+   */
+  unsigned get_index_on_chromosome() const;
+  /*!
+   * \brief set the index of this result among results
+   * for this chromosome
+   * \param index index of this result
+   */
+  void set_index_on_chromosome(unsigned index);
 
  private:
   std::ofstream _output;     //!< output uncompressed file stream
@@ -294,6 +318,8 @@ class output_variant_file : public base_output_variant_file {
   mpf_class _last_gpos;      //!< genetic position of most recent result
   mpf_class _last_rate;      //!< rate of most recent result
   mpf_class _step_interval;  //!< gpos increment to edge of bed queries
+  unsigned _index_on_chromosome;  //!< how many queries have been returned on
+                                  //!< this chromosome
 };
 }  // namespace interpolate_genetic_position
 

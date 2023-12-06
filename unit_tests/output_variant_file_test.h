@@ -53,6 +53,8 @@ class mock_output_variant_file : public base_output_variant_file {
   MOCK_METHOD(void, set_last_pos2, (const mpz_class &), (override));
   MOCK_METHOD(const mpf_class &, get_step_interval, (), (const, override));
   MOCK_METHOD(void, set_step_interval, (const mpf_class &), (override));
+  MOCK_METHOD(unsigned, get_index_on_chromosome, (), (const, override));
+  MOCK_METHOD(void, set_index_on_chromosome, (unsigned), (override));
 };
 }  // namespace interpolate_genetic_position
 #endif  // UNIT_TESTS_OUTPUT_VARIANT_FILE_TEST_H_
