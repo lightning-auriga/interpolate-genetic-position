@@ -100,24 +100,12 @@ class query_file {
    * \brief get the fixed interval to add to output
    * \return fixed interval to add to output
    */
-  const double &get_step_interval() const;
+  const mpf_class &get_step_interval() const;
   /*!
    * \brief set the fixed interval to add to output
    * \param step fixed interval to add to output
    */
-  void set_step_interval(const double &step);
-  /*!
-   * \brief get the index of this result among results
-   * for this chromosome
-   * \return index of this result
-   */
-  unsigned get_index_on_chromosome() const;
-  /*!
-   * \brief set the index of this result among results
-   * for this chromosome
-   * \param index index of this result
-   */
-  void set_index_on_chromosome(unsigned index);
+  void set_step_interval(const mpf_class &step);
   /*!
    * \brief get identifier of previous output result
    * \return identifier of previous output result
@@ -128,6 +116,16 @@ class query_file {
    * \param chr new value for chromosome
    */
   void set_previous_chromosome(const std::string &chr);
+  /*!
+   * \brief get label (column 4) of previous bed file query
+   * \return label (column 4) of previous bed file query
+   */
+  const std::string &get_previous_bed_label() const;
+  /*!
+   * \brief set label (column 4) of previous bed file query
+   * \param label label (column 4) of previous bed file query
+   */
+  void set_previous_bed_label(const std::string &label);
   /*!
    * \brief close any input connection
    */
@@ -151,10 +149,8 @@ class query_file {
   base_input_variant_file *_interface;  //!< input file handler
   format_type _ft;                      //!< stored format of input filestream
   base_output_variant_file *_output;    //!< interface class to output
-  double _step_interval;          //!< fixed genetic distance to add to interval
-  unsigned _index_on_chromosome;  //!< how many queries have been returned on
-                                  //!< this chromosome
-  std::string _previous_chromosome;  //!< name of chromosome for prior output
+  std::string _previous_chromosome;     //!< name of chromosome for prior output
+  std::string _previous_bed_label;      //!< label of previous bed format query
 };
 }  // namespace interpolate_genetic_position
 

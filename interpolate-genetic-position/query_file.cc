@@ -22,8 +22,8 @@ igp::query_file::query_file(base_input_variant_file *inptr,
     : _interface(inptr),
       _ft(UNKNOWN),
       _output(outptr),
-      _step_interval(0.0),
-      _index_on_chromosome(0) {}
+      _previous_chromosome(""),
+      _previous_bed_label("") {}
 igp::query_file::~query_file() throw() {}
 void igp::query_file::open(const std::string &filename, format_type ft) {
   _ft = ft;
@@ -64,8 +64,17 @@ bool igp::query_file::eof() { return _interface->eof(); }
 void igp::query_file::report(const std::vector<query_result> &results) {
   std::string id = "", a1 = "", a2 = "";
   if (get_previous_chromosome().compare(results.begin()->get_chr())) {
-    set_index_on_chromosome(0);
     set_previous_chromosome(results.begin()->get_chr());
+  }
+  /*
+   * for bed input only, respect column 4 of each query as an indicator
+   * of whether the query should be considered part of a different unit
+   * than the previous query, with respect to fixed value increments.
+   */
+  if (_ft == BED &&
+      get_previous_bed_label().compare(_interface->get_line_contents().at(3)) &&
+      !get_previous_bed_label().empty()) {
+    _output->set_index_on_chromosome(_output->get_index_on_chromosome() + 1);
   }
   for (std::vector<query_result>::const_iterator iter = results.begin();
        iter != results.end(); ++iter) {
@@ -81,30 +90,35 @@ void igp::query_file::report(const std::vector<query_result> &results) {
       a1 = _interface->get_a1();
       a2 = _interface->get_a2();
     }
-    _output->write(
-        iter->get_chr(), iter->get_startpos(), iter->get_endpos(), id,
-        iter->get_gpos() +
-            (_ft == BED ? get_step_interval() * get_index_on_chromosome()
-                        : 0.0),
-        iter->get_rate(), a1, a2, get_step_interval());
+    _output->write(iter->get_chr(), iter->get_startpos(), iter->get_endpos(),
+                   id, iter->get_gpos(), iter->get_rate(), a1, a2);
   }
-  set_index_on_chromosome(get_index_on_chromosome() + 1);
+  set_previous_bed_label(_interface->get_line_contents().at(3));
 }
-const double &igp::query_file::get_step_interval() const {
-  return _step_interval;
+const mpf_class &igp::query_file::get_step_interval() const {
+  if (_output) {
+    return _output->get_step_interval();
+  }
+  throw std::runtime_error(
+      "query_file::get_step_interval: called on unset output");
 }
-void igp::query_file::set_step_interval(const double &step) {
-  _step_interval = step;
-}
-unsigned igp::query_file::get_index_on_chromosome() const {
-  return _index_on_chromosome;
-}
-void igp::query_file::set_index_on_chromosome(unsigned index) {
-  _index_on_chromosome = index;
+void igp::query_file::set_step_interval(const mpf_class &step) {
+  if (_output) {
+    _output->set_step_interval(step);
+    return;
+  }
+  throw std::runtime_error(
+      "query_file::set_step_interval: called on unset output");
 }
 const std::string &igp::query_file::get_previous_chromosome() const {
   return _previous_chromosome;
 }
 void igp::query_file::set_previous_chromosome(const std::string &chr) {
   _previous_chromosome = chr;
+}
+const std::string &igp::query_file::get_previous_bed_label() const {
+  return _previous_bed_label;
+}
+void igp::query_file::set_previous_bed_label(const std::string &label) {
+  _previous_bed_label = label;
 }

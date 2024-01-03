@@ -10,6 +10,53 @@
 
 namespace igp = interpolate_genetic_position;
 
+igp::vardata::vardata()
+    : _chr(""), _varid(""), _pos1(-1), _pos2(-1), _a1(""), _a2("") {}
+
+igp::vardata::vardata(const vardata &obj)
+    : _chr(obj._chr),
+      _varid(obj._varid),
+      _pos1(obj._pos1),
+      _pos2(obj._pos2),
+      _a1(obj._a1),
+      _a2(obj._a2) {}
+
+igp::vardata::~vardata() throw() {}
+
+igp::vardata &igp::vardata::operator=(const igp::vardata &obj) {
+  set_chr(obj.get_chr());
+  set_pos1(obj.get_pos1());
+  set_pos2(obj.get_pos2());
+  set_a1(obj.get_a1());
+  set_a2(obj.get_a2());
+  set_varid(obj.get_varid());
+  return *this;
+}
+
+const std::string &igp::vardata::get_chr() const { return _chr; }
+
+void igp::vardata::set_chr(const std::string &chr) { _chr = chr; }
+
+const mpz_class &igp::vardata::get_pos1() const { return _pos1; }
+
+void igp::vardata::set_pos1(const mpz_class &pos1) { _pos1 = pos1; }
+
+const mpz_class &igp::vardata::get_pos2() const { return _pos2; }
+
+void igp::vardata::set_pos2(const mpz_class &pos2) { _pos2 = pos2; }
+
+const std::string &igp::vardata::get_varid() const { return _varid; }
+
+void igp::vardata::set_varid(const std::string &varid) { _varid = varid; }
+
+const std::string &igp::vardata::get_a1() const { return _a1; }
+
+void igp::vardata::set_a1(const std::string &a1) { _a1 = a1; }
+
+const std::string &igp::vardata::get_a2() const { return _a2; }
+
+void igp::vardata::set_a2(const std::string &a2) { _a2 = a2; }
+
 igp::base_input_variant_file::base_input_variant_file() {}
 igp::base_input_variant_file::~base_input_variant_file() throw() {}
 
@@ -24,14 +71,9 @@ igp::input_variant_file::input_variant_file()
       _pos1_index(0),
       _pos2_index(-1),
       _gpos_index(0),
-      _chr(""),
-      _varid(""),
-      _pos1(0),
-      _pos2(-1),
-      _a1(""),
-      _a2(""),
       _base0(false),
-      _vcf_eof(false) {
+      _vcf_eof(false),
+      _buffer_full(false) {
   _buffer = new char[_buffer_size];
 }
 
@@ -44,7 +86,7 @@ igp::input_variant_file::~input_variant_file() throw() {
 }
 
 void igp::input_variant_file::open(const std::string &filename) {
-  // this needs to be updated to catch vcfs
+  // catch vcfs
   if (filename.rfind(".vcf.gz") == filename.size() - 7 ||
       filename.rfind(".vcf") == filename.size() - 4 ||
       filename.rfind(".bcf") == filename.size() - 4) {
@@ -111,10 +153,18 @@ void igp::input_variant_file::set_format_parameters(
 
 bool igp::input_variant_file::get_variant() {
   std::string line = "", catcher = "";
+  // if the buffer has something in it, use that only
+  if (_buffer_full) {
+    _currentvar = _bufferedvar;
+    _buffer_full = false;
+    return true;
+  }
+
   // as best as possible, check streams for closed status
   if (eof()) {
     return false;
   }
+
   // vcf input only: extract fields with htslib and return
   if (_sr) {
     if (!bcf_sr_next_line(_sr)) {
@@ -123,15 +173,16 @@ bool igp::input_variant_file::get_variant() {
     }
     // use htslib internal accessors, and skip downstream logic
     // for other filetypes
-    _chr = std::string(
-        bcf_seqname_safe(bcf_sr_get_header(_sr, 0), bcf_sr_get_line(_sr, 0)));
+    _currentvar.set_chr(std::string(
+        bcf_seqname_safe(bcf_sr_get_header(_sr, 0), bcf_sr_get_line(_sr, 0))));
     bcf_unpack(bcf_sr_get_line(_sr, 0), BCF_UN_STR);
-    _varid = std::string(bcf_sr_get_line(_sr, 0)->d.id);
-    _a1 = std::string(bcf_sr_get_line(_sr, 0)->d.allele[0]);
-    _a2 = std::string(bcf_sr_get_line(_sr, 0)->d.allele[1]);
-    _pos1 = bcf_sr_get_line(_sr, 0)->pos + 1;
+    _currentvar.set_varid(std::string(bcf_sr_get_line(_sr, 0)->d.id));
+    _currentvar.set_a1(std::string(bcf_sr_get_line(_sr, 0)->d.allele[0]));
+    _currentvar.set_a2(std::string(bcf_sr_get_line(_sr, 0)->d.allele[1]));
+    _currentvar.set_pos1(bcf_sr_get_line(_sr, 0)->pos + 1);
     return true;
   }
+
   // other stream types are text line parsers of various kinds
   if (_input.is_open()) {
     getline(_input, line);
@@ -144,6 +195,10 @@ bool igp::input_variant_file::get_variant() {
     getline(*get_fallback_stream(), line);
   }
 
+  // store whatever is in the current stored variant in the buffer
+  _bufferedvar = _currentvar;
+
+  // populate the current variant
   std::istringstream strm1(line);
   for (unsigned i = 0; i < _line_contents.size(); ++i) {
     if (!(strm1 >> _line_contents.at(i))) {
@@ -151,32 +206,60 @@ bool igp::input_variant_file::get_variant() {
                                "\"");
     }
   }
-  _chr = _line_contents.at(_chr_index);
-  _pos1 = _line_contents.at(_pos1_index);
+  _currentvar.set_chr(_line_contents.at(_chr_index));
+  _currentvar.set_pos1(mpz_class(_line_contents.at(_pos1_index)));
   if (_base0) {
-    _pos1 = _pos1 + 1;
+    _currentvar.set_pos1(_currentvar.get_pos1() + 1);
   }
   if (_pos2_index >= 0) {
-    _pos2 = _line_contents.at(static_cast<unsigned>(_pos2_index));
+    _currentvar.set_pos2(
+        mpz_class(_line_contents.at(static_cast<unsigned>(_pos2_index))));
     if (_base0) {
-      _pos2 = _pos2 + 1;
+      _currentvar.set_pos2(_currentvar.get_pos2() + 1);
+    }
+  }
+
+  // now, only if the inputs are regions, determine whether
+  // the buffered and current variants are on the same chromosome
+  // but not contiguous, and if so, create a fake query that fills
+  // that non-contiguous region
+  if (_pos2_index >= 0) {
+    if (!_currentvar.get_chr().compare(_bufferedvar.get_chr()) &&
+        cmp(_currentvar.get_pos1(), _bufferedvar.get_pos2()) != 0) {
+      mpz_class breakpoint = _bufferedvar.get_pos2();
+      _bufferedvar = _currentvar;
+      _currentvar.set_pos2(_currentvar.get_pos1());
+      _currentvar.set_pos1(breakpoint);
+      _buffer_full = true;
     }
   }
 
   return true;
 }
 
-const std::string &igp::input_variant_file::get_chr() const { return _chr; }
+const std::string &igp::input_variant_file::get_chr() const {
+  return _currentvar.get_chr();
+}
 
-const mpz_class &igp::input_variant_file::get_pos1() const { return _pos1; }
+const mpz_class &igp::input_variant_file::get_pos1() const {
+  return _currentvar.get_pos1();
+}
 
-const mpz_class &igp::input_variant_file::get_pos2() const { return _pos2; }
+const mpz_class &igp::input_variant_file::get_pos2() const {
+  return _currentvar.get_pos2();
+}
 
-const std::string &igp::input_variant_file::get_varid() const { return _varid; }
+const std::string &igp::input_variant_file::get_varid() const {
+  return _currentvar.get_varid();
+}
 
-const std::string &igp::input_variant_file::get_a1() const { return _a1; }
+const std::string &igp::input_variant_file::get_a1() const {
+  return _currentvar.get_a1();
+}
 
-const std::string &igp::input_variant_file::get_a2() const { return _a2; }
+const std::string &igp::input_variant_file::get_a2() const {
+  return _currentvar.get_a2();
+}
 
 const std::vector<std::string> &igp::input_variant_file::get_line_contents()
     const {

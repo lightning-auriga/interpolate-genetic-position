@@ -24,6 +24,105 @@
 
 namespace interpolate_genetic_position {
 /*!
+ * @class vardata
+ * @brief store variant metadata
+ */
+class vardata {
+ public:
+  /*!
+   * \brief basic constructor
+   */
+  vardata();
+  /*!
+   * \brief copy constructor
+   */
+  vardata(const vardata &obj);
+  /*!
+   * \brief destructor
+   */
+  ~vardata() throw();
+  /*!
+   * \brief assignment operator
+   * \param obj value to copy into *this
+   * \return reference to this object
+   */
+  vardata &operator=(const vardata &obj);
+  /*!
+   * \brief get chromosome of currently loaded marker
+   * \return chromosome of currently loaded marker
+   */
+  const std::string &get_chr() const;
+  /*!
+   * \brief set chromosome of currently loaded marker
+   * \param chr chromosome of currently loaded marker
+   */
+  void set_chr(const std::string &chr);
+  /*!
+   * \brief get physical position of currently loaded marker
+   * \return physical position of currently loaded marker
+   */
+  const mpz_class &get_pos1() const;
+  /*!
+   * \brief set physical position of currently loaded marker
+   * \param pos1 physical position of currently loaded marker
+   */
+  void set_pos1(const mpz_class &pos1);
+  /*!
+   * \brief for region data, get end position of current region
+   * \return end position of current region
+   */
+  const mpz_class &get_pos2() const;
+  /*!
+   * \brief for region data, set end position of current region
+   * \param pos2 end position of current region
+   */
+  void set_pos2(const mpz_class &pos2);
+  /*!
+   * \brief get variant ID
+   * \return variant ID
+   *
+   * at time of writing, only used for vcfs
+   */
+  const std::string &get_varid() const;
+  /*!
+   * \brief set variant ID
+   * \param varid variant ID
+   */
+  void set_varid(const std::string &varid);
+  /*!
+   * \brief get first allele
+   * \return first allele
+   *
+   * at time of writing, only used for vcfs
+   */
+  const std::string &get_a1() const;
+  /*!
+   * \brief set first allele
+   * \param a1 first allele
+   */
+  void set_a1(const std::string &a1);
+  /*!
+   * \brief get second allele
+   * \return second allele
+   *
+   * at time of writing, only used for vcfs
+   */
+  const std::string &get_a2() const;
+  /*!
+   * \brief set second allele
+   * \param a2 second allele
+   */
+  void set_a2(const std::string &a2);
+
+ private:
+  std::string _chr;    //!< chromosome of current marker
+  std::string _varid;  //!< ID of current marker
+  mpz_class _pos1;     //!< physical position of current marker
+  mpz_class _pos2;     //!< for e.g. bedfiles, end position of region
+  std::string _a1;     //!< first allele of current marker
+  std::string _a2;     //!< second allele of current marker
+};
+/*!
  * \class base_input_variant_file
  * \brief virtual base class for input variant file types;
  * split out in this manner to facilitate mocks.
@@ -247,15 +346,13 @@ class input_variant_file : public base_input_variant_file {
   unsigned _pos1_index;  //!< index of physical position in line
   int _pos2_index;       //!< for e.g. bedfiles, index of end position of region
   unsigned _gpos_index;  //!< index of genetic position in line
-  std::string _chr;      //!< chromosome of current marker
-  std::string _varid;    //!< ID of current marker
-  mpz_class _pos1;       //!< physical position of current marker
-  mpz_class _pos2;       //!< for e.g. bedfiles, end position of region
-  std::string _a1;       //!< first allele of current marker
-  std::string _a2;       //!< second allele of current marker
+  vardata _currentvar;   //!< stored information for current query
+  vardata _bufferedvar;  //!< stored information for buffered query
   bool _base0;           //!< whether physical position is base 0
   bool _vcf_eof;         //!< track whether vcf eof has been encountered
+  bool _buffer_full;     //!< track whether there is a buffered variant
 };
+
 }  // namespace interpolate_genetic_position
 
 #endif  // INTERPOLATE_GENETIC_POSITION_INPUT_VARIANT_FILE_H_

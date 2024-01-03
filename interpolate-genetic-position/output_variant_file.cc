@@ -21,7 +21,9 @@ igp::output_variant_file::output_variant_file()
       _last_pos1(0),
       _last_pos2(0),
       _last_gpos(0.0),
-      _last_rate(0.0) {}
+      _last_rate(0.0),
+      _step_interval(0.0),
+      _index_on_chromosome(0) {}
 
 igp::output_variant_file::~output_variant_file() throw() { close(); }
 
@@ -53,6 +55,24 @@ void igp::output_variant_file::open(const std::string &filename,
 
 void igp::output_variant_file::close() {
   if (_output.is_open()) {
+    // only for BOLT output: make sure the end of the last chromosome has
+    // a placeholder entry with 0 rate
+    if (get_format() == BOLT && cmp(get_last_rate(), 0) != 0) {
+      std::ostringstream out;
+      out << get_last_chr() << '\t' << get_last_pos2() << '\t' << "0\t"
+          << (get_last_gpos() +
+              get_last_rate() * (get_last_pos2() - get_last_pos1()) /
+                  mpf_class(1000000.0) +
+              get_step_interval());
+      if (_output.is_open()) {
+        if (!(_output << out.str() << '\n')) {
+          throw std::runtime_error(
+              "output_variant_file::write: cannot write to file");
+        }
+      } else {
+        std::cout << out.str() << '\n';
+      }
+    }
     _output.close();
     _output.clear();
   }
@@ -61,11 +81,20 @@ void igp::output_variant_file::close() {
 void igp::output_variant_file::write(
     const std::string &chr, const mpz_class &pos1, const mpz_class &pos2,
     const std::string &id, const mpf_class &gpos, const mpf_class &rate,
-    const std::string &a1, const std::string &a2, const double &step_interval) {
+    const std::string &a1, const std::string &a2) {
   // the idea is: format an output line, then emit it to appropriate target
   std::ostringstream out;
   format_type ft = get_format();
-  mpf_class output_gpos = output_morgans() ? gpos / mpf_class("100") : gpos;
+
+  mpf_class step_interval = get_step_interval();
+  mpf_class adjusted_gpos = gpos;
+
+  if (pos2 > 0 && !get_last_chr().compare(chr)) {
+    adjusted_gpos = adjusted_gpos + step_interval * get_index_on_chromosome();
+  }
+  mpf_class output_gpos =
+      output_morgans() ? adjusted_gpos / mpf_class("100") : adjusted_gpos;
+
   // track when a result is on a different chromosome than the previous ones
   if (get_last_chr().compare(chr)) {
     // for bolt output only, emit dummy results at the end of a chromosome
@@ -78,6 +107,7 @@ void igp::output_variant_file::write(
           << '\n';
     }
     set_last_chr(chr);
+    set_index_on_chromosome(0);
   }
   set_last_pos1(pos1);
   set_last_pos2(pos2);
@@ -145,4 +175,21 @@ mpz_class igp::output_variant_file::get_last_pos2() const { return _last_pos2; }
 
 void igp::output_variant_file::set_last_pos2(const mpz_class &pos2) {
   _last_pos2 = pos2;
+}
+
+const mpf_class &igp::output_variant_file::get_step_interval() const {
+  return _step_interval;
+}
+
+void igp::output_variant_file::set_step_interval(
+    const mpf_class &step_interval) {
+  _step_interval = step_interval;
+}
+
+unsigned igp::output_variant_file::get_index_on_chromosome() const {
+  return _index_on_chromosome;
+}
+
+void igp::output_variant_file::set_index_on_chromosome(unsigned index) {
+  _index_on_chromosome = index;
 }

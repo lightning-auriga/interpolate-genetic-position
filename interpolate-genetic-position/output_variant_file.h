@@ -53,8 +53,7 @@ class base_output_variant_file {
   virtual void write(const std::string &chr, const mpz_class &pos1,
                      const mpz_class &pos2, const std::string &id,
                      const mpf_class &gpos, const mpf_class &rate,
-                     const std::string &a1, const std::string &a2,
-                     const double &step_interval) = 0;
+                     const std::string &a1, const std::string &a2) = 0;
   /*!
    * \brief get descriptor of format of output file
    * \return output file format
@@ -142,6 +141,28 @@ class base_output_variant_file {
    * emitted result
    */
   virtual void set_last_rate(const mpf_class &rate) = 0;
+  /*!
+   * \brief get the experimental step interval at region boundaries
+   * \return the experimental step interval at region boundaries
+   */
+  virtual const mpf_class &get_step_interval() const = 0;
+  /*!
+   * \brief set the experimental step interval at region boundaries
+   * \param step_interval the experimental step interval
+   */
+  virtual void set_step_interval(const mpf_class &step_interval) = 0;
+  /*!
+   * \brief get the index of this result among results
+   * for this chromosome
+   * \return index of this result
+   */
+  virtual unsigned get_index_on_chromosome() const = 0;
+  /*!
+   * \brief set the index of this result among results
+   * for this chromosome
+   * \param index index of this result
+   */
+  virtual void set_index_on_chromosome(unsigned index) = 0;
 };
 
 /*!
@@ -176,8 +197,7 @@ class output_variant_file : public base_output_variant_file {
   void write(const std::string &chr, const mpz_class &pos1,
              const mpz_class &pos2, const std::string &id,
              const mpf_class &gpos, const mpf_class &rate,
-             const std::string &a1, const std::string &a2,
-             const double &step_interval);
+             const std::string &a1, const std::string &a2);
   /*!
    * \brief get descriptor of format of output file
    * \return output file format
@@ -265,16 +285,41 @@ class output_variant_file : public base_output_variant_file {
    * emitted result
    */
   void set_last_rate(const mpf_class &rate);
+  /*!
+   * \brief get the experimental step interval at region boundaries
+   * \return the experimental step interval at region boundaries
+   */
+  const mpf_class &get_step_interval() const;
+  /*!
+   * \brief set the experimental step interval at region boundaries
+   * \param step_interval the experimental step interval
+   */
+  void set_step_interval(const mpf_class &step_interval);
+  /*!
+   * \brief get the index of this result among results
+   * for this chromosome
+   * \return index of this result
+   */
+  unsigned get_index_on_chromosome() const;
+  /*!
+   * \brief set the index of this result among results
+   * for this chromosome
+   * \param index index of this result
+   */
+  void set_index_on_chromosome(unsigned index);
 
  private:
-  std::ofstream _output;  //!< output uncompressed file stream
-  format_type _ft;        //!< format of output file
-  bool _output_morgans;   //!< whether to emit genetic position as morgans
-  std::string _last_chr;  //!< chromosome of most recently emitted result
-  mpz_class _last_pos1;   //!< start position of most recent result
-  mpz_class _last_pos2;   //!< end position of most recent result
-  mpf_class _last_gpos;   //!< genetic position of most recent result
-  mpf_class _last_rate;   //!< rate of most recent result
+  std::ofstream _output;     //!< output uncompressed file stream
+  format_type _ft;           //!< format of output file
+  bool _output_morgans;      //!< whether to emit genetic position as morgans
+  std::string _last_chr;     //!< chromosome of most recently emitted result
+  mpz_class _last_pos1;      //!< start position of most recent result
+  mpz_class _last_pos2;      //!< end position of most recent result
+  mpf_class _last_gpos;      //!< genetic position of most recent result
+  mpf_class _last_rate;      //!< rate of most recent result
+  mpf_class _step_interval;  //!< gpos increment to edge of bed queries
+  unsigned _index_on_chromosome;  //!< how many queries have been returned on
+                                  //!< this chromosome
 };
 }  // namespace interpolate_genetic_position
 

@@ -98,3 +98,13 @@ TEST(queryFileTest, canReadFromCin) {
   EXPECT_EQ(qf.get_pos2(), mpz_class(-1));
   EXPECT_FALSE(qf.get());
 }
+
+TEST(queryFileTest, preventNullAccessOfStepInterval) {
+  igp::query_file qf(NULL, NULL);
+  EXPECT_THROW(qf.get_step_interval(), std::runtime_error);
+}
+
+TEST(queryFileTest, preventNullSettingOfStepInterval) {
+  igp::query_file qf(NULL, NULL);
+  EXPECT_THROW(qf.set_step_interval(mpf_class(0.0)), std::runtime_error);
+}
