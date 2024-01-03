@@ -117,6 +117,16 @@ class query_file {
    */
   void set_previous_chromosome(const std::string &chr);
   /*!
+   * \brief get label (column 4) of previous bed file query
+   * \return label (column 4) of previous bed file query
+   */
+  const std::string &get_previous_bed_label() const;
+  /*!
+   * \brief set label (column 4) of previous bed file query
+   * \param label label (column 4) of previous bed file query
+   */
+  void set_previous_bed_label(const std::string &label);
+  /*!
    * \brief close any input connection
    */
   void close();
@@ -140,6 +150,7 @@ class query_file {
   format_type _ft;                      //!< stored format of input filestream
   base_output_variant_file *_output;    //!< interface class to output
   std::string _previous_chromosome;     //!< name of chromosome for prior output
+  std::string _previous_bed_label;      //!< label of previous bed format query
 };
 }  // namespace interpolate_genetic_position
 

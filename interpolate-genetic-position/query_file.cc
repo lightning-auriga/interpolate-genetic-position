@@ -19,7 +19,11 @@ igp::query_file::query_file(const query_file &obj) {
 }
 igp::query_file::query_file(base_input_variant_file *inptr,
                             base_output_variant_file *outptr)
-    : _interface(inptr), _ft(UNKNOWN), _output(outptr) {}
+    : _interface(inptr),
+      _ft(UNKNOWN),
+      _output(outptr),
+      _previous_chromosome(""),
+      _previous_bed_label("") {}
 igp::query_file::~query_file() throw() {}
 void igp::query_file::open(const std::string &filename, format_type ft) {
   _ft = ft;
@@ -62,6 +66,16 @@ void igp::query_file::report(const std::vector<query_result> &results) {
   if (get_previous_chromosome().compare(results.begin()->get_chr())) {
     set_previous_chromosome(results.begin()->get_chr());
   }
+  /*
+   * for bed input only, respect column 4 of each query as an indicator
+   * of whether the query should be considered part of a different unit
+   * than the previous query, with respect to fixed value increments.
+   */
+  if (_ft == BED &&
+      get_previous_bed_label().compare(_interface->get_line_contents().at(3)) &&
+      !get_previous_bed_label().empty()) {
+    _output->set_index_on_chromosome(_output->get_index_on_chromosome() + 1);
+  }
   for (std::vector<query_result>::const_iterator iter = results.begin();
        iter != results.end(); ++iter) {
     if (_ft == BIM || _ft == MAP) {
@@ -79,7 +93,7 @@ void igp::query_file::report(const std::vector<query_result> &results) {
     _output->write(iter->get_chr(), iter->get_startpos(), iter->get_endpos(),
                    id, iter->get_gpos(), iter->get_rate(), a1, a2);
   }
-  _output->set_index_on_chromosome(_output->get_index_on_chromosome() + 1);
+  set_previous_bed_label(_interface->get_line_contents().at(3));
 }
 const mpf_class &igp::query_file::get_step_interval() const {
   if (_output) {
@@ -101,4 +115,10 @@ const std::string &igp::query_file::get_previous_chromosome() const {
 }
 void igp::query_file::set_previous_chromosome(const std::string &chr) {
   _previous_chromosome = chr;
+}
+const std::string &igp::query_file::get_previous_bed_label() const {
+  return _previous_bed_label;
+}
+void igp::query_file::set_previous_bed_label(const std::string &label) {
+  _previous_bed_label = label;
 }
