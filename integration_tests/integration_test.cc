@@ -171,10 +171,10 @@ void integrationTest::write_bigwig_content(const std::string &filename) const {
 
 std::string integrationTest::get_bedfile_content() const {
   return "chr1 499999 1199999 0\n"
-         "chr1 1199999 1299999 0\n"
-         "chr1 1299999 1499999 0\n"
-         "chr1 1499999 2499999 0\n"
-         "chr3 999999 1999999 0\n";
+         "chr1 1199999 1299999 1\n"
+         "chr1 1299999 1499999 2\n"
+         "chr1 1499999 2499999 3\n"
+         "chr3 999999 1999999 4\n";
 }
 
 std::string integrationTest::get_bim_content() const {
@@ -428,6 +428,37 @@ TEST_F(integrationTest, bedfileInputBoltOutputSparseQueries) {
   igp::interpolator ip;
   ip.interpolate(_in_query_tmpfile, "bed", _in_gmap_tmpfile, "bedgraph",
                  _out_tmpfile, "bolt", false, 0.0, false);
+  EXPECT_TRUE(boost::filesystem::exists(_out_tmpfile));
+  std::string observed_output = load_plaintext_file(_out_tmpfile);
+  EXPECT_EQ(expected_output, observed_output);
+}
+
+TEST_F(integrationTest, bedfileInputRespectLabelColumn) {
+  std::string input_query =
+      create_plaintext_file(_in_query_tmpfile,
+                            "chr22\t17083846\t17084010\tthing1\n"
+                            "chr22\t17084010\t17084050\tthing1\n"
+                            "chr22\t17084050\t17084100\tthing2\n"
+                            "chr22\t17084100\t17084145\tthing2\n");
+  std::string input_gmap = create_plaintext_file(
+      _in_gmap_tmpfile,
+      "chr22\t17076254\t17081023\t0\t0\n"
+      "chr22\t17081023\t17083846\t0.137252\t0\n"
+      "chr22\t17083846\t17084017\t4.00811\t0.000387462396\n"
+      "chr22\t17084017\t17084145\t1.91398e-06\t0.001072849206\n"
+      "chr22\t17084145\t17086809\t0.925629\t0.00107284945098944\n"
+      "chr22\t17086809\t17087057\t7.31739e-12\t0.00353872510698944\n");
+  std::string expected_output =
+      "chr\tposition\tCOMBINED_rate(cM/Mb)\tGenetic_Map(cM)\n"
+      "chr22\t17083847\t4.00811\t0.000387462\n"
+      "chr22\t17084011\t4.00811\t0.00104479\n"
+      "chr22\t17084018\t1.91398e-06\t0.00107285\n"
+      "chr22\t17084051\t1.91398e-06\t0.101073\n"
+      "chr22\t17084101\t1.91398e-06\t0.101073\n"
+      "chr22\t17084146\t0\t0.201073\n";
+  igp::interpolator ip;
+  ip.interpolate(_in_query_tmpfile, "bed", _in_gmap_tmpfile, "bedgraph",
+                 _out_tmpfile, "bolt", false, 0.1, false);
   EXPECT_TRUE(boost::filesystem::exists(_out_tmpfile));
   std::string observed_output = load_plaintext_file(_out_tmpfile);
   EXPECT_EQ(expected_output, observed_output);
