@@ -113,25 +113,14 @@ class vardata {
    * \param a2 second allele
    */
   void set_a2(const std::string &a2);
-  /*!
-   * \brief get annotation
-   * \return annotation
-   */
-  const std::string &get_annotation() const;
-  /*!
-   * \brief set annotation
-   * \param annotation annotation
-   */
-  void set_annotation(const std::string &annotation);
 
  private:
-  std::string _chr;         //!< chromosome of current marker
-  std::string _varid;       //!< ID of current marker
-  mpz_class _pos1;          //!< physical position of current marker
-  mpz_class _pos2;          //!< for e.g. bedfiles, end position of region
-  std::string _a1;          //!< first allele of current marker
-  std::string _a2;          //!< second allele of current marker
-  std::string _annotation;  //!< variant annotation
+  std::string _chr;    //!< chromosome of current marker
+  std::string _varid;  //!< ID of current marker
+  mpz_class _pos1;     //!< physical position of current marker
+  mpz_class _pos2;     //!< for e.g. bedfiles, end position of region
+  std::string _a1;     //!< first allele of current marker
+  std::string _a2;     //!< second allele of current marker
 };
 /*!
  * \class base_input_variant_file
@@ -179,15 +168,12 @@ class base_input_variant_file {
    * \param pos2_index base 0 index of end position of a region; if not
    * applicable, set negative
    * \param gpos_index base 0 index of genetic position in line tokens
-   * \param annotation_index base 0 index of variant annotation; if not
-   * applicable, set negative
    * \param base0 whether physical position is base 0
    * \param n_tokens expected number of tokens in line
    */
   virtual void set_format_parameters(unsigned chr_index, unsigned pos1_index,
                                      int pos2_index, unsigned gpos_index,
-                                     int annotation_index, bool base0,
-                                     unsigned n_tokens) = 0;
+                                     bool base0, unsigned n_tokens) = 0;
   /*!
    * \brief get next marker's metadata from input connection
    * \return whether a variant was successfully accessed from file
@@ -229,13 +215,6 @@ class base_input_variant_file {
    * at time of writing, only used for vcfs
    */
   virtual const std::string &get_a2() const = 0;
-  /*!
-   * \brief get variant annotation
-   * \return variant annotation
-   *
-   * at time of writing, only used for bedfiles
-   */
-  virtual const std::string &get_annotation() const = 0;
   /*!
    * \brief get vector containing tokenized representation of current line
    * \return vector containing tokenized representation of current line
@@ -296,14 +275,11 @@ class input_variant_file : public base_input_variant_file {
    * \param pos2_index base 0 index of end position of a region; if not
    * applicable, set negative
    * \param gpos_index base 0 index of genetic position in line tokens
-   * \param annotation_index base 0 index of variant annotation; if not
-   * applicable, set negative
    * \param base0 whether physical position is base 0
    * \param n_tokens expected number of tokens in line
    */
   void set_format_parameters(unsigned chr_index, unsigned pos1_index,
-                             int pos2_index, unsigned gpos_index,
-                             int annotation_index, bool base0,
+                             int pos2_index, unsigned gpos_index, bool base0,
                              unsigned n_tokens);
   /*!
    * \brief get next marker's metadata from input connection
@@ -347,13 +323,6 @@ class input_variant_file : public base_input_variant_file {
    */
   const std::string &get_a2() const;
   /*!
-   * \brief get variant annotation
-   * \return variant annotation
-   *
-   * at time of writing, only used for bedfiles
-   */
-  const std::string &get_annotation() const;
-  /*!
    * \brief get vector containing tokenized representation of current line
    * \return vector containing tokenized representation of current line
    */
@@ -377,12 +346,11 @@ class input_variant_file : public base_input_variant_file {
   unsigned _pos1_index;  //!< index of physical position in line
   int _pos2_index;       //!< for e.g. bedfiles, index of end position of region
   unsigned _gpos_index;  //!< index of genetic position in line
-  int _annotation_index;  //!< for e.g. bedfiles, variant annotation
-  vardata _currentvar;    //!< stored information for current query
-  vardata _bufferedvar;   //!< stored information for buffered query
-  bool _base0;            //!< whether physical position is base 0
-  bool _vcf_eof;          //!< track whether vcf eof has been encountered
-  bool _buffer_full;      //!< track whether there is a buffered variant
+  vardata _currentvar;   //!< stored information for current query
+  vardata _bufferedvar;  //!< stored information for buffered query
+  bool _base0;           //!< whether physical position is base 0
+  bool _vcf_eof;         //!< track whether vcf eof has been encountered
+  bool _buffer_full;     //!< track whether there is a buffered variant
 };
 
 }  // namespace interpolate_genetic_position

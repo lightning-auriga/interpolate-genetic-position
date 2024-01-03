@@ -21,7 +21,7 @@ TEST(queryFileTest, canInitializeBimfile) {
   igp::mock_input_variant_file mock_infile;
   igp::mock_output_variant_file mock_outfile;
   std::string bimfilename = "test.bim";
-  EXPECT_CALL(mock_infile, set_format_parameters(0, 3, -1, 2, -1, false, 6))
+  EXPECT_CALL(mock_infile, set_format_parameters(0, 3, -1, 2, false, 6))
       .Times(1)
       .WillOnce(Return());
   EXPECT_CALL(mock_infile, open(bimfilename)).Times(1).WillOnce(Return());
@@ -33,7 +33,7 @@ TEST(queryFileTest, canInitializeMapfile) {
   igp::mock_input_variant_file mock_infile;
   igp::mock_output_variant_file mock_outfile;
   std::string mapfilename = "test.map";
-  EXPECT_CALL(mock_infile, set_format_parameters(0, 3, -1, 2, -1, false, 4))
+  EXPECT_CALL(mock_infile, set_format_parameters(0, 3, -1, 2, false, 4))
       .Times(1)
       .WillOnce(Return());
   EXPECT_CALL(mock_infile, open(mapfilename)).Times(1).WillOnce(Return());
@@ -45,7 +45,7 @@ TEST(queryFileTest, canInitializeBedfile) {
   igp::mock_input_variant_file mock_infile;
   igp::mock_output_variant_file mock_outfile;
   std::string bedfilename = "test.bed";
-  EXPECT_CALL(mock_infile, set_format_parameters(0, 1, 2, 4, 3, true, 4))
+  EXPECT_CALL(mock_infile, set_format_parameters(0, 1, 2, 4, true, 4))
       .Times(1)
       .WillOnce(Return());
   EXPECT_CALL(mock_infile, open(bedfilename)).Times(1).WillOnce(Return());
@@ -57,7 +57,7 @@ TEST(queryFileTest, canInitializeVcf) {
   igp::mock_input_variant_file mock_infile;
   igp::mock_output_variant_file mock_outfile;
   std::string vcfname = "test.vcf";
-  EXPECT_CALL(mock_infile, set_format_parameters(0, 1, -1, -1, -1, false, 9))
+  EXPECT_CALL(mock_infile, set_format_parameters(0, 1, -1, -1, false, 9))
       .Times(1)
       .WillOnce(Return());
   EXPECT_CALL(mock_infile, open(vcfname)).Times(1).WillOnce(Return());

@@ -20,7 +20,6 @@ TEST(vardataTest, copyConstructor) {
   vd1.set_a1("A");
   vd1.set_a2("T");
   vd1.set_varid("rs1");
-  vd1.set_annotation("annot");
   igp::vardata vd2(vd1);
   EXPECT_EQ(vd1.get_chr(), vd2.get_chr());
   EXPECT_EQ(vd1.get_pos1(), vd2.get_pos1());
@@ -28,7 +27,6 @@ TEST(vardataTest, copyConstructor) {
   EXPECT_EQ(vd1.get_a1(), vd2.get_a1());
   EXPECT_EQ(vd1.get_a2(), vd2.get_a2());
   EXPECT_EQ(vd1.get_varid(), vd2.get_varid());
-  EXPECT_EQ(vd1.get_annotation(), vd2.get_annotation());
 }
 
 TEST(vardataTest, assignmentOperator) {
@@ -39,7 +37,6 @@ TEST(vardataTest, assignmentOperator) {
   vd1.set_a1("A");
   vd1.set_a2("T");
   vd1.set_varid("rs1");
-  vd1.set_annotation("annot");
   igp::vardata vd2 = vd1;
   EXPECT_EQ(vd1.get_chr(), vd2.get_chr());
   EXPECT_EQ(vd1.get_pos1(), vd2.get_pos1());
@@ -47,7 +44,6 @@ TEST(vardataTest, assignmentOperator) {
   EXPECT_EQ(vd1.get_a1(), vd2.get_a1());
   EXPECT_EQ(vd1.get_a2(), vd2.get_a2());
   EXPECT_EQ(vd1.get_varid(), vd2.get_varid());
-  EXPECT_EQ(vd1.get_annotation(), vd2.get_annotation());
 }
 
 TEST(vardataTest, testGetSet) {
@@ -58,12 +54,10 @@ TEST(vardataTest, testGetSet) {
   vd.set_a1("A");
   vd.set_a2("T");
   vd.set_varid("rs1");
-  vd.set_annotation("annot");
   EXPECT_EQ(vd.get_chr(), "chr1");
   EXPECT_EQ(vd.get_pos1(), mpz_class(100));
   EXPECT_EQ(vd.get_pos2(), mpz_class(200));
   EXPECT_EQ(vd.get_a1(), "A");
   EXPECT_EQ(vd.get_a2(), "T");
   EXPECT_EQ(vd.get_varid(), "rs1");
-  EXPECT_EQ(vd.get_annotation(), "annot");
 }
