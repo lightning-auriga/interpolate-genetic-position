@@ -199,6 +199,11 @@ The flag `--region-step-interval [double-precision value]` causes the bolt-forma
 bedfile queries to contain stepwise increments in genetic position at the end position of each query interval.
 This is for experimental purposes; for most practical uses of this tool, this flag should be left at its default of 0.
 
+When `--region-step-interval` is non-zero, bedfile column 4 is considered a group label, such that consecutive queries
+with the same column 4 entry will not have their genetic position incremented by the fixed specified interval.
+This behavior allows distinct query regions to be assigned to the same conceptual unit. This behavior is obviously very niche,
+and since `--region-step-interval` should almost always be 0, this behavior will have no practical impact in most circumstances.
+
 ## I/O Streams
 
 This program can accept input files as streams and can emit output to stream. To have a file be read from

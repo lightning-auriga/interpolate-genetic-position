@@ -8,4 +8,4 @@ Description: Use reference genetic map to interpolate genetic position for a que
 Requires: gcc >= 8.2.0
 Version: @PACKAGE_VERSION@
 Libs: -L${libdir}
-Cflags: -I${includedir}/interpolate-genetic-position-1.1.0 -I${libdir}/interpolate-genetic-position-1.1.0/include
+Cflags: -I${includedir}/interpolate-genetic-position-1.2.0 -I${libdir}/interpolate-genetic-position-1.2.0/include
