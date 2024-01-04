@@ -108,6 +108,15 @@ void igp::output_variant_file::write(
     }
     set_last_chr(chr);
     set_index_on_chromosome(0);
+  } else {
+    // as a last resort, check uncontrolled precision errors in output
+    if (cmp(get_last_gpos(), output_gpos) > 0) {
+      throw std::runtime_error(
+          "write: an output genetic position is smaller than the position "
+          "of a previous output for the same chromosome. This is probably "
+          "caused by uncontrolled precision errors, either in one of the "
+          "inputs or in the logic of this program.");
+    }
   }
   set_last_pos1(pos1);
   set_last_pos2(pos2);
