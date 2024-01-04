@@ -217,7 +217,7 @@ TEST_F(integrationTest, vcfInputMapOutput) {
       "chr3\trs3\t0\t1000000\n";
   igp::interpolator ip;
   ip.interpolate("unit_tests/test.vcf.gz", "vcf", _in_gmap_tmpfile, "bolt",
-                 _out_tmpfile, "map", false, 0.0, false);
+                 _out_tmpfile, "map", false, 0.0, 0, false);
   EXPECT_TRUE(boost::filesystem::exists(_out_tmpfile));
   std::string observed_output = load_plaintext_file(_out_tmpfile);
   EXPECT_EQ(expected_output, observed_output);
@@ -232,7 +232,7 @@ TEST_F(integrationTest, vcfInputBimOutput) {
       "chr3\trs3\t0\t1000000\tA\tC\n";
   igp::interpolator ip;
   ip.interpolate("unit_tests/test.vcf.gz", "vcf", _in_gmap_tmpfile, "bolt",
-                 _out_tmpfile, "bim", false, 0.0, false);
+                 _out_tmpfile, "bim", false, 0.0, 0, false);
   EXPECT_TRUE(boost::filesystem::exists(_out_tmpfile));
   std::string observed_output = load_plaintext_file(_out_tmpfile);
   EXPECT_EQ(expected_output, observed_output);
@@ -255,7 +255,7 @@ TEST_F(integrationTest, bedfileInputBoltOutputNoIncrement) {
       "chr3\t1000000\t0\t0\n";
   igp::interpolator ip;
   ip.interpolate(_in_query_tmpfile, "bed", _in_gmap_tmpfile, "bolt",
-                 _out_tmpfile, "bolt", false, 0.0, false);
+                 _out_tmpfile, "bolt", false, 0.0, 0, false);
   EXPECT_TRUE(boost::filesystem::exists(_out_tmpfile));
   std::string observed_output = load_plaintext_file(_out_tmpfile);
   EXPECT_EQ(expected_output, observed_output);
@@ -279,7 +279,7 @@ TEST_F(integrationTest, bedfileInputBoltOutputBoundaryIncrement) {
       "chr3\t1000000\t0\t0\n";
   igp::interpolator ip;
   ip.interpolate(_in_query_tmpfile, "bed", _in_gmap_tmpfile, "bolt",
-                 _out_tmpfile, "bolt", false, boundary_increment, false);
+                 _out_tmpfile, "bolt", false, boundary_increment, 0, false);
   EXPECT_TRUE(boost::filesystem::exists(_out_tmpfile));
   std::string observed_output = load_plaintext_file(_out_tmpfile);
   EXPECT_EQ(expected_output, observed_output);
@@ -296,7 +296,7 @@ TEST_F(integrationTest, bimfileInputBimfileOutput) {
       "3\trs3\t0\t1000000\tA\tC\n";
   igp::interpolator ip;
   ip.interpolate(_in_query_tmpfile, "bim", _in_gmap_tmpfile, "bolt",
-                 _out_tmpfile, "bim", false, 0.0, false);
+                 _out_tmpfile, "bim", false, 0.0, 0, false);
   EXPECT_TRUE(boost::filesystem::exists(_out_tmpfile));
   std::string observed_output = load_plaintext_file(_out_tmpfile);
   EXPECT_EQ(expected_output, observed_output);
@@ -313,7 +313,7 @@ TEST_F(integrationTest, mapfileInputMapfileOutput) {
       "3\trs3\t0\t1000000\n";
   igp::interpolator ip;
   ip.interpolate(_in_query_tmpfile, "map", _in_gmap_tmpfile, "bolt",
-                 _out_tmpfile, "map", false, 0.0, false);
+                 _out_tmpfile, "map", false, 0.0, 0, false);
   EXPECT_TRUE(boost::filesystem::exists(_out_tmpfile));
   std::string observed_output = load_plaintext_file(_out_tmpfile);
   EXPECT_EQ(expected_output, observed_output);
@@ -333,7 +333,7 @@ TEST_F(integrationTest, gzippedMapfileInputMapfileOutput) {
         "3\trs3\t0\t1000000\n";
     igp::interpolator ip;
     ip.interpolate(in_query_tmpfile, "map", _in_gmap_tmpfile, "bolt",
-                   _out_tmpfile, "map", false, 0.0, false);
+                   _out_tmpfile, "map", false, 0.0, 0, false);
     EXPECT_TRUE(boost::filesystem::exists(_out_tmpfile));
     std::string observed_output = load_plaintext_file(_out_tmpfile);
     EXPECT_EQ(expected_output, observed_output);
@@ -360,7 +360,7 @@ TEST_F(integrationTest, gzippedBoltGeneticMap) {
         "3\trs3\t0\t1000000\n";
     igp::interpolator ip;
     ip.interpolate(_in_query_tmpfile, "map", in_gmap_tmpfile, "bolt",
-                   _out_tmpfile, "map", false, 0.0, false);
+                   _out_tmpfile, "map", false, 0.0, 0, false);
     EXPECT_TRUE(boost::filesystem::exists(_out_tmpfile));
     std::string observed_output = load_plaintext_file(_out_tmpfile);
     EXPECT_EQ(expected_output, observed_output);
@@ -383,7 +383,7 @@ TEST_F(integrationTest, bedgraphGeneticMap) {
       "3\trs3\t0\t1000000\n";
   igp::interpolator ip;
   ip.interpolate(_in_query_tmpfile, "map", _in_gmap_tmpfile, "bedgraph",
-                 _out_tmpfile, "map", false, 0.0, false);
+                 _out_tmpfile, "map", false, 0.0, 0, false);
   EXPECT_TRUE(boost::filesystem::exists(_out_tmpfile));
   std::string observed_output = load_plaintext_file(_out_tmpfile);
   EXPECT_EQ(expected_output, observed_output);
@@ -399,7 +399,7 @@ TEST_F(integrationTest, bigwigGeneticMap) {
       "3\trs3\t0\t1000000\n";
   igp::interpolator ip;
   ip.interpolate(_in_query_tmpfile, "map", _in_gmap_tmpfile, "bigwig",
-                 _out_tmpfile, "map", false, 0.0, false);
+                 _out_tmpfile, "map", false, 0.0, 0, false);
   EXPECT_TRUE(boost::filesystem::exists(_out_tmpfile));
   std::string observed_output = load_plaintext_file(_out_tmpfile);
   EXPECT_EQ(expected_output, observed_output);
@@ -427,7 +427,7 @@ TEST_F(integrationTest, bedfileInputBoltOutputSparseQueries) {
       "chr22\t17084146\t0\t0.00107285\n";
   igp::interpolator ip;
   ip.interpolate(_in_query_tmpfile, "bed", _in_gmap_tmpfile, "bedgraph",
-                 _out_tmpfile, "bolt", false, 0.0, false);
+                 _out_tmpfile, "bolt", false, 0.0, 0, false);
   EXPECT_TRUE(boost::filesystem::exists(_out_tmpfile));
   std::string observed_output = load_plaintext_file(_out_tmpfile);
   EXPECT_EQ(expected_output, observed_output);
@@ -458,7 +458,7 @@ TEST_F(integrationTest, bedfileInputRespectLabelColumn) {
       "chr22\t17084146\t0\t0.201073\n";
   igp::interpolator ip;
   ip.interpolate(_in_query_tmpfile, "bed", _in_gmap_tmpfile, "bedgraph",
-                 _out_tmpfile, "bolt", false, 0.1, false);
+                 _out_tmpfile, "bolt", false, 0.1, 0, false);
   EXPECT_TRUE(boost::filesystem::exists(_out_tmpfile));
   std::string observed_output = load_plaintext_file(_out_tmpfile);
   EXPECT_EQ(expected_output, observed_output);
