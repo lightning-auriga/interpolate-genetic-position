@@ -42,6 +42,8 @@ int main(int argc, const char** const argv) {
     return 0;
   }
 
+  mpf_set_default_prec(ap.get_mpf_precision());
+
   std::string input = ap.get_input_filename();
   std::string preset = ap.get_input_preset();
   std::string genetic_map = ap.get_recombination_map();
@@ -51,6 +53,7 @@ int main(int argc, const char** const argv) {
   bool verbose = ap.verbose();
   bool output_morgans = ap.output_morgans();
   double step_interval = ap.get_region_step_interval();
+  unsigned fixed_output_width = ap.get_fixed_output_width();
   if (input.empty() && genetic_map.empty()) {
     throw std::runtime_error("only one of -i and -g can be read from stdin");
   }
@@ -64,7 +67,7 @@ int main(int argc, const char** const argv) {
 
   igp::interpolator ip;
   ip.interpolate(input, preset, genetic_map, map_format, output, output_format,
-                 output_morgans, step_interval, verbose);
+                 output_morgans, step_interval, fixed_output_width, verbose);
 
   if (verbose) {
     std::cout << "all done woo!" << std::endl;

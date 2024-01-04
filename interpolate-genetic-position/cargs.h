@@ -142,6 +142,28 @@ class cargs {
    */
   double get_region_step_interval() const;
   /*!
+   * \brief get user-specified precision for internal floating point
+   * calculations. \return user-specified precision for internal floating point
+   * calculations.
+   *
+   * This number controls stored precision in arbitrary precision calculations;
+   * bigger numbers mean higher precision, at the cost of RAM and potentially
+   * performance. The default value on the test system is 64 (8 bytes).
+   */
+  unsigned get_mpf_precision() const;
+  /*!
+   * \brief get fixed width of output floating point values.
+   * \return user-specified fixed width of floating point values
+   *
+   * Depending on the calculations required downstream, a high amount of output
+   * precision may be required in order for later interpolation to provide
+   * consistent results without accumulated precision errors.
+   *
+   * Leaving this unset or setting it to 0 will cause the default gmp
+   * behavior of dynamic output width to be used.
+   */
+  unsigned get_fixed_output_width() const;
+  /*!
     \brief find status of arbitrary flag
     @param tag name of flag
     \return whether the flag is set

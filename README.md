@@ -128,6 +128,8 @@ By default, the final compiled program can be run with
 |`--verbose`<br>`-v`|Whether to print extremely verbose debug logs. You probably don't want this.|
 |`--output-morgans`|Report output genetic position in morgans, instead of the default centimorgans.|
 |`--region-step-interval`|Add a fixed genetic distance at the boundaries of end positions of bedfile region queries, such that the output data have a step-like structure. This functionality is included for experimental purposes, and in most applications this setting should be kept at its default of 0.|
+|`--precision`|Specify the number of bits to use for internal floating point calculations. Higher values will lead to higher fidelity calculations, at the cost of RAM and potentially performance. The program is capable of detecting situations where it has experienced catastrophic floating point errors, and in such a situation, try increasing this value to fix the problem. Default is 64.|
+|`--fixed-output-width`|Specify the number of digits after the decimal to be reported in output floating point values. More digits will potentially lead to more consistent downstream interpolation calculations, at the cost of file size. Leaving this unspecified or setting this to 0 causes the output floating point width to be scaled to the number of significant digits per value.|
 |`--help`<br>`-h`|Print brief help message and exit.|
 |`--version`|Print version string for current build.|
 

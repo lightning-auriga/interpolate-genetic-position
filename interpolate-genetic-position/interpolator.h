@@ -57,6 +57,9 @@ class interpolator {
    * within regions behaves linearly regardless. this functionality,
    * when set to 0, is effectively disabled. this parameter is ignored
    * for all input types other than bedfiles.
+   * \param fixed_output_width number of digits to print after
+   * decimal for output floating point values, or 0 for the number
+   * of digits to be scaled dynamically based on the number of sigfigs
    * \param verbose whether to emit (extremely) verbose logging to std::cout
    * can be empty string, in which case output is std::cout
    */
@@ -65,7 +68,8 @@ class interpolator {
                    const std::string &map_format,
                    const std::string &output_filename,
                    const std::string &output_format, bool output_morgans,
-                   const double &step_interval, bool verbose) const;
+                   const double &step_interval, unsigned fixed_output_width,
+                   bool verbose) const;
 };
 }  // namespace interpolate_genetic_position
 
