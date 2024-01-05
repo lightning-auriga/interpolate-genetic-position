@@ -128,6 +128,8 @@ By default, the final compiled program can be run with
 |`--verbose`<br>`-v`|Whether to print extremely verbose debug logs. You probably don't want this.|
 |`--output-morgans`|Report output genetic position in morgans, instead of the default centimorgans.|
 |`--region-step-interval`|Add a fixed genetic distance at the boundaries of end positions of bedfile region queries, such that the output data have a step-like structure. This functionality is included for experimental purposes, and in most applications this setting should be kept at its default of 0.|
+|`--precision`|Specify the number of bits to use for internal floating point calculations. Higher values will lead to higher fidelity calculations, at the cost of RAM and potentially performance. The program is capable of detecting situations where it has experienced catastrophic floating point errors, and in such a situation, try increasing this value to fix the problem. Default is 64.|
+|`--fixed-output-width`|Specify the number of digits after the decimal to be reported in output floating point values. More digits will potentially lead to more consistent downstream interpolation calculations, at the cost of file size. Leaving this unspecified or setting this to 0 causes the output floating point width to be scaled to the number of significant digits per value.|
 |`--help`<br>`-h`|Print brief help message and exit.|
 |`--version`|Print version string for current build.|
 
@@ -210,6 +212,28 @@ This program can accept input files as streams and can emit output to stream. To
 or written to stream, simply omit its relevant flag (`-i`, `-g`, `-o`). For input streams, the corresponding
 format flag should still be set. Only one input stream (either `-i` or `-g`) can be read from an input stream
 per run.
+
+## Floating Point Precision
+
+The recombination rates and physical positions involved in these maps creates situations where some interpolations
+create extremely small differences in estimated recombination rates. Fixed precision in computational
+calculations and output files can create cascading rounding errors when using
+genetic maps to annotate, for example, a series of variants on a chromosome where the genetic position
+of successive variants must never _decrease_, even by a very small amount.
+
+To allow the user to conditionally avoid this difficulty, the program offers the following:
+
+- the program will check its output genetic positions and error out if it finds a position that decreases
+  relative to the prior output result;
+- the program has the configuration flag `--precision` that controls the amount of memory in RAM that is
+  used for calculations; and
+- the program has the configuration flag `--fixed-output-width` that controls the number of digits
+  after the decimal place that are reported for any decimal value in its output.
+
+If the user encounters the error in the first point above, they can then increase in tandem the values
+of `--precision` and `--fixed-output-width` until the observed errors go away. Unfortunately, it is extremely
+challenging to predict how to adjust these values without simply trying different combinations. In a test
+case with real data, the permutation of values `--precision 256 --fixed-width 60` addressed all observed issues.
 
 ## Example Use Cases
 

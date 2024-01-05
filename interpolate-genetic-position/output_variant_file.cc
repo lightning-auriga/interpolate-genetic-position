@@ -23,7 +23,8 @@ igp::output_variant_file::output_variant_file()
       _last_gpos(0.0),
       _last_rate(0.0),
       _step_interval(0.0),
-      _index_on_chromosome(0) {}
+      _index_on_chromosome(0),
+      _fixed_width(0) {}
 
 igp::output_variant_file::~output_variant_file() throw() { close(); }
 
@@ -84,6 +85,11 @@ void igp::output_variant_file::write(
     const std::string &a1, const std::string &a2) {
   // the idea is: format an output line, then emit it to appropriate target
   std::ostringstream out;
+  // set fixed width if a non-zero width has been specified
+  if (get_fixed_width()) {
+    out.precision(get_fixed_width());
+    out << std::fixed;
+  }
   format_type ft = get_format();
 
   mpf_class step_interval = get_step_interval();
@@ -108,6 +114,18 @@ void igp::output_variant_file::write(
     }
     set_last_chr(chr);
     set_index_on_chromosome(0);
+  } else {
+    // as a last resort, check uncontrolled precision errors in output
+    if (cmp(get_last_gpos(), output_gpos) > 0) {
+      throw std::runtime_error(
+          "write: an output genetic position is smaller than the position "
+          "of a previous output for the same chromosome. This is probably "
+          "caused by uncontrolled precision errors, either in one of the "
+          "inputs or in the logic of this program. The most likely way to "
+          "solve this error is to try increasing --precision and "
+          "--fixed-output-width in combination until sufficient precision "
+          "is preserved for the results to remain internally consistent.");
+    }
   }
   set_last_pos1(pos1);
   set_last_pos2(pos2);
@@ -192,4 +210,12 @@ unsigned igp::output_variant_file::get_index_on_chromosome() const {
 
 void igp::output_variant_file::set_index_on_chromosome(unsigned index) {
   _index_on_chromosome = index;
+}
+
+void igp::output_variant_file::set_fixed_width(unsigned width) {
+  _fixed_width = width;
+}
+
+unsigned igp::output_variant_file::get_fixed_width() const {
+  return _fixed_width;
 }

@@ -29,7 +29,7 @@ cargsTest::cargsTest()
   populate(test3, &_argvec3, &_argv3);
   std::string test4 = "progname -i fn1 -p bedgraph -g fn2 -m map -o fn3 -f vcf";
   populate(test4, &_argvec4, &_argv4);
-  std::string test5 = "progname --version";
+  std::string test5 = "progname --version --precision 68";
   populate(test5, &_argvec5, &_argv5);
 }
 
@@ -145,4 +145,9 @@ TEST_F(cargsTest, detectImproperFormats) {
   EXPECT_THROW(ap.get_input_preset(), std::runtime_error);
   EXPECT_THROW(ap.get_map_format(), std::runtime_error);
   EXPECT_THROW(ap.get_output_format(), std::runtime_error);
+}
+
+TEST_F(cargsTest, detectPrecision) {
+  igp::cargs ap(_argvec5.size(), _argv5);
+  EXPECT_EQ(ap.get_mpf_precision(), 68u);
 }

@@ -163,6 +163,16 @@ class base_output_variant_file {
    * \param index index of this result
    */
   virtual void set_index_on_chromosome(unsigned index) = 0;
+  /*!
+   * \brief set fixed width for output floats
+   * \param width fixed width for output floats
+   */
+  virtual void set_fixed_width(unsigned width) = 0;
+  /*!
+   * \brief get fixed width for output floats
+   * \return fixed width for output floats
+   */
+  virtual unsigned get_fixed_width() const = 0;
 };
 
 /*!
@@ -307,6 +317,16 @@ class output_variant_file : public base_output_variant_file {
    * \param index index of this result
    */
   void set_index_on_chromosome(unsigned index);
+  /*!
+   * \brief set fixed width for output floats
+   * \param width fixed width for output floats
+   */
+  void set_fixed_width(unsigned width);
+  /*!
+   * \brief get fixed width for output floats
+   * \return fixed width for output floats
+   */
+  unsigned get_fixed_width() const;
 
  private:
   std::ofstream _output;     //!< output uncompressed file stream
@@ -320,6 +340,7 @@ class output_variant_file : public base_output_variant_file {
   mpf_class _step_interval;  //!< gpos increment to edge of bed queries
   unsigned _index_on_chromosome;  //!< how many queries have been returned on
                                   //!< this chromosome
+  unsigned _fixed_width;          //!< fixed width of output decimal values
 };
 }  // namespace interpolate_genetic_position
 

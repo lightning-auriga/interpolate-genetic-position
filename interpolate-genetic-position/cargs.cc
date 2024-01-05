@@ -50,7 +50,16 @@ void igp::cargs::initialize_options() {
       "region-step-interval",
       boost::program_options::value<double>()->default_value(0.0),
       "genetic distance increment to add at boundaries of bed interval; "
-      "experimental, generally should be kept at default");
+      "experimental, generally should be kept at default")(
+      "precision", boost::program_options::value<unsigned>()->default_value(64),
+      "set bits used for floating point precision in calculations; "
+      "bigger leads to higher precision at the cost of RAM and possibly "
+      "performance")(
+      "fixed-output-width", boost::program_options::value<unsigned>(),
+      "set width of output floating point values. larger width will "
+      "potentially lead to more reasonable downstream interpolation, "
+      "at the cost of file size. leaving this unset or set to 0 will cause "
+      "the output width to be dynamically scaled to significant digits");
 }
 
 bool igp::cargs::help() const { return compute_flag("help"); }
@@ -106,6 +115,24 @@ bool igp::cargs::output_morgans() const {
 
 double igp::cargs::get_region_step_interval() const {
   return compute_parameter<double>("region-step-interval");
+}
+
+unsigned igp::cargs::get_mpf_precision() const {
+  unsigned res = compute_parameter<unsigned>("precision");
+  if (res < 64) {
+    throw std::runtime_error(
+        "cargs::get_mpf_precision: minimum permitted "
+        "precision value at this time is 64");
+  }
+  return res;
+}
+
+unsigned igp::cargs::get_fixed_output_width() const {
+  unsigned res = 0;
+  if (_vm.count("fixed-output-width")) {
+    res = compute_parameter<unsigned>("fixed-output-width");
+  }
+  return res;
 }
 
 bool igp::cargs::compute_flag(const std::string &tag) const {

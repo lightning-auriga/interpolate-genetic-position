@@ -16,12 +16,14 @@ void igp::interpolator::interpolate(
     const std::string &input_filename, const std::string &preset,
     const std::string &genetic_map_filename, const std::string &map_format,
     const std::string &output_filename, const std::string &output_format,
-    bool output_morgans, const double &step_interval, bool verbose) const {
+    bool output_morgans, const double &step_interval,
+    unsigned fixed_output_width, bool verbose) const {
   input_variant_file input_variant_interface;
   input_genetic_map_file genetic_map_interface;
   output_variant_file output_variant_interface;
   input_variant_interface.set_fallback_stream(&std::cin);
   output_variant_interface.output_morgans(output_morgans);
+  output_variant_interface.set_fixed_width(fixed_output_width);
   genetic_map_interface.set_fallback_stream(&std::cin);
   genetic_map gm(&genetic_map_interface);
   format_type map_ft = string_to_format_type(map_format);
